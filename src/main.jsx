@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { ChefHat, Heart, Home, Minus, Plus, Search, UtensilsCrossed, X, Sparkles, Clock3, Sun, Moon } from 'lucide-react'
+import { ChefHat, Heart, Home, Minus, Plus, Search, UtensilsCrossed, X, Sparkles, Clock3, Sun, Moon, Soup, Salad, Croissant, CakeSlice, Drumstick, Wheat, Utensils } from 'lucide-react'
 import './styles.css'
 
 const recipes = [
@@ -170,7 +170,16 @@ const recipes = [
   }
 ]
 
-const categories = ['Все', 'Первые блюда', 'Вторые блюда', 'Салаты', 'Завтраки', 'Гарниры', 'Выпечка', 'Десерты']
+const categories = ['Первые блюда', 'Вторые блюда', 'Салаты', 'Завтраки', 'Гарниры', 'Выпечка', 'Десерты']
+const categoryIcons = {
+  'Первые блюда': Soup,
+  'Вторые блюда': Drumstick,
+  'Салаты': Salad,
+  'Завтраки': Croissant,
+  'Гарниры': Wheat,
+  'Выпечка': Utensils,
+  'Десерты': CakeSlice
+}
 
 function readFavorites() {
   try {
@@ -244,7 +253,7 @@ function DishIcon({ recipe, size = 22 }) {
 }
 
 function App() {
-  const [selectedId, setSelectedId] = useState('borscht')
+  const [selectedId, setSelectedId] = useState(null)
   const [servings, setServings] = useState(5)
   const [category, setCategory] = useState('Все')
   const [query, setQuery] = useState('')
@@ -255,7 +264,7 @@ function App() {
     try { return window.localStorage.getItem('food-theme') || 'light' } catch { return 'light' }
   })
 
-  const selected = recipes.find(r => r.id === selectedId) || recipes[0]
+  const selected = recipes.find(r => r.id === selectedId) || null
 
   const filtered = useMemo(() => recipes.filter(r => {
     const matchesCategory = category === 'Все' || r.category === category
@@ -264,7 +273,7 @@ function App() {
     return matchesCategory && matchesQuery && matchesTab
   }), [category, query, tab, favorites])
 
-  const multiplier = servings / selected.baseServings
+  const multiplier = selected ? servings / selected.baseServings : 1
 
   React.useEffect(() => {
     document.documentElement.dataset.theme = theme
@@ -282,6 +291,20 @@ function App() {
     setSelectedId(id)
     setShowSteps(false)
     setTab('dishes')
+  }
+
+  const openCategory = (item) => {
+    setCategory(item)
+    setSelectedId(null)
+    setQuery('')
+    setTab('dishes')
+  }
+
+  const backToCategories = () => {
+    setSelectedId(null)
+    setCategory('Все')
+    setQuery('')
+    setShowSteps(false)
   }
 
   return (
@@ -310,114 +333,60 @@ function App() {
         </div>
       </section>
 
-      <div className="workspace">
-        <aside className="sidebar">
-          <div className="sidebarTitle"><span className="libraryLabel">Моя кухня</span>
-            <span>Блюда</span>
-            <span className="count">{filtered.length}</span>
+      {!selected ? (
+        <section className="categoryHome">
+          <div className="categoryIntro">
+            <span className="muted">Выберите раздел</span>
+            <h3>Что будем готовить?</h3>
+            <p>Сначала выберите категорию, затем блюдо — и Food рассчитает продукты под нужное количество людей.</p>
           </div>
-          <div className="search">
-            <Search size={18} />
-            <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Найти блюдо..." />
-            {query && <button className="clearSearch" onClick={() => setQuery('')} aria-label="Очистить"><X size={15}/></button>}
-          </div>
-          <div className="categories">
-            {categories.map(item => (
-              <button key={item} className={category === item ? 'category active' : 'category'} onClick={() => setCategory(item)}>
-                {item}
-              </button>
-            ))}
-          </div>
-          <div className="recipeList">
-            {filtered.length ? filtered.map(recipe => (
-              <button key={recipe.id} className={selected.id === recipe.id ? 'recipe active' : 'recipe'} onClick={() => selectRecipe(recipe.id)}>
-                <span className="recipeEmoji"><DishIcon recipe={recipe} size={22} /></span>
-                <span className="recipeText">
-                  <strong>{recipe.name}</strong>
-                  <small>{recipe.category}</small>
-                </span>
-                <Heart className={favorites.includes(recipe.id) ? 'miniHeart liked' : 'miniHeart'} size={15} fill={favorites.includes(recipe.id) ? 'currentColor' : 'none'} />
-              </button>
-            )) : <div className="empty">В избранном пока нет блюд.</div>}
-          </div>
-        </aside>
-
-        <section className="card">
-          <div className="cardTop">
-            <div className="dishHead">
-              <div className="dishIcon"><img src={selected.image} alt={selected.name} loading="eager" /><i></i></div>
-              <div>
-                <span className="muted">{selected.category} · {selected.ingredients.length} ингредиентов</span>
-                <h3>{selected.name}</h3>
-                <p>{selected.description}</p>
-              </div>
-            </div>
-            <button className={favorites.includes(selected.id) ? 'favoriteButton active' : 'favoriteButton'} onClick={() => toggleFavorite(selected.id)} aria-label="Добавить в избранное">
-              <Heart size={19} fill={favorites.includes(selected.id) ? 'currentColor' : 'none'} />
-            </button>
-          </div>
-
-          <div className="recipeMeta"><span><Clock3 size={15}/> 30–60 мин</span><span><UtensilsCrossed size={15}/> {selected.baseServings} {pluralPeople(selected.baseServings)}</span></div>
-
-          <div className="servings">
-            <div>
-              <span className="muted">Количество</span>
-              <strong>{servings} {pluralPeople(servings)}</strong>
-            </div>
-            <div className="stepper">
-              <button onClick={() => setServings(Math.max(1, servings - 1))} aria-label="Уменьшить"><Minus size={18}/></button>
-              <span>{servings}</span>
-              <button onClick={() => setServings(Math.min(50, servings + 1))} aria-label="Увеличить"><Plus size={18}/></button>
-            </div>
-          </div>
-
-          <div className="scaleButtons">
-            {[2, 4, 5, 6, 10].map(n => (
-              <button key={n} className={servings === n ? 'scale active' : 'scale'} onClick={() => setServings(n)}>{n}</button>
-            ))}
-          </div>
-
-          <div className="sectionHeading"><div><span>Ингредиенты</span><small>Количество автоматически пересчитано</small></div><b>{selected.ingredients.length}</b></div>
-
-          <div className="tableHead">
-            <span>ИНГРЕДИЕНТ</span>
-            <span>КОЛИЧЕСТВО</span>
-          </div>
-
-          <div className="ingredients">
-            {selected.ingredients.map(([name, amount, unit]) => (
-              <div className="ingredient" key={name}>
-                <span>{name}</span>
-                <strong>{formatAmount(amount * multiplier, unit)}</strong>
-              </div>
-            ))}
-          </div>
-
-          <div className="cardActions">
-            <button className={showSteps ? 'secondaryAction active' : 'secondaryAction'} onClick={() => setShowSteps(!showSteps)}>
-              <UtensilsCrossed size={17} />
-              {showSteps ? 'Скрыть приготовление' : 'Как приготовить'}
-            </button>
-          </div>
-
-          {showSteps && (
-            <div className="steps">
-              <div className="stepsTitle">Приготовление</div>
-              {selected.steps.map((step, index) => (
-                <div className="step" key={step}>
-                  <span>{index + 1}</span>
-                  <p>{step}</p>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div className="note">
-            <UtensilsCrossed size={18} />
-            <span>Расчёт выполнен по базовой рецептуре на {selected.baseServings} {pluralPeople(selected.baseServings)}.</span>
+          <div className="categoryGrid">
+            {categories.map(item => {
+              const Icon = categoryIcons[item]
+              const count = recipes.filter(r => r.category === item).length
+              return (
+                <button key={item} className="categoryTile" onClick={() => openCategory(item)}>
+                  <span className="categoryTileIcon"><Icon size={28} strokeWidth={1.7} /></span>
+                  <span className="categoryTileText"><strong>{item}</strong><small>{count} {count === 1 ? 'блюдо' : count < 5 ? 'блюда' : 'блюд'}</small></span>
+                  <span className="categoryTileArrow">›</span>
+                </button>
+              )
+            })}
           </div>
         </section>
-      </div>
+      ) : (
+        <div className="workspace">
+          <aside className="sidebar">
+            <div className="backRow"><button className="backButton" onClick={backToCategories}>‹ Категории</button></div>
+            <div className="sidebarTitle"><span className="libraryLabel">{category}</span><span>Блюда</span><span className="count">{filtered.length}</span></div>
+            <div className="search"><Search size={18}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Найти блюдо..."/>{query && <button className="clearSearch" onClick={() => setQuery('')} aria-label="Очистить"><X size={15}/></button>}</div>
+            <div className="recipeList">
+              {filtered.length ? filtered.map(recipe => (
+                <button key={recipe.id} className={selected.id === recipe.id ? 'recipe active' : 'recipe'} onClick={() => selectRecipe(recipe.id)}>
+                  <span className="recipeEmoji"><DishIcon recipe={recipe} size={22}/></span>
+                  <span className="recipeText"><strong>{recipe.name}</strong><small>{recipe.category}</small></span>
+                  <Heart className={favorites.includes(recipe.id) ? 'miniHeart liked' : 'miniHeart'} size={15} fill={favorites.includes(recipe.id) ? 'currentColor' : 'none'}/>
+                </button>
+              )) : <div className="empty">В этой категории пока нет блюд.</div>}
+            </div>
+          </aside>
+          <section className="card">
+            <div className="cardTop">
+              <div className="dishHead"><div className="dishIcon"><img src={selected.image} alt={selected.name} loading="eager"/><i/></div><div><span className="muted">{selected.category} · {selected.ingredients.length} ингредиентов</span><h3>{selected.name}</h3><p>{selected.description}</p></div></div>
+              <button className={favorites.includes(selected.id) ? 'favoriteButton active' : 'favoriteButton'} onClick={() => toggleFavorite(selected.id)} aria-label="Добавить в избранное"><Heart size={19} fill={favorites.includes(selected.id) ? 'currentColor' : 'none'}/></button>
+            </div>
+            <div className="recipeMeta"><span><Clock3 size={15}/> 30–60 мин</span><span><UtensilsCrossed size={15}/> {selected.baseServings} {pluralPeople(selected.baseServings)}</span></div>
+            <div className="servings"><div><span className="muted">Количество</span><strong>{servings} {pluralPeople(servings)}</strong></div><div className="stepper"><button onClick={() => setServings(Math.max(1, servings - 1))} aria-label="Уменьшить"><Minus size={18}/></button><span>{servings}</span><button onClick={() => setServings(Math.min(50, servings + 1))} aria-label="Увеличить"><Plus size={18}/></button></div></div>
+            <div className="scaleButtons">{[2,4,5,6,10].map(n => <button key={n} className={servings === n ? 'scale active' : 'scale'} onClick={() => setServings(n)}>{n}</button>)}</div>
+            <div className="sectionHeading"><div><span>Ингредиенты</span><small>Количество автоматически пересчитано</small></div><b>{selected.ingredients.length}</b></div>
+            <div className="tableHead"><span>ИНГРЕДИЕНТ</span><span>КОЛИЧЕСТВО</span></div>
+            <div className="ingredients">{selected.ingredients.map(([name, amount, unit]) => <div className="ingredient" key={name}><span>{name}</span><strong>{formatAmount(amount * multiplier, unit)}</strong></div>)}</div>
+            <div className="cardActions"><button className={showSteps ? 'secondaryAction active' : 'secondaryAction'} onClick={() => setShowSteps(!showSteps)}><UtensilsCrossed size={17}/>{showSteps ? 'Скрыть приготовление' : 'Как приготовить'}</button></div>
+            {showSteps && <div className="steps"><div className="stepsTitle">Приготовление</div>{selected.steps.map((step,index) => <div className="step" key={step}><span>{index+1}</span><p>{step}</p></div>)}</div>}
+            <div className="note"><UtensilsCrossed size={18}/><span>Расчёт выполнен по базовой рецептуре на {selected.baseServings} {pluralPeople(selected.baseServings)}.</span></div>
+          </section>
+        </div>
+      )}
 
       <nav className="bottomNav">
         <button className={tab === 'dishes' ? 'navItem active' : 'navItem'} onClick={() => setTab('dishes')}>
