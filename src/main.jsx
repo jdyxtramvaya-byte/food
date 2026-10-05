@@ -82,7 +82,7 @@ const recipes = [
       ['Растительное масло', 30, 'мл'],
       ['Соль', 3, 'г']
     ]
-  }
+  },
 
   {
     id: 'solyanka', name: 'Солянка', category: 'Первые блюда', emoji: '🍜', baseServings: 4,
