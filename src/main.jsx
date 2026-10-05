@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { ChefHat, Heart, Home, Minus, Plus, Search, UtensilsCrossed, X, Sparkles, Clock3, Sun, Moon, Soup, Salad, Croissant, CakeSlice, Wheat, Utensils } from 'lucide-react'
+import { ChefHat, Heart, Home, Minus, Plus, Search, UtensilsCrossed, X, Sparkles, Clock3, Sun, Moon, Soup, Salad, Croissant, CakeSlice, Drumstick, Wheat, Utensils } from 'lucide-react'
 import './styles.css'
 
 const recipes = [
@@ -173,7 +173,7 @@ const recipes = [
 const categories = ['Первые блюда', 'Вторые блюда', 'Салаты', 'Завтраки', 'Гарниры', 'Выпечка', 'Десерты']
 const categoryIcons = {
   'Первые блюда': Soup,
-  'Вторые блюда': Utensils,
+  'Вторые блюда': Drumstick,
   'Салаты': Salad,
   'Завтраки': Croissant,
   'Гарниры': Wheat,
@@ -333,44 +333,69 @@ function App() {
         </div>
       </section>
 
-      {!selected && category === 'Все' ? (
-        <section className="categoryHome">
-          <div className="categoryIntro">
-            <span className="muted">Выберите раздел</span>
-            <h3>Что будем готовить?</h3>
-            <p>Сначала выберите категорию, затем блюдо — и Food рассчитает продукты под нужное количество людей.</p>
-          </div>
-          <div className="categoryGrid">
-            {categories.map(item => {
-              const Icon = categoryIcons[item]
-              const count = recipes.filter(r => r.category === item).length
-              return (
-                <button key={item} className="categoryTile" onClick={() => openCategory(item)}>
-                  <span className="categoryTileIcon"><Icon size={28} strokeWidth={1.7} /></span>
-                  <span className="categoryTileText"><strong>{item}</strong><small>{count} {count === 1 ? 'блюдо' : count < 5 ? 'блюда' : 'блюд'}</small></span>
-                  <span className="categoryTileArrow">›</span>
+      {!selected ? (
+        tab === 'favorites' ? (
+          <section className="categoryDishes">
+            <div className="categoryDishesHeader">
+              <button className="backButton" onClick={backToCategories}>‹ Категории</button>
+              <span className="muted">Сохранённые блюда</span>
+              <h3>Избранное</h3>
+              <p>Ваши любимые рецепты в одном месте.</p>
+            </div>
+            {filtered.length ? (
+              <div className="dishGrid">
+                {filtered.map(recipe => (
+                  <button key={recipe.id} className="dishTile" onClick={() => selectRecipe(recipe.id)}>
+                    <img src={recipe.image} alt={recipe.name} loading="lazy" />
+                    <span><strong>{recipe.name}</strong><small>{recipe.description}</small></span>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="categoryDishesHeader">
+                <p>Пока нет сохранённых блюд. Нажмите сердечко у рецепта, чтобы добавить его сюда.</p>
+              </div>
+            )}
+          </section>
+        ) : category === 'Все' ? (
+          <section className="categoryHome">
+            <div className="categoryIntro">
+              <span className="muted">Выберите раздел</span>
+              <h3>Что будем готовить?</h3>
+              <p>Сначала выберите категорию, затем блюдо — и Food рассчитает продукты под нужное количество людей.</p>
+            </div>
+            <div className="categoryGrid">
+              {categories.map(item => {
+                const Icon = categoryIcons[item]
+                const count = recipes.filter(r => r.category === item).length
+                return (
+                  <button key={item} className="categoryTile" onClick={() => openCategory(item)}>
+                    <span className="categoryTileIcon"><Icon size={28} strokeWidth={1.7} /></span>
+                    <span className="categoryTileText"><strong>{item}</strong><small>{count} {count === 1 ? 'блюдо' : count < 5 ? 'блюда' : 'блюд'}</small></span>
+                    <span className="categoryTileArrow">›</span>
+                  </button>
+                )
+              })}
+            </div>
+          </section>
+        ) : (
+          <section className="categoryDishes">
+            <div className="categoryDishesHeader">
+              <button className="backButton" onClick={backToCategories}>‹ Категории</button>
+              <span className="muted">Раздел блюд</span>
+              <h3>{category}</h3>
+              <p>Выберите блюдо — после этого Food откроет калькулятор ингредиентов.</p>
+            </div>
+            <div className="dishGrid">
+              {filtered.map(recipe => (
+                <button key={recipe.id} className="dishTile" onClick={() => selectRecipe(recipe.id)}>
+                  <img src={recipe.image} alt={recipe.name} loading="lazy" />
+                  <span><strong>{recipe.name}</strong><small>{recipe.description}</small></span>
                 </button>
-              )
-            })}
-          </div>
-        </section>
-      ) : !selected ? (
-        <section className="categoryDishes">
-          <div className="categoryDishesHeader">
-            <button className="backButton" onClick={backToCategories}>‹ Категории</button>
-            <span className="muted">{category}</span>
-            <h3>Выберите блюдо</h3>
-            <p>Выберите блюдо, чтобы открыть калькулятор и рассчитать ингредиенты.</p>
-          </div>
-          <div className="dishGrid">
-            {filtered.length ? filtered.map(recipe => (
-              <button key={recipe.id} className="dishTile" onClick={() => selectRecipe(recipe.id)}>
-                <img src={recipe.image} alt={recipe.name} loading="lazy" />
-                <span><strong>{recipe.name}</strong><small>{recipe.description}</small></span>
-              </button>
-            )) : <div className="empty">В этой категории пока нет блюд.</div>}
-          </div>
-        </section>
+              ))}
+            </div>
+          </section>
+        )
       ) : (
         <div className="workspace">
           <aside className="sidebar">
@@ -379,7 +404,7 @@ function App() {
             <div className="search"><Search size={18}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Найти блюдо..."/>{query && <button className="clearSearch" onClick={() => setQuery('')} aria-label="Очистить"><X size={15}/></button>}</div>
             <div className="recipeList">
               {filtered.length ? filtered.map(recipe => (
-                <button key={recipe.id} className={selected && selected.id === recipe.id ? 'recipe active' : 'recipe'} onClick={() => selectRecipe(recipe.id)}>
+                <button key={recipe.id} className={selected.id === recipe.id ? 'recipe active' : 'recipe'} onClick={() => selectRecipe(recipe.id)}>
                   <span className="recipeEmoji"><DishIcon recipe={recipe} size={22}/></span>
                   <span className="recipeText"><strong>{recipe.name}</strong><small>{recipe.category}</small></span>
                   <Heart className={favorites.includes(recipe.id) ? 'miniHeart liked' : 'miniHeart'} size={15} fill={favorites.includes(recipe.id) ? 'currentColor' : 'none'}/>
