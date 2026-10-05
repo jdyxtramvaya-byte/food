@@ -236,6 +236,13 @@ class AppErrorBoundary extends React.Component {
   }
 }
 
+function DishIcon({ recipe, size = 22 }) {
+  const Icon = ['olivier', 'greek-salad', 'caesar', 'buckwheat', 'apple-pie', 'charlotte'].includes(recipe.id)
+    ? Sparkles
+    : UtensilsCrossed
+  return <Icon size={size} strokeWidth={1.8} />
+}
+
 function App() {
   const [selectedId, setSelectedId] = useState('borscht')
   const [servings, setServings] = useState(5)
