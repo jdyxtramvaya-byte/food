@@ -4,8 +4,9 @@ import { ChefHat, Heart, Home, Minus, Plus, Search, UtensilsCrossed, X, Sparkles
 import './styles.css'
 import IngredientFinder from './IngredientFinder'
 import recipeDetails from './recipeDetails'
+import extraRecipes from './extraRecipes'
 
-const recipes = [
+const baseRecipes = [
   {
     id: 'borscht',
     name: 'Борщ',
@@ -206,6 +207,7 @@ const recipes = [
 
 ]
 
+const recipes = [...baseRecipes, ...extraRecipes]
 const categories = ['Первые блюда', 'Вторые блюда', 'Салаты', 'Завтраки', 'Гарниры', 'Выпечка', 'Десерты']
 const categoryIcons = {
   'Первые блюда': Soup,
