@@ -174,10 +174,21 @@ const categories = ['Все', 'Первые блюда', 'Вторые блюд�
 
 function readFavorites() {
   try {
-    const saved = JSON.parse(localStorage.getItem('food-favorites') || '[]')
+    if (typeof window === 'undefined') return []
+    const saved = JSON.parse(window.localStorage.getItem('food-favorites') || '[]')
     return Array.isArray(saved) ? saved : []
   } catch {
     return []
+  }
+}
+
+function writeFavorites(value) {
+  try {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('food-favorites', JSON.stringify(value))
+    }
+  } catch {
+    // Storage can be unavailable in private/restricted browser modes.
   }
 }
 
@@ -192,6 +203,37 @@ function pluralPeople(n) {
   if (n % 10 === 1 && n % 100 !== 11) return 'человек'
   if ([2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100)) return 'человека'
   return 'человек'
+}
+
+class AppErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { hasError: false }
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true }
+  }
+
+  componentDidCatch(error) {
+    console.error('Food app error:', error)
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <main className="errorScreen">
+          <div className="errorCard">
+            <div className="errorIcon">🍲</div>
+            <h1>Food не удалось запустить</h1>
+            <p>Попробуйте обновить страницу. Если ошибка повторится, очистите данные сайта.</p>
+            <button onClick={() => window.location.reload()}>Обновить</button>
+          </div>
+        </main>
+      )
+    }
+    return this.props.children
+  }
 }
 
 function App() {
@@ -214,7 +256,7 @@ function App() {
 
   const multiplier = servings / selected.baseServings
 
-  const saveFavorites = (next) => { setFavorites(next); localStorage.setItem('food-favorites', JSON.stringify(next)) }
+  const saveFavorites = (next) => { setFavorites(next); writeFavorites(next) }
 
   const toggleFavorite = (id) => {
     const next = favorites.includes(id) ? favorites.filter(item => item !== id) : [...favorites, id]
@@ -369,4 +411,8 @@ function App() {
   )
 }
 
-createRoot(document.getElementById('root')).render(<App />)
+createRoot(document.getElementById('root')).render(
+  <AppErrorBoundary>
+    <App />
+  </AppErrorBoundary>
+)
