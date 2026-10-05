@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { ChefHat, Heart, Home, Minus, Plus, Search, UtensilsCrossed, X, Sparkles, Clock3, Sun, Moon, Soup, Salad, Croissant, CakeSlice, Drumstick, Wheat, Utensils } from 'lucide-react'
+import { ChefHat, Heart, Home, Minus, Plus, Search, UtensilsCrossed, X, Sparkles, Clock3, Sun, Moon, Soup, Salad, Croissant, CakeSlice, Wheat, Utensils } from 'lucide-react'
 import './styles.css'
 
 const recipes = [
@@ -173,7 +173,7 @@ const recipes = [
 const categories = ['Первые блюда', 'Вторые блюда', 'Салаты', 'Завтраки', 'Гарниры', 'Выпечка', 'Десерты']
 const categoryIcons = {
   'Первые блюда': Soup,
-  'Вторые блюда': Drumstick,
+  'Вторые блюда': Utensils,
   'Салаты': Salad,
   'Завтраки': Croissant,
   'Гарниры': Wheat,
