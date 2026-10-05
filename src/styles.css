@@ -41,3 +41,20 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(0,122,255,.28);o
 @media(max-width:900px){.app{padding:16px 16px 42px}.header{margin-bottom:20px}.hero{padding:40px 8px 42px}.workspace{grid-template-columns:1fr}.sidebar{position:relative;top:auto;order:2}.card{padding:24px}}
 @media(max-width:560px){.hero h2{font-size:40px}.hero p{font-size:16px}.card{padding:20px;border-radius:26px}.dishHead{align-items:flex-start}.dishIcon{width:62px;height:62px;font-size:32px}.dishHead h3{font-size:27px}.servings{align-items:flex-start;flex-direction:column}.tableHead,.ingredient{grid-template-columns:1fr 115px}.ingredient{padding:13px 4px}.header{position:relative;top:auto}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+
+.headerMeta{font-size:13px;color:#8e8e93;padding:10px 14px}
+.sidebarTitle{display:flex;align-items:center;justify-content:space-between;margin:4px 5px 11px;font-size:15px;font-weight:650}
+.count{min-width:24px;padding:3px 7px;text-align:center;border-radius:999px;background:#f2f2f7;color:#8e8e93;font-size:11px}
+.clearSearch{display:grid;place-items:center;width:24px;height:24px;padding:0;border:0;border-radius:50%;background:#d1d1d6;color:#fff}
+.recipeText{min-width:0;flex:1}.recipeText strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.miniHeart{color:#8e8e93;flex:none}.miniHeart.liked{color:#ff375f}
+.cardTop{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.favoriteButton{width:44px;height:44px;display:grid;place-items:center;border:0;border-radius:50%;background:#f2f2f7;color:#8e8e93;transition:.2s}
+.favoriteButton:hover{transform:scale(1.05)}.favoriteButton.active{background:rgba(255,55,95,.10);color:#ff375f}
+.cardActions{margin-top:22px}.secondaryAction{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:13px;padding:10px 14px;background:#f2f2f7;color:#1d1d1f;font-weight:600;transition:.2s}.secondaryAction:hover,.secondaryAction.active{background:#e8e8ed}
+.steps{margin-top:14px;padding:20px;border-radius:20px;background:#f7f7f9}.stepsTitle{font-size:18px;font-weight:700;margin-bottom:12px}.step{display:flex;gap:12px;align-items:flex-start;padding:10px 0}.step>span{width:25px;height:25px;display:grid;place-items:center;flex:none;border-radius:50%;background:#1d1d1f;color:#fff;font-size:12px;font-weight:700}.step p{margin:3px 0 0;color:#515154;line-height:1.45}
+.empty{padding:28px 12px;text-align:center;color:#8e8e93;font-size:13px}
+.bottomNav{display:none}
+@media(max-width:900px){.headerMeta{display:none}.bottomNav{position:fixed;display:flex;left:50%;bottom:14px;transform:translateX(-50%);z-index:30;gap:5px;padding:7px;border:1px solid rgba(255,255,255,.82);border-radius:22px;background:rgba(255,255,255,.76);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);box-shadow:0 14px 40px rgba(0,0,0,.14)}.navItem{min-width:105px;display:flex;align-items:center;justify-content:center;gap:7px;border:0;border-radius:16px;padding:10px 14px;background:transparent;color:#8e8e93;font-size:12px;font-weight:600}.navItem.active{background:#1d1d1f;color:#fff}.app{padding-bottom:105px}}
+@media(max-width:560px){.cardTop{align-items:flex-start}.favoriteButton{width:40px;height:40px}.dishHead{max-width:calc(100% - 45px)}.steps{padding:16px}.bottomNav{bottom:10px}}
