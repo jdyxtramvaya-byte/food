@@ -172,6 +172,15 @@ const recipes = [
 
 const categories = ['Все', 'Первые блюда', 'Вторые блюда', 'Салаты', 'Завтраки', 'Гарниры', 'Выпечка', 'Десерты']
 
+function readFavorites() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('food-favorites') || '[]')
+    return Array.isArray(saved) ? saved : []
+  } catch {
+    return []
+  }
+}
+
 function formatAmount(value, unit) {
   const rounded = Math.round(value * 10) / 10
   if (unit === 'г' && rounded >= 1000) return `${Math.round(rounded / 100 * 10) / 10} кг`
@@ -190,7 +199,7 @@ function App() {
   const [servings, setServings] = useState(5)
   const [category, setCategory] = useState('Все')
   const [query, setQuery] = useState('')
-  const [favorites, setFavorites] = useState(() => JSON.parse(localStorage.getItem('food-favorites') || '[]'))
+  const [favorites, setFavorites] = useState(readFavorites)
   const [tab, setTab] = useState('dishes')
   const [showSteps, setShowSteps] = useState(false)
 
