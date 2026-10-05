@@ -165,3 +165,87 @@ button{-webkit-tap-highlight-color:transparent}
  .dishTile small{font-size:11px}
 }
 @media(max-width:380px){.dishGrid{grid-template-columns:1fr}.dishTile img{height:180px}}
+
+
+/* iOS 27 / Liquid Glass — visual-only layer */
+button{
+  -webkit-tap-highlight-color:transparent;
+  -webkit-appearance:none;
+  appearance:none;
+}
+button:focus:not(:focus-visible){outline:none}
+.categoryTile,
+.dishTile,
+.backButton,
+.navItem,
+.scale,
+.secondaryAction,
+.favoriteButton,
+.stepper button,
+.themeToggle{
+  -webkit-tap-highlight-color:transparent;
+}
+.categoryTile::before,
+.dishTile::before{
+  content:"";
+  position:absolute;
+  pointer-events:none;
+  inset:0;
+  border-radius:inherit;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.34),transparent 38%),
+    radial-gradient(circle at 85% 10%,rgba(255,255,255,.28),transparent 28%);
+  opacity:.8;
+}
+.categoryTile{
+  isolation:isolate;
+  overflow:hidden;
+  min-height:196px;
+  border-color:rgba(255,255,255,.72);
+  background:linear-gradient(145deg,rgba(255,255,255,.52),rgba(255,255,255,.20));
+  box-shadow:
+    0 22px 60px rgba(0,0,0,.08),
+    inset 0 1px rgba(255,255,255,.92),
+    inset 0 -1px rgba(255,255,255,.18);
+}
+.categoryTile>*{position:relative;z-index:1}
+.categoryTile:hover{
+  transform:translateY(-5px) scale(1.008);
+  background:linear-gradient(145deg,rgba(255,255,255,.66),rgba(255,255,255,.27));
+  box-shadow:
+    0 28px 72px rgba(0,0,0,.12),
+    inset 0 1px rgba(255,255,255,.98),
+    inset 0 -1px rgba(255,255,255,.2);
+}
+.categoryTile:active{transform:scale(.985);box-shadow:0 14px 35px rgba(0,0,0,.08),inset 0 1px rgba(255,255,255,.8)}
+.categoryTileIcon{
+  background:linear-gradient(145deg,rgba(255,255,255,.58),rgba(255,255,255,.18));
+  border-color:rgba(255,255,255,.72);
+  box-shadow:inset 0 1px rgba(255,255,255,.95),0 8px 24px rgba(0,0,0,.05);
+}
+.categoryTileArrow{transition:transform .25s ease,color .25s ease}
+.categoryTile:hover .categoryTileArrow{transform:translateX(3px);color:var(--text)}
+.navItem.active,
+[data-theme="dark"] .navItem.active{
+  background:rgba(255,255,255,.48);
+  color:var(--text);
+  box-shadow:0 8px 24px rgba(0,0,0,.08),inset 0 1px rgba(255,255,255,.78);
+}
+.navItem.active::after{background:rgba(120,120,128,.55)}
+.navItem:active{background:rgba(255,255,255,.34)!important;color:var(--text)!important}
+[data-theme="dark"] .navItem.active{background:rgba(70,70,74,.72);color:#f5f5f7}
+[data-theme="dark"] .navItem:active{background:rgba(70,70,74,.55)!important;color:#f5f5f7!important}
+.category:active,.scale:active,.secondaryAction:active,.backButton:active,.themeToggle:active,.favoriteButton:active,.stepper button:active{
+  color:var(--text);
+}
+[data-theme="dark"] .categoryTile{
+  background:linear-gradient(145deg,rgba(52,52,55,.72),rgba(30,30,32,.58));
+  border-color:rgba(255,255,255,.14);
+  box-shadow:0 24px 65px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.12);
+}
+[data-theme="dark"] .categoryTile:hover{background:linear-gradient(145deg,rgba(66,66,70,.82),rgba(35,35,38,.66))}
+[data-theme="dark"] .categoryTileIcon{background:rgba(70,70,74,.58);border-color:rgba(255,255,255,.14);box-shadow:inset 0 1px rgba(255,255,255,.12)}
+@media(max-width:720px){
+  .categoryTile{min-height:164px}
+  .categoryIntro h3{letter-spacing:-.065em}
+}
