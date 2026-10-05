@@ -126,9 +126,8 @@ button{-webkit-tap-highlight-color:transparent}
 .categoryTile:hover{transform:translateY(-4px);background:rgba(255,255,255,.42);box-shadow:0 24px 65px rgba(0,0,0,.11),inset 0 1px rgba(255,255,255,.92)}
 .categoryTile:active{transform:scale(.98)}
 .categoryTileIcon{width:58px;height:58px;display:grid;place-items:center;border-radius:19px;background:rgba(255,255,255,.38);border:1px solid rgba(255,255,255,.55);box-shadow:inset 0 1px rgba(255,255,255,.75);color:var(--text)}
-.categoryTileText{display:flex;flex-direction:column;gap:4px}
-.categoryTileText strong{font-size:17px;letter-spacing:-.025em}.categoryTileText small{font-size:12px;color:#8e8e93}
-.categoryTileArrow{position:absolute;right:20px;bottom:19px;font-size:28px;font-weight:300;color:#8e8e93}
+.categoryTileText{display:flex;flex-direction:column;gap:5px;max-width:85%}
+.categoryTileText strong{font-size:18px;letter-spacing:-.035em}.categoryTileText small{font-size:12px;color:#8e8e93}
 .backRow{margin:0 0 12px}.backButton{border:0;background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.5);border-radius:999px;padding:8px 13px;color:var(--text);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:inset 0 1px rgba(255,255,255,.7);transition:.2s}.backButton:hover{background:rgba(255,255,255,.45)}
 @media(max-width:1050px){.categoryGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:720px){.categoryHome{padding-top:8px}.categoryGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.categoryTile{min-height:155px;padding:17px;border-radius:25px}.categoryTileIcon{width:50px;height:50px;border-radius:16px}.categoryTileText strong{font-size:15px}.categoryIntro{margin-bottom:24px}.categoryIntro h3{font-size:34px}}
@@ -217,14 +216,13 @@ button:focus:not(:focus-visible){outline:none}
     inset 0 1px rgba(255,255,255,.98),
     inset 0 -1px rgba(255,255,255,.2);
 }
-.categoryTile:active{transform:scale(.985);box-shadow:0 14px 35px rgba(0,0,0,.08),inset 0 1px rgba(255,255,255,.8)}
+.categoryTile:active{transform:scale(.975);box-shadow:0 12px 30px rgba(0,0,0,.08),inset 0 1px rgba(255,255,255,.8)}
 .categoryTileIcon{
+  transform:translateZ(0);
   background:linear-gradient(145deg,rgba(255,255,255,.58),rgba(255,255,255,.18));
   border-color:rgba(255,255,255,.72);
   box-shadow:inset 0 1px rgba(255,255,255,.95),0 8px 24px rgba(0,0,0,.05);
 }
-.categoryTileArrow{transition:transform .25s ease,color .25s ease}
-.categoryTile:hover .categoryTileArrow{transform:translateX(3px);color:var(--text)}
 .navItem.active,
 [data-theme="dark"] .navItem.active{
   background:rgba(255,255,255,.48);
