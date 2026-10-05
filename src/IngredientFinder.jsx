@@ -40,7 +40,7 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
   const [value, setValue] = useState('')
 
   const available = useMemo(() => value
-    .split(/[,;\\n]+/)
+    .split(/[,;\n]+/)
     .map(item => item.trim())
     .filter(Boolean), [value])
 
