@@ -334,26 +334,68 @@ function App() {
       </section>
 
       {!selected ? (
-        <section className="categoryHome">
-          <div className="categoryIntro">
-            <span className="muted">Выберите раздел</span>
-            <h3>Что будем готовить?</h3>
-            <p>Сначала выберите категорию, затем блюдо — и Food рассчитает продукты под нужное количество людей.</p>
-          </div>
-          <div className="categoryGrid">
-            {categories.map(item => {
-              const Icon = categoryIcons[item]
-              const count = recipes.filter(r => r.category === item).length
-              return (
-                <button key={item} className="categoryTile" onClick={() => openCategory(item)}>
-                  <span className="categoryTileIcon"><Icon size={28} strokeWidth={1.7} /></span>
-                  <span className="categoryTileText"><strong>{item}</strong><small>{count} {count === 1 ? 'блюдо' : count < 5 ? 'блюда' : 'блюд'}</small></span>
-                  <span className="categoryTileArrow">›</span>
+        tab === 'favorites' ? (
+          <section className="categoryDishes">
+            <div className="categoryDishesHeader">
+              <button className="backButton" onClick={backToCategories}>‹ Категории</button>
+              <span className="muted">Сохранённые блюда</span>
+              <h3>Избранное</h3>
+              <p>Ваши любимые рецепты в одном месте.</p>
+            </div>
+            {filtered.length ? (
+              <div className="dishGrid">
+                {filtered.map(recipe => (
+                  <button key={recipe.id} className="dishTile" onClick={() => selectRecipe(recipe.id)}>
+                    <img src={recipe.image} alt={recipe.name} loading="lazy" />
+                    <span><strong>{recipe.name}</strong><small>{recipe.description}</small></span>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="categoryDishesHeader">
+                <p>Пока нет сохранённых блюд. Нажмите сердечко у рецепта, чтобы добавить его сюда.</p>
+              </div>
+            )}
+          </section>
+        ) : category === 'Все' ? (
+          <section className="categoryHome">
+            <div className="categoryIntro">
+              <span className="muted">Выберите раздел</span>
+              <h3>Что будем готовить?</h3>
+              <p>Сначала выберите категорию, затем блюдо — и Food рассчитает продукты под нужное количество людей.</p>
+            </div>
+            <div className="categoryGrid">
+              {categories.map(item => {
+                const Icon = categoryIcons[item]
+                const count = recipes.filter(r => r.category === item).length
+                return (
+                  <button key={item} className="categoryTile" onClick={() => openCategory(item)}>
+                    <span className="categoryTileIcon"><Icon size={28} strokeWidth={1.7} /></span>
+                    <span className="categoryTileText"><strong>{item}</strong><small>{count} {count === 1 ? 'блюдо' : count < 5 ? 'блюда' : 'блюд'}</small></span>
+                    <span className="categoryTileArrow">›</span>
+                  </button>
+                )
+              })}
+            </div>
+          </section>
+        ) : (
+          <section className="categoryDishes">
+            <div className="categoryDishesHeader">
+              <button className="backButton" onClick={backToCategories}>‹ Категории</button>
+              <span className="muted">Раздел блюд</span>
+              <h3>{category}</h3>
+              <p>Выберите блюдо — после этого Food откроет калькулятор ингредиентов.</p>
+            </div>
+            <div className="dishGrid">
+              {filtered.map(recipe => (
+                <button key={recipe.id} className="dishTile" onClick={() => selectRecipe(recipe.id)}>
+                  <img src={recipe.image} alt={recipe.name} loading="lazy" />
+                  <span><strong>{recipe.name}</strong><small>{recipe.description}</small></span>
                 </button>
-              )
-            })}
-          </div>
-        </section>
+              ))}
+            </div>
+          </section>
+        )
       ) : (
         <div className="workspace">
           <aside className="sidebar">
