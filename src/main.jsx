@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { ChefHat, ChevronLeft, Minus, Plus, Search, UtensilsCrossed } from 'lucide-react'
+import { ChefHat, Heart, Home, Minus, Plus, Search, UtensilsCrossed, X } from 'lucide-react'
 import './styles.css'
 
 const recipes = [
@@ -11,6 +11,7 @@ const recipes = [
     emoji: '🍲',
     baseServings: 4,
     description: 'Домашний насыщенный борщ',
+    steps: ['Сварить мясо до готовности.', 'Добавить картофель и капусту.', 'Приготовить зажарку из свёклы, моркови и лука.', 'Соединить всё в кастрюле и довести до готовности.', 'Добавить чеснок, соль и дать борщу настояться.'],
     ingredients: [
       ['Свинина или говядина', 500, 'г'],
       ['Картофель', 500, 'г'],
@@ -32,6 +33,7 @@ const recipes = [
     emoji: '🍖',
     baseServings: 4,
     description: 'Сочные котлеты из фарша',
+    steps: ['Замочить хлеб в молоке.', 'Смешать фарш с луком, яйцом и хлебом.', 'Добавить соль и перец, хорошо вымесить.', 'Сформировать котлеты и обвалять в сухарях.', 'Обжарить до румяной корочки и довести до готовности.'],
     ingredients: [
       ['Мясной фарш', 600, 'г'],
       ['Лук репчатый', 150, 'г'],
@@ -51,6 +53,7 @@ const recipes = [
     emoji: '🥗',
     baseServings: 4,
     description: 'Классический домашний салат',
+    steps: ['Отварить картофель, морковь и яйца.', 'Нарезать ингредиенты небольшими кубиками.', 'Добавить огурцы, горошек и лук.', 'Заправить майонезом и аккуратно перемешать.', 'Посолить по вкусу.'],
     ingredients: [
       ['Картофель', 400, 'г'],
       ['Морковь', 150, 'г'],
@@ -70,6 +73,7 @@ const recipes = [
     emoji: '🥞',
     baseServings: 4,
     description: 'Тонкие домашние блины',
+    steps: ['Взбить яйца с сахаром и солью.', 'Добавить молоко и муку, перемешать до однородности.', 'Влить масло и дать тесту постоять 10 минут.', 'Выпекать тонкие блины на хорошо разогретой сковороде.'],
     ingredients: [
       ['Молоко', 500, 'мл'],
       ['Мука', 250, 'г'],
@@ -90,46 +94,76 @@ function formatAmount(value, unit) {
   return String(rounded).replace('.0', '') + ' ' + unit
 }
 
+function pluralPeople(n) {
+  if (n % 10 === 1 && n % 100 !== 11) return 'человек'
+  if ([2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100)) return 'человека'
+  return 'человек'
+}
+
 function App() {
   const [selectedId, setSelectedId] = useState('borscht')
   const [servings, setServings] = useState(5)
   const [category, setCategory] = useState('Все')
   const [query, setQuery] = useState('')
+  const [favorites, setFavorites] = useState([])
+  const [tab, setTab] = useState('dishes')
+  const [showSteps, setShowSteps] = useState(false)
 
   const selected = recipes.find(r => r.id === selectedId) || recipes[0]
 
-  const filtered = useMemo(() => recipes.filter(r =>
-    (category === 'Все' || r.category === category) &&
-    r.name.toLowerCase().includes(query.toLowerCase())
-  ), [category, query])
+  const filtered = useMemo(() => recipes.filter(r => {
+    const matchesCategory = category === 'Все' || r.category === category
+    const matchesQuery = r.name.toLowerCase().includes(query.toLowerCase())
+    const matchesTab = tab !== 'favorites' || favorites.includes(r.id)
+    return matchesCategory && matchesQuery && matchesTab
+  }), [category, query, tab, favorites])
 
   const multiplier = servings / selected.baseServings
+
+  const toggleFavorite = (id) => {
+    setFavorites(current => current.includes(id)
+      ? current.filter(item => item !== id)
+      : [...current, id]
+    )
+  }
+
+  const selectRecipe = (id) => {
+    setSelectedId(id)
+    setShowSteps(false)
+    setTab('dishes')
+  }
 
   return (
     <main className="app">
       <header className="header">
         <div className="brand">
-          <div className="brandIcon"><ChefHat size={24} /></div>
+          <div className="brandIcon"><ChefHat size={22} /></div>
           <div>
             <h1>Food</h1>
-            <p>Домашние калькуляционные карты</p>
+            <p>Калькулятор домашних блюд</p>
           </div>
         </div>
+        <div className="headerMeta">Домашняя кухня</div>
       </header>
 
       <section className="hero">
         <div>
           <span className="eyebrow">КАЛЬКУЛЯТОР БЛЮД</span>
           <h2>Готовим точно столько, сколько нужно.</h2>
-          <p>Выберите блюдо и количество человек — Food автоматически пересчитает все ингредиенты.</p>
+          <p>Выберите блюдо и количество человек — Food автоматически пересчитает ингредиенты.</p>
         </div>
       </section>
 
       <div className="workspace">
         <aside className="sidebar">
+          <div className="sidebarTitle">
+            <span>Блюда</span>
+            <span className="count">{filtered.length}</span>
+          </div>
           <div className="search">
             <Search size={18} />
             <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Найти блюдо..." />
+            {query && <button className="clearSearch" onClick={() => setQuery('')} aria-label="Очистить"><X size={15}/></button>}
           </div>
           <div className="categories">
             {categories.map(item => (
@@ -139,32 +173,38 @@ function App() {
             ))}
           </div>
           <div className="recipeList">
-            {filtered.map(recipe => (
-              <button key={recipe.id} className={selected.id === recipe.id ? 'recipe active' : 'recipe'} onClick={() => setSelectedId(recipe.id)}>
+            {filtered.length ? filtered.map(recipe => (
+              <button key={recipe.id} className={selected.id === recipe.id ? 'recipe active' : 'recipe'} onClick={() => selectRecipe(recipe.id)}>
                 <span className="recipeEmoji">{recipe.emoji}</span>
-                <span>
+                <span className="recipeText">
                   <strong>{recipe.name}</strong>
                   <small>{recipe.category}</small>
                 </span>
+                <Heart className={favorites.includes(recipe.id) ? 'miniHeart liked' : 'miniHeart'} size={15} fill={favorites.includes(recipe.id) ? 'currentColor' : 'none'} />
               </button>
-            ))}
+            )) : <div className="empty">В избранном пока нет блюд.</div>}
           </div>
         </aside>
 
         <section className="card">
-          <div className="dishHead">
-            <div className="dishIcon">{selected.emoji}</div>
-            <div>
-              <span className="muted">{selected.category}</span>
-              <h3>{selected.name}</h3>
-              <p>{selected.description}</p>
+          <div className="cardTop">
+            <div className="dishHead">
+              <div className="dishIcon">{selected.emoji}</div>
+              <div>
+                <span className="muted">{selected.category}</span>
+                <h3>{selected.name}</h3>
+                <p>{selected.description}</p>
+              </div>
             </div>
+            <button className={favorites.includes(selected.id) ? 'favoriteButton active' : 'favoriteButton'} onClick={() => toggleFavorite(selected.id)} aria-label="Добавить в избранное">
+              <Heart size={19} fill={favorites.includes(selected.id) ? 'currentColor' : 'none'} />
+            </button>
           </div>
 
           <div className="servings">
             <div>
-              <span className="muted">Количество человек</span>
-              <strong>{servings} {servings === 1 ? 'человек' : 'человек'}</strong>
+              <span className="muted">Количество</span>
+              <strong>{servings} {pluralPeople(servings)}</strong>
             </div>
             <div className="stepper">
               <button onClick={() => setServings(Math.max(1, servings - 1))} aria-label="Уменьшить"><Minus size={18}/></button>
@@ -193,12 +233,40 @@ function App() {
             ))}
           </div>
 
+          <div className="cardActions">
+            <button className={showSteps ? 'secondaryAction active' : 'secondaryAction'} onClick={() => setShowSteps(!showSteps)}>
+              <UtensilsCrossed size={17} />
+              {showSteps ? 'Скрыть приготовление' : 'Как приготовить'}
+            </button>
+          </div>
+
+          {showSteps && (
+            <div className="steps">
+              <div className="stepsTitle">Приготовление</div>
+              {selected.steps.map((step, index) => (
+                <div className="step" key={step}>
+                  <span>{index + 1}</span>
+                  <p>{step}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
           <div className="note">
             <UtensilsCrossed size={18} />
-            <span>Количество рассчитано пропорционально базовой рецептуре на {selected.baseServings} человека.</span>
+            <span>Расчёт выполнен по базовой рецептуре на {selected.baseServings} {pluralPeople(selected.baseServings)}.</span>
           </div>
         </section>
       </div>
+
+      <nav className="bottomNav">
+        <button className={tab === 'dishes' ? 'navItem active' : 'navItem'} onClick={() => setTab('dishes')}>
+          <Home size={20} /><span>Блюда</span>
+        </button>
+        <button className={tab === 'favorites' ? 'navItem active' : 'navItem'} onClick={() => setTab('favorites')}>
+          <Heart size={20} fill={tab === 'favorites' ? 'currentColor' : 'none'} /><span>Избранное</span>
+        </button>
+      </nav>
     </main>
   )
 }
