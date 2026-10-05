@@ -333,7 +333,7 @@ function App() {
         </div>
       </section>
 
-      {!selected ? (
+      {!selected && category === 'Все' ? (
         <section className="categoryHome">
           <div className="categoryIntro">
             <span className="muted">Выберите раздел</span>
