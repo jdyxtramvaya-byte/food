@@ -243,7 +243,10 @@ function App() {
   const [query, setQuery] = useState('')
   const [favorites, setFavorites] = useState(readFavorites)
   const [tab, setTab] = useState('dishes')
-  const [showSteps, setShowSteps] = useState(false)\n  const [theme, setTheme] = useState(() => {\n    try { return window.localStorage.getItem('food-theme') || 'light' } catch { return 'light' }\n  })
+  const [showSteps, setShowSteps] = useState(false)
+  const [theme, setTheme] = useState(() => {
+    try { return window.localStorage.getItem('food-theme') || 'light' } catch { return 'light' }
+  })
 
   const selected = recipes.find(r => r.id === selectedId) || recipes[0]
 
@@ -254,7 +257,12 @@ function App() {
     return matchesCategory && matchesQuery && matchesTab
   }), [category, query, tab, favorites])
 
-  const multiplier = servings / selected.baseServings\n\n  React.useEffect(() => {\n    document.documentElement.dataset.theme = theme\n    try { window.localStorage.setItem('food-theme', theme) } catch {}\n  }, [theme])
+  const multiplier = servings / selected.baseServings
+
+  React.useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    try { window.localStorage.setItem('food-theme', theme) } catch {}
+  }, [theme])
 
   const saveFavorites = (next) => { setFavorites(next); writeFavorites(next) }
 
