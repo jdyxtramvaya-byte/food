@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ChefHat, Heart, Home, Minus, Plus, Search, UtensilsCrossed, X, Sparkles, Clock3, Sun, Moon, Soup, Salad, Croissant, CakeSlice, Drumstick, Wheat, Utensils } from 'lucide-react'
 import './styles.css'
+import IngredientFinder from './IngredientFinder'
 
 const recipes = [
   {
@@ -260,6 +261,7 @@ function App() {
   const [favorites, setFavorites] = useState(readFavorites)
   const [tab, setTab] = useState('dishes')
   const [showSteps, setShowSteps] = useState(false)
+  const [showFinder, setShowFinder] = useState(false)
   const [theme, setTheme] = useState(() => {
     try { return window.localStorage.getItem('food-theme') || 'light' } catch { return 'light' }
   })
@@ -291,6 +293,13 @@ function App() {
     setSelectedId(id)
     setShowSteps(false)
     setTab('dishes')
+  }
+
+  const selectFinderRecipe = (id) => {
+    const recipe = recipes.find(item => item.id === id)
+    if (recipe) setCategory(recipe.category)
+    setShowFinder(false)
+    selectRecipe(id)
   }
 
   const openCategory = (item) => {
@@ -330,6 +339,7 @@ function App() {
           <span className="eyebrow"><Sparkles size={13}/> ДОМАШНЯЯ КУХНЯ</span>
           <h2>Готовим точно столько, сколько нужно.</h2>
           <p>Рецепты, точные пропорции и понятные шаги. Выберите блюдо — остальное Food посчитает сам.</p>
+          <button className="finderHeroButton" onClick={() => setShowFinder(true)}><ChefHat size={18}/><span><strong>Что приготовить из того, что есть?</strong><small>Введите продукты — Food подберёт блюда</small></span><span className="finderHeroArrow">›</span></button>
         </div>
       </section>
 
@@ -365,6 +375,11 @@ function App() {
               <p>Сначала выберите категорию, затем блюдо — и Food рассчитает продукты под нужное количество людей.</p>
             </div>
             <div className="categoryGrid">
+              <button className="categoryTile finderCategoryTile" onClick={() => setShowFinder(true)}>
+                <span className="categoryTileIcon"><ChefHat size={28} strokeWidth={1.7} /></span>
+                <span className="categoryTileText"><strong>Из моих продуктов</strong><small>Подобрать блюдо</small></span>
+                <span className="categoryTileArrow">›</span>
+              </button>
               {categories.map(item => {
                 const Icon = categoryIcons[item]
                 const count = recipes.filter(r => r.category === item).length
@@ -434,10 +449,15 @@ function App() {
         <button className={tab === 'dishes' ? 'navItem active' : 'navItem'} onClick={() => setTab('dishes')}>
           <Home size={20} /><span>Блюда</span>
         </button>
+        <button className={showFinder ? 'navItem active' : 'navItem'} onClick={() => setShowFinder(true)}>
+          <ChefHat size={20} /><span>Из продуктов</span>
+        </button>
         <button className={tab === 'favorites' ? 'navItem active' : 'navItem'} onClick={() => setTab('favorites')}>
           <Heart size={20} fill={tab === 'favorites' ? 'currentColor' : 'none'} /><span>Избранное</span>
         </button>
       </nav>
+
+      {showFinder && <IngredientFinder recipes={recipes} onClose={() => setShowFinder(false)} onSelectRecipe={selectFinderRecipe} />}
     </main>
   )
 }
