@@ -489,8 +489,8 @@ function App() {
         <button className={showFinder ? 'navItem active' : 'navItem'} onClick={() => setShowFinder(true)}>
           <ChefHat size={20} /><span>Из продуктов</span>
         </button>
-        <button className={tab === 'favorites' ? 'navItem active' : 'navItem'} onClick={() => { setTab('favorites'); setCategory('Все'); setQuery(''); setSelectedId(null); setShowSteps(false) }}>
-          <Heart size={20} fill={tab === 'favorites' ? 'currentColor' : 'none'} /><span>Избранное{favorites.length ? ` · ${favorites.length}` : ''}</span>
+        <button className={tab === 'favorites' ? 'navItem active' : 'navItem'} onClick={() => setTab('favorites')}>
+          <Heart size={20} fill={tab === 'favorites' ? 'currentColor' : 'none'} /><span>Избранное</span>
         </button>
       </nav>
 
