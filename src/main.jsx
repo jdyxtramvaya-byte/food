@@ -2,11 +2,8 @@ import React, { useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ChefHat, Heart, Home, Minus, Plus, Search, UtensilsCrossed, X, Sparkles, Clock3, Sun, Moon, Soup, Salad, Croissant, CakeSlice, Drumstick, Wheat, Utensils } from 'lucide-react'
 import './styles.css'
-import IngredientFinder from './IngredientFinder'
-import recipeDetails from './recipeDetails'
-import extraRecipes from './extraRecipes'
 
-const baseRecipes = [
+const recipes = [
   {
     id: 'borscht',
     name: 'Борщ',
@@ -170,44 +167,9 @@ const baseRecipes = [
     description: 'Паста с беконом, яйцом и сыром',
     steps: ['Отварить спагетти.', 'Обжарить бекон.', 'Смешать яйца с сыром.', 'Соединить горячую пасту с беконом и яичной смесью.'],
     ingredients: [['Спагетти',200,'г'],['Бекон',120,'г'],['Яйца',2,'шт.'],['Пармезан',70,'г'],['Чёрный перец',3,'г']]
-  }, 
-  {id:'shchi',name:'Щи из свежей капусты',category:'Первые блюда',image:'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=82',baseServings:4,description:'Лёгкий домашний суп с капустой',steps:['Сварить мясо и снять пену.','Добавить картофель и капусту.','Обжарить морковь с луком.','Добавить зажарку и варить до мягкости овощей.','Дать супу настояться 10 минут.'],ingredients:[['Курица',500,'г'],['Капуста',450,'г'],['Картофель',400,'г'],['Морковь',120,'г'],['Лук',120,'г'],['Масло',25,'мл'],['Вода',1800,'мл']]},
-  {id:'rassolnik',name:'Рассольник',category:'Первые блюда',image:'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=900&q=82',baseServings:4,description:'Наваристый суп с перловкой и солёными огурцами',steps:['Сварить мясной бульон.','Отдельно отварить перловку.','Добавить картофель и крупу в бульон.','Обжарить лук и морковь.','Добавить огурцы и зажарку, довести до готовности.'],ingredients:[['Говядина',400,'г'],['Перловка',100,'г'],['Картофель',400,'г'],['Солёные огурцы',180,'г'],['Морковь',120,'г'],['Лук',120,'г'],['Вода',1800,'мл']]},
-  {id:'chicken-soup',name:'Куриный суп с лапшой',category:'Первые блюда',image:'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=900&q=82',baseServings:4,description:'Простой домашний суп с курицей и лапшой',steps:['Сварить курицу до готовности.','Добавить картофель и морковь.','Положить лапшу за 7 минут до конца.','Посолить и добавить зелень.'],ingredients:[['Куриное филе',450,'г'],['Картофель',350,'г'],['Морковь',120,'г'],['Лапша',120,'г'],['Лук',100,'г'],['Вода',1800,'мл']]},
-  {id:'beef-goulash',name:'Гуляш из говядины',category:'Вторые блюда',image:'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=82',baseServings:4,description:'Мягкая говядина в густом соусе',steps:['Нарезать говядину кубиками и обсушить.','Обжарить порциями до корочки.','Добавить лук и паприку.','Влить воду и тушить под крышкой.','Загустить соус сметаной или мукой.'],ingredients:[['Говядина',700,'г'],['Лук',180,'г'],['Морковь',120,'г'],['Томатная паста',50,'г'],['Мука',25,'г'],['Масло',40,'мл']]},
-  {id:'chicken-cutlets',name:'Куриные котлеты',category:'Вторые блюда',image:'https://images.unsplash.com/photo-1532550907401-a500c9a57435?auto=format&fit=crop&w=900&q=82',baseServings:4,description:'Нежные котлеты из куриного филе',steps:['Измельчить филе и лук.','Добавить яйцо, сметану и крахмал.','Посолить и перемешать.','Обжаривать ложкой с двух сторон до готовности.'],ingredients:[['Куриное филе',600,'г'],['Лук',120,'г'],['Яйца',1,'шт.'],['Сметана',80,'г'],['Крахмал',30,'г'],['Масло',40,'мл']]},
-  {id:'fried-potatoes',name:'Жареная картошка',category:'Вторые блюда',image:'https://images.unsplash.com/photo-1518013431117-eb1465fa5752?auto=format&fit=crop&w=900&q=82',baseServings:4,description:'Картофель с хрустящей корочкой и луком',steps:['Нарезать картофель и промыть.','Хорошо обсушить.','Жарить на горячей сковороде без частого перемешивания.','Добавить лук ближе к концу.','Посолить после образования корочки.'],ingredients:[['Картофель',900,'г'],['Лук',150,'г'],['Масло',70,'мл']]},
-  {id:'beef-stroganoff',name:'Бефстроганов',category:'Вторые блюда',image:'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=82',baseServings:4,description:'Нежная говядина в сметанном соусе',steps:['Нарезать мясо тонкими полосками.','Быстро обжарить на сильном огне.','Добавить лук.','Ввести сметану и немного воды.','Тушить 10 минут.'],ingredients:[['Говядина',600,'г'],['Лук',180,'г'],['Сметана',250,'г'],['Мука',20,'г'],['Масло',40,'мл']]},
-  {id:'fish-baked',name:'Рыба в духовке',category:'Вторые блюда',image:'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?auto=format&fit=crop&w=900&q=82',baseServings:4,description:'Запечённое рыбное филе с лимоном',steps:['Обсушить филе.','Посолить, поперчить и сбрызнуть лимоном.','Выложить в форму с луком.','Запекать до готовности.'],ingredients:[['Рыбное филе',700,'г'],['Лимон',1,'шт.'],['Лук',120,'г'],['Масло',30,'мл']]},
-  {id:'meat-french',name:'Мясо по-французски',category:'Вторые блюда',image:'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=82',baseServings:4,description:'Мясо с луком, сыром и запечённой корочкой',steps:['Нарезать мясо пластинами и слегка отбить.','Выложить лук и мясо в форму.','Смазать сметаной.','Посыпать сыром.','Запекать до золотистой корочки.'],ingredients:[['Свинина',600,'г'],['Лук',180,'г'],['Сыр',180,'г'],['Сметана',180,'г']]},
-  {id:'mac-cheese',name:'Макароны с сыром',category:'Вторые блюда',image:'https://images.unsplash.com/photo-1543339494-b4cd4f7ba686?auto=format&fit=crop&w=900&q=82',baseServings:3,description:'Быстрое сливочное блюдо для всей семьи',steps:['Отварить макароны.','Растопить масло и добавить сливки.','Всыпать сыр.','Соединить соус с горячими макаронами.'],ingredients:[['Макароны',300,'г'],['Сыр',180,'г'],['Сливки',200,'мл'],['Сливочное масло',40,'г']]},
-  {id:'draniki',name:'Драники',category:'Вторые блюда',image:'https://images.unsplash.com/photo-1518013431117-eb1465fa5752?auto=format&fit=crop&w=900&q=82',baseServings:3,description:'Хрустящие картофельные драники',steps:['Натереть картофель и слегка отжать.','Добавить яйцо, муку и лук.','Посолить перед жаркой.','Жарить до румяной корочки.'],ingredients:[['Картофель',700,'г'],['Лук',100,'г'],['Яйца',1,'шт.'],['Мука',50,'г'],['Масло',60,'мл']]},
-  {id:'vinaigrette',name:'Винегрет',category:'Салаты',image:'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=900&q=82',baseServings:4,description:'Овощной салат со свёклой и солёными огурцами',steps:['Отварить свёклу, картофель и морковь.','Остудить и нарезать кубиками.','Добавить огурцы и горошек.','Заправить маслом и перемешать.'],ingredients:[['Свёкла',300,'г'],['Картофель',300,'г'],['Морковь',150,'г'],['Солёные огурцы',180,'г'],['Горошек',150,'г'],['Масло',40,'мл']]},
-  {id:'crab-salad',name:'Крабовый салат',category:'Салаты',image:'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=900&q=82',baseServings:4,description:'Нежный салат с кукурузой и крабовыми палочками',steps:['Отварить яйца.','Нарезать палочки и яйца.','Добавить кукурузу и огурец.','Заправить майонезом.'],ingredients:[['Крабовые палочки',250,'г'],['Яйца',4,'шт.'],['Кукуруза',250,'г'],['Огурец',200,'г'],['Майонез',150,'г']]},
-  {id:'tomato-cucumber',name:'Салат из помидоров и огурцов',category:'Салаты',image:'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=900&q=82',baseServings:3,description:'Свежий салат на каждый день',steps:['Нарезать овощи.','Добавить лук и зелень.','Заправить маслом.','Посолить перед подачей.'],ingredients:[['Помидоры',400,'г'],['Огурцы',300,'г'],['Лук',70,'г'],['Зелень',20,'г'],['Масло',30,'мл']]},
-  {id:'hot-sandwiches',name:'Горячие бутерброды',category:'Завтраки',image:'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=82',baseServings:2,description:'Хрустящие бутерброды с сыром и ветчиной',steps:['Намазать хлеб соусом.','Добавить ветчину и сыр.','Запечь до расплавления сыра.'],ingredients:[['Хлеб',4,'шт.'],['Ветчина',100,'г'],['Сыр',120,'г']]},
-  {id:'french-toast',name:'Гренки сладкие',category:'Завтраки',image:'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=82',baseServings:2,description:'Румяные гренки к завтраку',steps:['Взбить яйцо с молоком и сахаром.','Обмакнуть хлеб с двух сторон.','Обжарить на масле до золотистой корочки.'],ingredients:[['Белый хлеб',4,'ломтика'],['Яйца',2,'шт.'],['Молоко',100,'мл'],['Сахар',20,'г'],['Масло',25,'г']]},
-  {id:'oatmeal',name:'Овсяная каша',category:'Завтраки',image:'https://images.unsplash.com/photo-1517673132405-a56a62b18caf?auto=format&fit=crop&w=900&q=82',baseServings:2,description:'Кремовая овсяная каша с фруктами',steps:['Нагреть молоко.','Всыпать овсянку и варить до мягкости.','Добавить соль и сахар.','Подать с маслом и фруктами.'],ingredients:[['Овсяные хлопья',100,'г'],['Молоко',400,'мл'],['Сахар',20,'г'],['Сливочное масло',20,'г'],['Банан',1,'шт.']]},
-  {id:'scrambled-eggs',name:'Яичница с помидорами',category:'Завтраки',image:'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=82',baseServings:2,description:'Простой сытный завтрак за 10 минут',steps:['Нарезать помидоры.','Обжарить их 2–3 минуты.','Разбить яйца сверху.','Посолить и готовить до желаемой степени.'],ingredients:[['Яйца',4,'шт.'],['Помидоры',200,'г'],['Масло',20,'мл']]},
-  {id:'rice-garnish',name:'Рис на гарнир',category:'Гарниры',image:'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=900&q=82',baseServings:4,description:'Рассыпчатый рис без лишних сложностей',steps:['Промыть рис до прозрачной воды.','Залить водой.','Довести до кипения.','Варить под крышкой на минимальном огне.','Оставить под крышкой ещё 10 минут.'],ingredients:[['Рис',300,'г'],['Вода',450,'мл'],['Соль',6,'г'],['Сливочное масло',30,'г']]},
-  {id:'buckwheat-mushrooms',name:'Гречка с грибами',category:'Гарниры',image:'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=82',baseServings:3,description:'Гречка с обжаренными грибами и луком',steps:['Сварить гречку.','Обжарить грибы до испарения влаги.','Добавить лук.','Смешать с гречкой и прогреть.'],ingredients:[['Гречка',250,'г'],['Шампиньоны',300,'г'],['Лук',120,'г'],['Масло',35,'мл']]},
-  {id:'casserole',name:'Картофельная запеканка',category:'Гарниры',image:'https://images.unsplash.com/photo-1572449043416-55f4685c9bb7?auto=format&fit=crop&w=900&q=82',baseServings:4,description:'Сытная запеканка с картофелем и фаршем',steps:['Сделать картофельное пюре.','Обжарить фарш с луком.','Выложить слоями пюре и фарш.','Добавить сыр.','Запекать до румяной корочки.'],ingredients:[['Картофель',800,'г'],['Мясной фарш',500,'г'],['Лук',150,'г'],['Сыр',120,'г'],['Молоко',100,'мл']]},
-  {id:'banana-pancakes',name:'Банановые панкейки',category:'Завтраки',image:'https://images.unsplash.com/photo-1528207776546-365bb710ee93?auto=format&fit=crop&w=900&q=82',baseServings:3,description:'Мягкие панкейки с бананом',steps:['Размять банан.','Добавить яйцо и молоко.','Вмешать муку и разрыхлитель.','Жарить небольшими порциями.'],ingredients:[['Банан',2,'шт.'],['Яйца',2,'шт.'],['Молоко',150,'мл'],['Мука',160,'г'],['Разрыхлитель',6,'г']]},
-  {id:'muffins',name:'Ванильные маффины',category:'Выпечка',image:'https://images.unsplash.com/photo-1558301211-0d8c8ddee6ec?auto=format&fit=crop&w=900&q=82',baseServings:6,description:'Мягкие порционные кексы',steps:['Смешать яйца, сахар и масло.','Добавить молоко и ваниль.','Вмешать муку и разрыхлитель.','Разложить по формочкам.','Выпекать до сухой шпажки.'],ingredients:[['Мука',220,'г'],['Яйца',2,'шт.'],['Сахар',120,'г'],['Молоко',120,'мл'],['Сливочное масло',80,'г'],['Разрыхлитель',8,'г']]},
-  {id:'cookies',name:'Песочное печенье',category:'Выпечка',image:'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=900&q=82',baseServings:6,description:'Рассыпчатое домашнее печенье',steps:['Перетереть масло с сахаром.','Добавить яйцо и муку.','Замесить тесто.','Охладить 20 минут.','Раскатать и выпекать до румянца.'],ingredients:[['Мука',300,'г'],['Сливочное масло',150,'г'],['Сахар',100,'г'],['Яйца',1,'шт.']]},
-  {id:'cheesecake',name:'Чизкейк без выпечки',category:'Десерты',image:'https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=900&q=82',baseServings:6,description:'Нежный сливочный десерт без духовки',steps:['Измельчить печенье и смешать с маслом.','Утрамбовать основу.','Взбить сливочный сыр со сливками и сахаром.','Выложить крем на основу.','Охладить минимум 4 часа.'],ingredients:[['Печенье',250,'г'],['Сливочное масло',100,'г'],['Сливочный сыр',500,'г'],['Сливки',250,'мл'],['Сахарная пудра',100,'г']]},
-  {id:'apple-crumble',name:'Яблочный крамбл',category:'Десерты',image:'https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&w=900&q=82',baseServings:4,description:'Запечённые яблоки под хрустящей крошкой',steps:['Нарезать яблоки.','Смешать муку, сахар и холодное масло в крошку.','Распределить крошку по яблокам.','Запекать до золотистой корочки.'],ingredients:[['Яблоки',500,'г'],['Мука',120,'г'],['Сливочное масло',80,'г'],['Сахар',80,'г'],['Корица',3,'г']]},
-  {id:'puff-pastry',name:'Слойки с сыром',category:'Выпечка',image:'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=900&q=82',baseServings:4,description:'Хрустящие слойки с сырной начинкой',steps:['Разморозить тесто.','Добавить сыр.','Сформировать слойки.','Смазать яйцом.','Выпекать до золотистого цвета.'],ingredients:[['Слоёное тесто',500,'г'],['Сыр',200,'г'],['Яйца',1,'шт.']]},
-  {id:'stuffed-peppers',name:'Фаршированные перцы',category:'Вторые блюда',image:'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=900&q=82',baseServings:4,description:'Перцы с мясом и рисом в томатном соусе',steps:['Смешать фарш с полуготовым рисом и луком.','Наполнить перцы.','Выложить в кастрюлю.','Залить томатным соусом.','Тушить до мягкости.'],ingredients:[['Болгарский перец',6,'шт.'],['Мясной фарш',500,'г'],['Рис',120,'г'],['Лук',120,'г'],['Томатный соус',400,'г']]},
-  {id:'meatballs',name:'Тефтели в соусе',category:'Вторые блюда',image:'https://images.unsplash.com/photo-1529042410759-befb1204b468?auto=format&fit=crop&w=900&q=82',baseServings:4,description:'Нежные тефтели в томатно-сметанном соусе',steps:['Смешать фарш с рисом и луком.','Сформировать шарики.','Слегка обжарить.','Залить соусом.','Тушить до готовности.'],ingredients:[['Мясной фарш',500,'г'],['Рис',100,'г'],['Лук',120,'г'],['Сметана',150,'г'],['Томатная паста',50,'г']]},
-  {id:'chicken-chops',name:'Куриные отбивные',category:'Вторые блюда',image:'https://images.unsplash.com/photo-1532550907401-a500c9a57435?auto=format&fit=crop&w=900&q=82',baseServings:3,description:'Тонкие сочные отбивные в хрустящей корочке',steps:['Разрезать филе пластинами.','Отбить через плёнку.','Посолить и поперчить.','Обмакнуть в яйцо и сухари.','Жарить до золотистой корочки.'],ingredients:[['Куриное филе',500,'г'],['Яйца',2,'шт.'],['Панировочные сухари',100,'г'],['Масло',50,'мл']]},
-  {id:'vegetable-stew',name:'Овощное рагу',category:'Вторые блюда',image:'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=900&q=82',baseServings:4,description:'Сочное рагу из сезонных овощей',steps:['Нарезать овощи одинаковыми кусочками.','Обжарить лук и морковь.','Добавить картофель и перец.','Добавить кабачок и томаты.','Тушить до мягкости.'],ingredients:[['Картофель',400,'г'],['Кабачок',300,'г'],['Помидоры',300,'г'],['Морковь',150,'г'],['Перец',150,'г'],['Лук',120,'г']]},
-  {id:'chicken-pasta-tomato',name:'Паста с курицей и томатами',category:'Вторые блюда',image:'https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=900&q=82',baseServings:4,description:'Паста в томатном соусе с курицей',steps:['Отварить пасту.','Обжарить курицу.','Добавить чеснок и томатный соус.','Потушить соус.','Соединить с пастой и сыром.'],ingredients:[['Паста',350,'г'],['Куриное филе',450,'г'],['Томатный соус',300,'г'],['Чеснок',2,'зубчика'],['Сыр',80,'г']]},
-  {id:'meat-pie',name:'Пирог с мясом',category:'Выпечка',image:'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=900&q=82',baseServings:6,description:'Сытный домашний пирог с мясной начинкой',steps:['Замесить дрожжевое тесто.','Обжарить фарш с луком.','Выложить начинку между слоями теста.','Смазать яйцом.','Выпекать до румяной корочки.'],ingredients:[['Мука',450,'г'],['Мясной фарш',450,'г'],['Лук',150,'г'],['Яйца',1,'шт.'],['Дрожжи',7,'г'],['Молоко',200,'мл']]}
-
+  }
 ]
 
-const recipes = [...baseRecipes, ...extraRecipes]
 const categories = ['Первые блюда', 'Вторые блюда', 'Салаты', 'Завтраки', 'Гарниры', 'Выпечка', 'Десерты']
 const categoryIcons = {
   'Первые блюда': Soup,
@@ -298,7 +260,6 @@ function App() {
   const [favorites, setFavorites] = useState(readFavorites)
   const [tab, setTab] = useState('dishes')
   const [showSteps, setShowSteps] = useState(false)
-  const [showFinder, setShowFinder] = useState(false)
   const [theme, setTheme] = useState(() => {
     try { return window.localStorage.getItem('food-theme') || 'light' } catch { return 'light' }
   })
@@ -330,13 +291,6 @@ function App() {
     setSelectedId(id)
     setShowSteps(false)
     setTab('dishes')
-  }
-
-  const selectFinderRecipe = (id) => {
-    const recipe = recipes.find(item => item.id === id)
-    if (recipe) setCategory(recipe.category)
-    setShowFinder(false)
-    selectRecipe(id)
   }
 
   const openCategory = (item) => {
@@ -376,7 +330,6 @@ function App() {
           <span className="eyebrow"><Sparkles size={13}/> ДОМАШНЯЯ КУХНЯ</span>
           <h2>Готовим точно столько, сколько нужно.</h2>
           <p>Рецепты, точные пропорции и понятные шаги. Выберите блюдо — остальное Food посчитает сам.</p>
-          <button className="finderHeroButton" onClick={() => setShowFinder(true)}><ChefHat size={18}/><span><strong>Что приготовить из того, что есть?</strong><small>Введите продукты — Food подберёт блюда</small></span><span className="finderHeroArrow">›</span></button>
         </div>
       </section>
 
@@ -412,11 +365,6 @@ function App() {
               <p>Сначала выберите категорию, затем блюдо — и Food рассчитает продукты под нужное количество людей.</p>
             </div>
             <div className="categoryGrid">
-              <button className="categoryTile finderCategoryTile" onClick={() => setShowFinder(true)}>
-                <span className="categoryTileIcon"><ChefHat size={28} strokeWidth={1.7} /></span>
-                <span className="categoryTileText"><strong>Из моих продуктов</strong><small>Подобрать блюдо</small></span>
-                <span className="categoryTileArrow">›</span>
-              </button>
               {categories.map(item => {
                 const Icon = categoryIcons[item]
                 const count = recipes.filter(r => r.category === item).length
@@ -469,14 +417,14 @@ function App() {
               <div className="dishHead"><div className="dishIcon"><img src={selected.image} alt={selected.name} loading="eager"/><i/></div><div><span className="muted">{selected.category} · {selected.ingredients.length} ингредиентов</span><h3>{selected.name}</h3><p>{selected.description}</p></div></div>
               <button className={favorites.includes(selected.id) ? 'favoriteButton active' : 'favoriteButton'} onClick={() => toggleFavorite(selected.id)} aria-label="Добавить в избранное"><Heart size={19} fill={favorites.includes(selected.id) ? 'currentColor' : 'none'}/></button>
             </div>
-            <div className="recipeMeta"><span><Clock3 size={15}/> {recipeDetails[selected.id]?.time || '30–60 мин'}</span><span><UtensilsCrossed size={15}/> {selected.baseServings} {pluralPeople(selected.baseServings)}</span><span>{recipeDetails[selected.id]?.difficulty || 'Средне'}</span></div>
+            <div className="recipeMeta"><span><Clock3 size={15}/> 30–60 мин</span><span><UtensilsCrossed size={15}/> {selected.baseServings} {pluralPeople(selected.baseServings)}</span></div>
             <div className="servings"><div><span className="muted">Количество</span><strong>{servings} {pluralPeople(servings)}</strong></div><div className="stepper"><button onClick={() => setServings(Math.max(1, servings - 1))} aria-label="Уменьшить"><Minus size={18}/></button><span>{servings}</span><button onClick={() => setServings(Math.min(50, servings + 1))} aria-label="Увеличить"><Plus size={18}/></button></div></div>
             <div className="scaleButtons">{[2,4,5,6,10].map(n => <button key={n} className={servings === n ? 'scale active' : 'scale'} onClick={() => setServings(n)}>{n}</button>)}</div>
             <div className="sectionHeading"><div><span>Ингредиенты</span><small>Количество автоматически пересчитано</small></div><b>{selected.ingredients.length}</b></div>
             <div className="tableHead"><span>ИНГРЕДИЕНТ</span><span>КОЛИЧЕСТВО</span></div>
             <div className="ingredients">{selected.ingredients.map(([name, amount, unit]) => <div className="ingredient" key={name}><span>{name}</span><strong>{formatAmount(amount * multiplier, unit)}</strong></div>)}</div>
             <div className="cardActions"><button className={showSteps ? 'secondaryAction active' : 'secondaryAction'} onClick={() => setShowSteps(!showSteps)}><UtensilsCrossed size={17}/>{showSteps ? 'Скрыть приготовление' : 'Как приготовить'}</button></div>
-            {showSteps && <div className="steps"><div className="stepsTitle">Приготовление</div><div className="recipeDetailGrid"><div><small>Время</small><strong>{recipeDetails[selected.id]?.time || '30–60 мин'}</strong></div><div><small>Сложность</small><strong>{recipeDetails[selected.id]?.difficulty || 'Средне'}</strong></div><div><small>Инвентарь</small><strong>{recipeDetails[selected.id]?.equipment || 'Кастрюля, сковорода'}</strong></div></div>{(recipeDetails[selected.id]?.detailedSteps || selected.steps).map((step,index) => <div className="step" key={index}><span>{index+1}</span><p>{step}</p></div>)}{recipeDetails[selected.id]?.tip && <div className="recipeTip"><strong>💡 Совет</strong><p>{recipeDetails[selected.id].tip}</p></div>}{recipeDetails[selected.id]?.substitutions && <div className="recipeTip"><strong>↔ Чем заменить</strong><p>{recipeDetails[selected.id].substitutions}</p></div>}</div>}
+            {showSteps && <div className="steps"><div className="stepsTitle">Приготовление</div>{selected.steps.map((step,index) => <div className="step" key={step}><span>{index+1}</span><p>{step}</p></div>)}</div>}
             <div className="note"><UtensilsCrossed size={18}/><span>Расчёт выполнен по базовой рецептуре на {selected.baseServings} {pluralPeople(selected.baseServings)}.</span></div>
           </section>
         </div>
@@ -486,15 +434,10 @@ function App() {
         <button className={tab === 'dishes' ? 'navItem active' : 'navItem'} onClick={() => setTab('dishes')}>
           <Home size={20} /><span>Блюда</span>
         </button>
-        <button className={showFinder ? 'navItem active' : 'navItem'} onClick={() => setShowFinder(true)}>
-          <ChefHat size={20} /><span>Из продуктов</span>
-        </button>
         <button className={tab === 'favorites' ? 'navItem active' : 'navItem'} onClick={() => setTab('favorites')}>
           <Heart size={20} fill={tab === 'favorites' ? 'currentColor' : 'none'} /><span>Избранное</span>
         </button>
       </nav>
-
-      {showFinder && <IngredientFinder recipes={recipes} onClose={() => setShowFinder(false)} onSelectRecipe={selectFinderRecipe} />}
     </main>
   )
 }
