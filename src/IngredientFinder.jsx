@@ -160,10 +160,36 @@ async function translateInstructions(text, setProgress) {
   return translated.join('\n\n')
 }
 
+function localizeMeasure(value) {
+  return (value || '')
+    .replace(/tablespoons?/gi, 'ст. л.')
+    .replace(/tbsp/gi, 'ст. л.')
+    .replace(/teaspoons?/gi, 'ч. л.')
+    .replace(/tsp/gi, 'ч. л.')
+    .replace(/cups?/gi, 'стак.')
+    .replace(/ounces?/gi, 'унц.')
+    .replace(/pounds?/gi, 'фунт.')
+    .replace(/cloves?/gi, 'зубч.')
+    .replace(/bunch(?:es)?/gi, 'пуч.')
+    .replace(/pinch(?:es)?/gi, 'щепотка')
+    .replace(/to taste/gi, 'по вкусу')
+    .replace(/as needed/gi, 'по необходимости')
+    .replace(/grams?/gi, 'г')
+    .replace(/kilograms?/gi, 'кг')
+    .replace(/millilit(?:er|re)s?/gi, 'мл')
+    .replace(/lit(?:er|re)s?/gi, 'л')
+    .replace(/pieces?/gi, 'шт.')
+    .replace(/slices?/gi, 'ломт.')
+    .replace(/large/gi, 'крупный')
+    .replace(/medium/gi, 'средний')
+    .replace(/small/gi, 'маленький')
+    .trim()
+}
+
 function mealIngredients(meal) {
   return Array.from({ length: 20 }, (_, index) => {
     const raw = meal[`strIngredient${index + 1}`]?.trim()
-    const measure = meal[`strMeasure${index + 1}`]?.trim()
+    const measure = localizeMeasure(meal[`strMeasure${index + 1}`]?.trim())
     if (!raw) return null
     const ru = ingredientRu[raw.toLowerCase()] || raw
     return `${ru}${measure ? ` — ${measure}` : ''}`
@@ -245,7 +271,7 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
   }
 
   const displayName = selectedOnlineMeal?.strMealRu || selectedOnlineMeal?.strMeal
-  const instructions = translatedInstructions || selectedOnlineMeal?.strInstructions || ''
+  const instructions = translationLoading ? 'Переводим инструкцию на русский…' : (translatedInstructions || selectedOnlineMeal?.strInstructions || '')
 
   return (
     <div className="finderOverlay" role="dialog" aria-modal="true" aria-label="Что приготовить из продуктов">
