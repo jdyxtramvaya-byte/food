@@ -853,3 +853,40 @@ button:focus-visible,input:focus-visible{outline-color:rgba(82,118,92,.55)}
   .categoryTile{min-height:180px;padding:12px}
   .categoryTileText strong{font-size:15px}
 }
+
+
+/* Recipe detail — editorial, photo-led layout */
+.recipeCover{position:relative;height:clamp(220px,30vw,340px);margin:-2px -2px 26px;border-radius:28px;overflow:hidden;background:#dfe4d8;isolation:isolate}
+.recipeCover>img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .65s cubic-bezier(.2,.7,.2,1)}
+.card:hover .recipeCover>img{transform:scale(1.025)}
+.recipeCoverShade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,18,12,.10) 0%,transparent 35%,rgba(12,18,12,.38) 100%);pointer-events:none}
+.recipeCoverLabel{position:absolute;left:18px;bottom:17px;display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border:1px solid rgba(255,255,255,.32);border-radius:999px;background:rgba(24,30,22,.28);color:#fff;font-size:12px;font-weight:650;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.recipeCover .favoriteButton{position:absolute;right:16px;top:16px;background:rgba(255,255,255,.82);border-color:rgba(255,255,255,.8);color:#344d37;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.recipeCardHeading{margin-bottom:4px}
+.recipeCardHeading .dishHead{align-items:flex-start}
+.recipeCardHeading .dishHead h3{font-size:clamp(30px,4vw,44px);line-height:1.02;letter-spacing:-.045em;margin:8px 0 9px}
+.recipeCardHeading .dishHead p{font-size:15px;line-height:1.55;max-width:58ch}
+.recipeCardHeading .muted{font-size:11px;text-transform:uppercase;letter-spacing:.09em;font-weight:750}
+.card .sectionHeading{margin-top:30px}
+.card .tableHead{margin-top:4px}
+.card .ingredient{border-radius:12px;padding:15px 12px}
+.card .ingredient strong{color:var(--text);font-variant-numeric:tabular-nums}
+.card .stepsTitle{font-size:23px;letter-spacing:-.035em;margin-bottom:16px}
+.card .recipeDetailGrid>div{border-radius:16px;padding:13px;background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.65)}
+.card .step{padding:14px 0;border-bottom:1px solid var(--line)}
+.card .step:last-of-type{border-bottom:0}
+.card .step>span{width:32px;height:32px;border-radius:11px;background:#385a40;color:white;box-shadow:0 5px 14px rgba(56,90,64,.18)}
+.card .step p{margin-top:5px}
+[data-theme="dark"] .recipeCover{background:#282c25}
+[data-theme="dark"] .recipeCover .favoriteButton{background:rgba(35,39,33,.86);color:#dce8d4;border-color:rgba(255,255,255,.12)}
+[data-theme="dark"] .card .recipeDetailGrid>div{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08)}
+@media(max-width:600px){
+  .recipeCover{height:220px;margin:0 0 20px;border-radius:22px}
+  .recipeCoverLabel{left:12px;bottom:12px}
+  .recipeCover .favoriteButton{right:12px;top:12px}
+  .recipeCardHeading .dishHead h3{font-size:32px}
+  .recipeCardHeading .dishHead p{font-size:14px}
+  .card .sectionHeading{margin-top:24px}
+  .card .recipeDetailGrid{gap:8px}
+  .card .recipeDetailGrid>div{padding:11px}
+}
