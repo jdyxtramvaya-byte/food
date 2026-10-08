@@ -1310,3 +1310,17 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline-color:rg
 [data-theme="dark"] .finderReadyFilter{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.1);color:#e8eae5}
 [data-theme="dark"] .finderReadyFilter.active{background:rgba(130,167,119,.16);border-color:rgba(130,167,119,.3);color:#c6dfbd}
 @media(max-width:560px){.finderPantryQuickAdd button{padding:8px 10px}.finderReadyFilter{padding:10px 11px}}
+
+
+/* Personal taste memory — recommendations learn from explicit feedback */
+.finderTasteRow{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:8px 9px 0;padding:9px 2px 1px;border-top:1px solid rgba(82,118,92,.10)}
+.finderTasteRow>span{flex:1;min-width:125px;color:var(--muted,#7d8178);font-size:10px;line-height:1.35}
+.finderTasteRow button{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:31px;padding:6px 9px;border:1px solid rgba(82,118,92,.15);border-radius:11px;background:rgba(255,255,255,.45);color:#6d7866;font:inherit;font-size:10px;font-weight:700;-webkit-tap-highlight-color:transparent;transition:background .18s,border-color .18s,transform .18s}
+.finderTasteRow button:active{transform:scale(.97)}
+.finderTasteRow button.active{background:rgba(82,118,92,.14);border-color:rgba(82,118,92,.32);color:#45664b}
+.finderTasteRow button.active.avoid{background:rgba(155,104,79,.10);border-color:rgba(155,104,79,.25);color:#95674f}
+[data-theme="dark"] .finderTasteRow{border-top-color:rgba(255,255,255,.09)}
+[data-theme="dark"] .finderTasteRow button{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.1);color:#c0c8b8}
+[data-theme="dark"] .finderTasteRow button.active{background:rgba(130,167,119,.16);border-color:rgba(130,167,119,.3);color:#c6dfbd}
+[data-theme="dark"] .finderTasteRow button.active.avoid{background:rgba(191,133,103,.12);border-color:rgba(191,133,103,.25);color:#e2b9a3}
+@media(max-width:560px){.finderTasteRow{gap:6px;margin-right:7px;margin-left:7px}.finderTasteRow>span{flex-basis:100%;min-width:0}.finderTasteRow button{flex:1}}
