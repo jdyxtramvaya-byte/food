@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { ChefHat, Heart, Home, Minus, Plus, Search, UtensilsCrossed, X, Sparkles, Clock3, Sun, Moon, Soup, Salad, Croissant, CakeSlice, Drumstick, Wheat, Utensils } from 'lucide-react'
 import './styles.css'
 import IngredientFinder from './IngredientFinder'
+import CookingMode from './CookingMode'
 import recipeDetails from './recipeDetails'
 import extraRecipes from './extraRecipes'
 
@@ -569,7 +570,7 @@ function App() {
             <div className="tableHead"><span>ИНГРЕДИЕНТ</span><span>КОЛИЧЕСТВО</span></div>
             <div className="ingredients">{selected.ingredients.map(([name, amount, unit]) => <div className="ingredient" key={name}><span>{name}</span><strong>{formatAmount(amount * multiplier, unit)}</strong></div>)}</div>
             <div className="cardActions"><button className={showSteps ? 'secondaryAction active' : 'secondaryAction'} onClick={() => setShowSteps(!showSteps)}><UtensilsCrossed size={17}/>{showSteps ? 'Скрыть приготовление' : 'Как приготовить'}</button></div>
-            {showSteps && <div className="steps"><div className="stepsTitle">Приготовление</div><div className="recipeDetailGrid"><div><small>Время</small><strong>{recipeDetails[selected.id]?.time || '30–60 мин'}</strong></div><div><small>Сложность</small><strong>{recipeDetails[selected.id]?.difficulty || 'Средне'}</strong></div><div><small>Инвентарь</small><strong>{recipeDetails[selected.id]?.equipment || 'Кастрюля, сковорода'}</strong></div></div>{(recipeDetails[selected.id]?.detailedSteps || selected.steps).map((step,index) => <div className="step" key={index}><span>{index+1}</span><p>{step}</p></div>)}{recipeDetails[selected.id]?.tip && <div className="recipeTip"><strong>💡 Совет</strong><p>{recipeDetails[selected.id].tip}</p></div>}{recipeDetails[selected.id]?.substitutions && <div className="recipeTip"><strong>↔ Чем заменить</strong><p>{recipeDetails[selected.id].substitutions}</p></div>}</div>}
+            {showSteps && <div className="steps"><div className="stepsTitle">Приготовление</div><div className="recipeDetailGrid"><div><small>Время</small><strong>{recipeDetails[selected.id]?.time || '30–60 мин'}</strong></div><div><small>Сложность</small><strong>{recipeDetails[selected.id]?.difficulty || 'Средне'}</strong></div><div><small>Инвентарь</small><strong>{recipeDetails[selected.id]?.equipment || 'Кастрюля, сковорода'}</strong></div></div><CookingMode recipe={selected} steps={recipeDetails[selected.id]?.detailedSteps || selected.steps} tip={recipeDetails[selected.id]?.tip} substitutions={recipeDetails[selected.id]?.substitutions}/></div>}
             <div className="note"><UtensilsCrossed size={18}/><span>Ингредиенты пересчитаны на {servings} {pluralPeople(servings)}. Количество можно изменить в любой момент.</span></div>
           </section>
         </div>
