@@ -1002,3 +1002,56 @@ button:focus-visible,input:focus-visible{outline-color:rgba(82,118,92,.55)}
  .card .calculatorQuickPick>span{flex-basis:100%;margin:0 0 2px}
  .card .calculatorQuickPick .scale{flex:1;min-width:0;height:37px}
 }
+
+
+/* Futuristic portion lab — isolated from app boot and recipe logic */
+.card .portionLab{position:relative;isolation:isolate;overflow:hidden;margin:0 0 27px;padding:19px 20px 16px;border:1px solid rgba(100,125,83,.22);border-radius:27px;background:radial-gradient(ellipse at 17% 38%,rgba(161,190,132,.22),transparent 43%),linear-gradient(135deg,rgba(250,252,245,.98),rgba(235,241,226,.88));box-shadow:0 16px 38px rgba(55,77,42,.075),inset 0 1px 0 rgba(255,255,255,.9);color:var(--text,#242820);animation:portionLabAppear .55s cubic-bezier(.2,.8,.2,1) both}
+.card .portionLab:after{content:"";position:absolute;z-index:-1;width:210px;height:210px;right:-105px;top:-112px;border:1px solid rgba(105,136,83,.14);border-radius:50%;box-shadow:0 0 0 20px rgba(105,136,83,.025),0 0 0 42px rgba(105,136,83,.025)}
+.card .portionLabTop{display:flex;align-items:center;gap:9px;color:#728367;font-size:9px;font-weight:800;letter-spacing:.16em}
+.card .portionLiveDot{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:#8ba976;box-shadow:0 0 0 4px rgba(139,169,118,.13);animation:portionPulse 2s ease-in-out infinite}
+.card .portionLabLine{height:1px;flex:1;background:linear-gradient(90deg,rgba(110,137,91,.3),transparent)}
+.card .portionLabTop svg{opacity:.8}
+.card .portionLabBody{display:grid;grid-template-columns:minmax(145px,.9fr) minmax(0,1.1fr);align-items:center;gap:17px;padding:12px 0 17px}
+.card .portionOrbit{width:min(100%,220px);aspect-ratio:1;position:relative;display:grid;place-items:center;justify-self:center;isolation:isolate}
+.card .portionOrbitRing{position:absolute;inset:8%;border:1px solid rgba(103,132,83,.26);border-radius:50%;animation:portionOrbitSpin 22s linear infinite}
+.card .portionOrbitRingOne:before,.card .portionOrbitRingTwo:before{content:"";position:absolute;top:11%;left:12%;width:6px;height:6px;border-radius:50%;background:#819c6d;box-shadow:0 0 13px rgba(129,156,109,.8)}
+.card .portionOrbitRingTwo{inset:0;border-style:dashed;border-color:rgba(103,132,83,.23);animation-duration:32s;animation-direction:reverse}
+.card .portionOrbitRingTwo:before{top:auto;left:auto;bottom:12%;right:10%;width:4px;height:4px}
+.card .portionOrbitCore{position:relative;width:66%;aspect-ratio:1;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 35% 25%,#fff 0,#f3f7ed 43%,#e3ecd9 100%);border:1px solid rgba(255,255,255,.95);box-shadow:0 12px 30px rgba(72,97,54,.14),inset 0 0 0 7px rgba(255,255,255,.36);animation:portionCoreFloat 4s ease-in-out infinite}
+.card .portionNumber{font-size:clamp(43px,7vw,65px);line-height:.95;font-weight:650;letter-spacing:-.085em;font-variant-numeric:tabular-nums;color:#33472d;transition:transform .2s ease;animation:portionNumberIn .28s ease both}
+.card .portionUnit{margin-top:8px;font-size:8px;letter-spacing:.22em;font-weight:800;color:#7a8c6d}
+.card .portionOrbitNode{position:absolute;z-index:2;width:10px;height:10px;border:2px solid #f7faF2;border-radius:50%;background:#809a6b;box-shadow:0 0 0 4px rgba(128,154,107,.12)}
+.card .portionOrbitNodeOne{right:11%;top:19%}.card .portionOrbitNodeTwo{left:12%;bottom:20%;width:6px;height:6px}
+.card .portionLabControls{min-width:0;padding:4px 0}
+.card .portionLabEyebrow{display:block;margin-bottom:8px;color:#839476;font-size:9px;font-weight:800;letter-spacing:.14em}
+.card .portionLabControls h3{margin:0;color:var(--text,#242820);font-size:clamp(22px,3.8vw,30px);font-weight:650;letter-spacing:-.055em;line-height:1.04}
+.card .portionLabControls p{max-width:230px;margin:9px 0 15px;color:var(--muted,#7c8275);font-size:11px;line-height:1.5}
+.card .portionAdjust{display:flex;align-items:center;gap:10px}
+.card .portionAdjust>button{width:34px;height:34px;display:grid;place-items:center;padding:0;border:1px solid rgba(100,125,83,.18);border-radius:12px;background:rgba(255,255,255,.76);color:#4a6040;box-shadow:0 3px 9px rgba(55,77,42,.05);transition:transform .18s ease,background .18s ease}
+.card .portionAdjust>button:active{transform:scale(.9);background:#dce8d2}
+.card .portionAdjust>button:disabled{opacity:.35}
+.card .portionAdjust>span{min-width:0;font-size:14px;font-weight:750;font-variant-numeric:tabular-nums}
+.card .portionAdjust>span small{font-size:10px;font-weight:550;color:var(--muted,#7c8275)}
+.card .portionPresets{display:flex;align-items:center;gap:7px;padding-top:13px;border-top:1px solid rgba(100,125,83,.15)}
+.card .portionPresets>span:first-child{margin-right:auto;color:#87927e;font-size:8px;font-weight:800;letter-spacing:.12em}
+.card .portionPreset{width:35px;height:31px;padding:0;border:1px solid rgba(100,125,83,.16);border-radius:11px;background:rgba(255,255,255,.48);color:var(--text,#34402f);font-size:10px;font-weight:700;font-variant-numeric:tabular-nums;transition:transform .18s ease,background .2s ease,color .2s ease,border-color .2s ease}
+.card .portionPreset:active{transform:scale(.92)}
+.card .portionPreset.active{background:#3e5940;border-color:#3e5940;color:#fff;box-shadow:0 5px 13px rgba(62,89,64,.2)}
+.card .portionPresetMax{margin-left:2px;color:#a0a796;font-size:8px;white-space:nowrap}
+[data-theme="dark"] .card .portionLab{background:radial-gradient(ellipse at 17% 38%,rgba(126,157,103,.16),transparent 43%),linear-gradient(135deg,rgba(35,43,33,.98),rgba(25,31,25,.96));border-color:rgba(143,164,123,.22);box-shadow:0 16px 38px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.035);color:#f0f2eb}
+[data-theme="dark"] .card .portionLabTop,[data-theme="dark"] .card .portionLabEyebrow{color:#a6bd95}
+[data-theme="dark"] .card .portionOrbitRing{border-color:rgba(160,190,139,.24)}
+[data-theme="dark"] .card .portionOrbitCore{background:radial-gradient(circle at 35% 25%,#485541 0,#303c2c 58%,#263024 100%);border-color:rgba(190,211,173,.14);box-shadow:0 12px 30px rgba(0,0,0,.22),inset 0 0 0 7px rgba(255,255,255,.025)}
+[data-theme="dark"] .card .portionNumber{color:#e2edda}
+[data-theme="dark"] .card .portionUnit{color:#afc59e}
+[data-theme="dark"] .card .portionLabControls h3{color:#f0f2eb}
+[data-theme="dark"] .card .portionAdjust>button{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.09);color:#c7dbb8;box-shadow:none}
+[data-theme="dark"] .card .portionPreset{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.09);color:#e4e9df}
+[data-theme="dark"] .card .portionPreset.active{background:#91a887;border-color:#91a887;color:#182116}
+@keyframes portionLabAppear{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes portionPulse{0%,100%{box-shadow:0 0 0 4px rgba(139,169,118,.12)}50%{box-shadow:0 0 0 7px rgba(139,169,118,.025)}}
+@keyframes portionOrbitSpin{to{transform:rotate(360deg)}}
+@keyframes portionCoreFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes portionNumberIn{from{opacity:.55;transform:translateY(4px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:480px){.card .portionLab{padding:16px 14px 13px;border-radius:23px}.card .portionLabBody{grid-template-columns:minmax(112px,.88fr) minmax(0,1.12fr);gap:10px;padding:10px 0 14px}.card .portionOrbit{width:100%;max-width:165px}.card .portionOrbitCore{width:68%}.card .portionNumber{font-size:43px}.card .portionLabControls h3{font-size:22px}.card .portionLabControls p{font-size:10px;margin:8px 0 12px}.card .portionAdjust{gap:6px}.card .portionAdjust>button{width:30px;height:30px;border-radius:10px}.card .portionAdjust>span{font-size:12px}.card .portionAdjust>span small{font-size:9px}.card .portionPresets{gap:5px}.card .portionPreset{flex:1;min-width:0;width:auto;height:30px;border-radius:10px}.card .portionPresets>span:first-child{font-size:7px;letter-spacing:.07em}.card .portionPresetMax{display:none}}
+@media(prefers-reduced-motion:reduce){.card .portionLab,.card .portionLiveDot,.card .portionOrbitRing,.card .portionOrbitCore,.card .portionNumber{animation:none!important;transition:none!important}}
