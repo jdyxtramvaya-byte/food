@@ -299,9 +299,7 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
       setTranslatedIngredients(ingredients)
       setTranslatedCategory(category)
       setTranslatedArea(area)
-      const instructionStillEnglish = looksEnglish(translated) && looksEnglish(sourceText)
-      const ingredientStillEnglish = mealIngredients(meal).some(item => looksEnglish(item.ru) && item.ru === item.raw && !looksEnglish(ingredientRu[item.raw.toLowerCase()] || ''))
-      if (translated === sourceText || instructionStillEnglish || ingredientStillEnglish) {
+      if (translated === sourceText || (looksEnglish(translated) && looksEnglish(sourceText))) {
         setTranslationNotice('Часть текста не удалось перевести автоматически. Некоторые названия или строки могут остаться на английском.')
       }
     } catch {
