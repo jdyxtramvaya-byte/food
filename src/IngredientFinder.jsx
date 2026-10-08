@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { ChefHat, Search, X, Check, ShoppingCart, Globe, LoaderCircle, ArrowLeft, ExternalLink, Languages, Sparkles } from 'lucide-react'
+import { ChefHat, Search, X, Check, ShoppingCart, Globe, LoaderCircle, ArrowLeft, ExternalLink, Languages, Sparkles, Heart, ThumbsDown } from 'lucide-react'
 
 const aliases = {
   'яйцо': ['яйца', 'яйцо'], 'молоко': ['молоко'], 'мука': ['мука'],
@@ -260,6 +260,12 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
     try { return window.localStorage.getItem('food-pantry-ingredients') || '' } catch { return '' }
   })
   const [readyOnly, setReadyOnly] = useState(false)
+  const [tasteMemory, setTasteMemory] = useState(() => {
+    try {
+      const saved = JSON.parse(window.localStorage.getItem('food-taste-memory') || '{}')
+      return saved && typeof saved === 'object' && !Array.isArray(saved) ? saved : {}
+    } catch { return {} }
+  })
   const [shoppingList, setShoppingList] = useState(() => {
     try {
       const saved = JSON.parse(window.localStorage.getItem('food-shopping-list') || '[]')
@@ -286,6 +292,20 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
     try { window.localStorage.setItem('food-pantry-ingredients', value) } catch {}
   }, [value])
 
+  useEffect(() => {
+    try { window.localStorage.setItem('food-taste-memory', JSON.stringify(tasteMemory)) } catch {}
+  }, [tasteMemory])
+
+  const rateRecipe = (id, rating) => setTasteMemory(current => {
+    const key = String(id)
+    if (current[key] === rating) {
+      const next = { ...current }
+      delete next[key]
+      return next
+    }
+    return { ...current, [key]: rating }
+  })
+
   const addMissingIngredients = items => {
     setShoppingList(current => {
       const known = new Set(current.map(item => normalize(item.name)))
@@ -306,8 +326,11 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
       const missing = ingredientNames.filter(name => !matched.includes(name))
       return { recipe, matched, missing, percent: Math.round((matched.length / ingredientNames.length) * 100) }
     }).filter(item => item.matched.length > 0)
-      .sort((a, b) => b.percent - a.percent || a.missing.length - b.missing.length).slice(0, 8)
-  }, [available, recipes])
+      .sort((a, b) => {
+        const tasteScore = item => tasteMemory[String(item.recipe.id)] === 'love' ? 100 : tasteMemory[String(item.recipe.id)] === 'avoid' ? -100 : 0
+        return tasteScore(b) - tasteScore(a) || b.percent - a.percent || a.missing.length - b.missing.length
+      }).slice(0, 8)
+  }, [available, recipes, tasteMemory])
 
   const visibleResults = useMemo(() => readyOnly ? results.filter(item => item.missing.length === 0) : results, [results, readyOnly])
 
@@ -468,6 +491,11 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
                       </span>
                     </button>
                     {missing.length > 0 && <button className="finderAddMissing" onClick={() => addMissingIngredients(missing)}><ShoppingCart size={15}/> Добавить недостающее <span>+{missing.filter(name => !shoppingList.some(item => normalize(item.name) === normalize(name))).length}</span></button>}
+                    <div className="finderTasteRow" aria-label={'Оценить рецепт '+recipe.name}>
+                      <span>{tasteMemory[String(recipe.id)] === 'love' ? 'Food запомнил: нравится' : tasteMemory[String(recipe.id)] === 'avoid' ? 'Food запомнил: не предлагать' : 'Подстроить рекомендации'}</span>
+                      <button className={tasteMemory[String(recipe.id)] === 'love' ? 'active' : ''} onClick={() => rateRecipe(recipe.id, 'love')} aria-pressed={tasteMemory[String(recipe.id)] === 'love'}><Heart size={14}/> Моё</button>
+                      <button className={tasteMemory[String(recipe.id)] === 'avoid' ? 'active avoid' : ''} onClick={() => rateRecipe(recipe.id, 'avoid')} aria-pressed={tasteMemory[String(recipe.id)] === 'avoid'}><ThumbsDown size={14}/> Не моё</button>
+                    </div>
                   </div>
                 )) : <div className="finderEmpty">{readyOnly ? 'Пока нет блюд, для которых хватает всех указанных ингредиентов. Выключи фильтр или добавь продукты.' : 'В локальном каталоге совпадений нет. Ниже можно найти дополнительные блюда.'}</div>}
               </div>
