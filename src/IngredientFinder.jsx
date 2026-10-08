@@ -1,69 +1,144 @@
 import React, { useMemo, useState } from 'react'
-import { ChefHat, Search, X, Check, ShoppingCart, Globe, LoaderCircle, ArrowLeft, ExternalLink } from 'lucide-react'
+import { ChefHat, Search, X, Check, ShoppingCart, Globe, LoaderCircle, ArrowLeft, ExternalLink, Languages, Sparkles } from 'lucide-react'
 
 const aliases = {
-  'яйцо': ['яйца', 'яйцо'],
-  'молоко': ['молоко'],
-  'мука': ['мука'],
-  'картофель': ['картофель', 'картошка'],
-  'лук': ['лук', 'лук репчатый'],
+  'яйцо': ['яйца', 'яйцо'], 'молоко': ['молоко'], 'мука': ['мука'],
+  'картофель': ['картофель', 'картошка'], 'лук': ['лук', 'лук репчатый'],
   'масло': ['масло', 'растительное масло', 'сливочное масло'],
   'курица': ['куриное филе', 'куриные бёдра', 'курица'],
   'мясо': ['мясо', 'мясной фарш', 'говядина', 'свинина или говядина'],
-  'сыр': ['сыр', 'пармезан', 'моцарелла', 'фета'],
-  'сахар': ['сахар'],
-  'вода': ['вода', 'вода или бульон'],
-  'яблоки': ['яблоки'],
-  'рис': ['рис'],
-  'гречка': ['гречка'],
-  'паста': ['паста', 'спагетти']
+  'сыр': ['сыр', 'пармезан', 'моцарелла', 'фета'], 'сахар': ['сахар'],
+  'вода': ['вода', 'вода или бульон'], 'яблоки': ['яблоки'], 'рис': ['рис'],
+  'гречка': ['гречка'], 'паста': ['паста', 'спагетти']
 }
 
 const apiIngredients = [
   { ru: ['курица', 'куриное филе', 'куриные бедра', 'куриные бёдра'], api: 'chicken_breast' },
   { ru: ['говядина', 'мясо', 'фарш'], api: 'beef' },
-  { ru: ['свинина'], api: 'pork' },
-  { ru: ['картофель', 'картошка'], api: 'potatoes' },
-  { ru: ['лук', 'лук репчатый'], api: 'onion' },
-  { ru: ['яйцо', 'яйца'], api: 'eggs' },
-  { ru: ['молоко'], api: 'milk' },
-  { ru: ['сыр', 'пармезан', 'моцарелла', 'фета'], api: 'cheddar_cheese' },
-  { ru: ['рис'], api: 'rice' },
-  { ru: ['паста', 'спагетти', 'макароны'], api: 'spaghetti' },
-  { ru: ['помидор', 'помидоры', 'томат'], api: 'tomatoes' },
-  { ru: ['морковь'], api: 'carrots' },
-  { ru: ['чеснок'], api: 'garlic' },
-  { ru: ['перец'], api: 'pepper' },
-  { ru: ['лимон'], api: 'lemon' },
-  { ru: ['лосось', 'рыба'], api: 'salmon' },
-  { ru: ['яблоки', 'яблоко'], api: 'apples' },
-  { ru: ['мука'], api: 'flour' }
+  { ru: ['свинина'], api: 'pork' }, { ru: ['картофель', 'картошка'], api: 'potatoes' },
+  { ru: ['лук', 'лук репчатый'], api: 'onion' }, { ru: ['яйцо', 'яйца'], api: 'eggs' },
+  { ru: ['молоко'], api: 'milk' }, { ru: ['сыр', 'пармезан', 'моцарелла', 'фета'], api: 'cheddar_cheese' },
+  { ru: ['рис'], api: 'rice' }, { ru: ['паста', 'спагетти', 'макароны'], api: 'spaghetti' },
+  { ru: ['помидор', 'помидоры', 'томат'], api: 'tomatoes' }, { ru: ['морковь'], api: 'carrots' },
+  { ru: ['чеснок'], api: 'garlic' }, { ru: ['перец'], api: 'pepper' },
+  { ru: ['лимон'], api: 'lemon' }, { ru: ['лосось', 'рыба'], api: 'salmon' },
+  { ru: ['яблоки', 'яблоко'], api: 'apples' }, { ru: ['мука'], api: 'flour' }
 ]
 
-const normalize = value => value
-  .toLowerCase()
-  .replace(/ё/g, 'е')
-  .replace(/[^а-яa-z0-9]+/g, ' ')
-  .trim()
+const ingredientRu = {
+  'chicken': 'курица', 'chicken breast': 'куриная грудка', 'chicken breasts': 'куриные грудки',
+  'chicken thighs': 'куриные бёдра', 'beef': 'говядина', 'ground beef': 'говяжий фарш',
+  'pork': 'свинина', 'potatoes': 'картофель', 'potato': 'картофель', 'onion': 'репчатый лук',
+  'onions': 'репчатый лук', 'eggs': 'яйца', 'egg': 'яйцо', 'milk': 'молоко', 'cheddar cheese': 'сыр чеддер',
+  'cheese': 'сыр', 'rice': 'рис', 'spaghetti': 'спагетти', 'pasta': 'макароны',
+  'tomatoes': 'помидоры', 'tomato': 'помидор', 'carrots': 'морковь', 'carrot': 'морковь',
+  'garlic': 'чеснок', 'black pepper': 'чёрный перец', 'pepper': 'перец', 'lemon': 'лимон',
+  'salmon': 'лосось', 'apples': 'яблоки', 'apple': 'яблоко', 'flour': 'мука',
+  'sugar': 'сахар', 'salt': 'соль', 'butter': 'сливочное масло', 'olive oil': 'оливковое масло',
+  'vegetable oil': 'растительное масло', 'water': 'вода', 'cream': 'сливки',
+  'heavy cream': 'жирные сливки', 'parsley': 'петрушка', 'basil': 'базилик',
+  'oregano': 'орегано', 'paprika': 'паприка', 'cumin': 'зира', 'cinnamon': 'корица',
+  'bread': 'хлеб', 'breadcrumbs': 'панировочные сухари', 'flour tortillas': 'пшеничные лепёшки',
+  'bell pepper': 'сладкий перец', 'red pepper': 'красный перец', 'green pepper': 'зелёный перец',
+  'mushrooms': 'грибы', 'button mushrooms': 'шампиньоны', 'broccoli': 'брокколи',
+  'spinach': 'шпинат', 'cucumber': 'огурец', 'cucumbers': 'огурцы', 'lettuce': 'салат',
+  'mayonnaise': 'майонез', 'mustard': 'горчица', 'soy sauce': 'соевый соус',
+  'honey': 'мёд', 'vinegar': 'уксус', 'lemon juice': 'лимонный сок',
+  'stock': 'бульон', 'chicken stock': 'куриный бульон', 'beef stock': 'говяжий бульон',
+  'tomato puree': 'томатное пюре', 'tomato paste': 'томатная паста',
+  'coconut milk': 'кокосовое молоко', 'yogurt': 'йогурт', 'yoghurt': 'йогурт',
+  'parmesan': 'пармезан', 'mozzarella': 'моцарелла', 'feta': 'фета',
+  'shrimp': 'креветки', 'prawns': 'креветки', 'tuna': 'тунец', 'white fish': 'белая рыба',
+  'bacon': 'бекон', 'sausage': 'колбаса', 'sausages': 'колбаски',
+  'sweetcorn': 'сладкая кукуруза', 'corn': 'кукуруза', 'peas': 'зелёный горошек',
+  'beans': 'фасоль', 'kidney beans': 'красная фасоль', 'chickpeas': 'нут',
+  'lentils': 'чечевица', 'oats': 'овсяные хлопья', 'rolled oats': 'овсяные хлопья',
+  'honey': 'мёд', 'vanilla extract': 'ванильный экстракт', 'baking powder': 'разрыхлитель',
+  'cocoa': 'какао', 'dark chocolate': 'тёмный шоколад', 'chocolate': 'шоколад',
+  'banana': 'банан', 'bananas': 'бананы', 'strawberries': 'клубника',
+  'orange': 'апельсин', 'orange juice': 'апельсиновый сок'
+}
 
+const categoryRu = {
+  'beef': 'Говядина', 'chicken': 'Курица', 'dessert': 'Десерт', 'lamb': 'Баранина',
+  'miscellaneous': 'Разное', 'pasta': 'Паста', 'pork': 'Свинина', 'seafood': 'Морепродукты',
+  'side': 'Гарнир', 'starter': 'Закуска', 'vegan': 'Веганское', 'vegetarian': 'Вегетарианское',
+  'breakfast': 'Завтрак', 'goat': 'Козлятина'
+}
+const areaRu = {
+  'american': 'Американская кухня', 'british': 'Британская кухня', 'canadian': 'Канадская кухня',
+  'chinese': 'Китайская кухня', 'croatian': 'Хорватская кухня', 'dutch': 'Голландская кухня',
+  'egyptian': 'Египетская кухня', 'french': 'Французская кухня', 'greek': 'Греческая кухня',
+  'indian': 'Индийская кухня', 'irish': 'Ирландская кухня', 'italian': 'Итальянская кухня',
+  'jamaican': 'Ямайская кухня', 'japanese': 'Японская кухня', 'kenyan': 'Кенийская кухня',
+  'malaysian': 'Малайзийская кухня', 'mexican': 'Мексиканская кухня', 'moroccan': 'Марокканская кухня',
+  'polish': 'Польская кухня', 'portuguese': 'Португальская кухня', 'russian': 'Русская кухня',
+  'spanish': 'Испанская кухня', 'thai': 'Тайская кухня', 'turkish': 'Турецкая кухня',
+  'vietnamese': 'Вьетнамская кухня', 'tunisian': 'Тунисская кухня', 'ukrainian': 'Украинская кухня'
+}
+
+const normalize = value => value.toLowerCase().replace(/ё/g, 'е').replace(/[^а-яa-z0-9]+/g, ' ').trim()
 const matches = (have, ingredient) => {
-  const h = normalize(have)
-  const i = normalize(ingredient)
+  const h = normalize(have), i = normalize(ingredient)
   if (!h || !i) return false
   if (h.includes(i) || i.includes(h)) return true
-  return Object.values(aliases).some(group =>
-    group.some(item => normalize(item) === i) &&
-    group.some(item => normalize(item) === h || h.includes(normalize(item)) || normalize(item).includes(h))
-  )
+  return Object.values(aliases).some(group => group.some(item => normalize(item) === i) &&
+    group.some(item => normalize(item) === h || h.includes(normalize(item)) || normalize(item).includes(h)))
 }
 
 const API = 'https://www.themealdb.com/api/json/v1/1'
+const translationCache = {}
+async function translateToRussian(text) {
+  const value = (text || '').trim()
+  if (!value) return value
+  if (translationCache[value]) return translationCache[value]
+  try {
+    const url = new URL('https://api.mymemory.translated.net/get')
+    url.searchParams.set('q', value.slice(0, 450))
+    url.searchParams.set('langpair', 'en|ru')
+    const response = await fetch(url.toString())
+    if (!response.ok) return value
+    const data = await response.json()
+    const translated = data.responseData?.translatedText
+    if (translated && !/MYMEMORY WARNING|PLEASE SELECT/i.test(translated)) {
+      translationCache[value] = translated
+      return translated
+    }
+  } catch { /* Keep the original text if translation service is unavailable. */ }
+  return value
+}
+
+function splitForTranslation(text, max = 420) {
+  const sentences = (text || '').replace(/\r/g, '').split(/(?<=[.!?])\s+/)
+  const chunks = []
+  let current = ''
+  for (const sentence of sentences) {
+    if ((current + ' ' + sentence).trim().length > max && current) {
+      chunks.push(current.trim())
+      current = sentence
+    } else current = (current + ' ' + sentence).trim()
+  }
+  if (current) chunks.push(current)
+  return chunks
+}
+
+async function translateInstructions(text, setProgress) {
+  const chunks = splitForTranslation(text)
+  const translated = []
+  for (let i = 0; i < chunks.length; i++) {
+    translated.push(await translateToRussian(chunks[i]))
+    setProgress(Math.round(((i + 1) / Math.max(chunks.length, 1)) * 100))
+  }
+  return translated.join('\n\n')
+}
 
 function mealIngredients(meal) {
   return Array.from({ length: 20 }, (_, index) => {
-    const ingredient = meal[`strIngredient${index + 1}`]?.trim()
+    const raw = meal[`strIngredient${index + 1}`]?.trim()
     const measure = meal[`strMeasure${index + 1}`]?.trim()
-    return ingredient ? `${ingredient}${measure ? ` — ${measure}` : ''}` : null
+    if (!raw) return null
+    const ru = ingredientRu[raw.toLowerCase()] || raw
+    return `${ru}${measure ? ` — ${measure}` : ''}`
   }).filter(Boolean)
 }
 
@@ -73,63 +148,76 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
   const [onlineLoading, setOnlineLoading] = useState(false)
   const [onlineError, setOnlineError] = useState('')
   const [selectedOnlineMeal, setSelectedOnlineMeal] = useState(null)
+  const [translatedInstructions, setTranslatedInstructions] = useState('')
+  const [translationLoading, setTranslationLoading] = useState(false)
+  const [translationProgress, setTranslationProgress] = useState(0)
+  const [translationNotice, setTranslationNotice] = useState('')
 
-  const available = useMemo(() => value
-    .split(/[,;\n]+/)
-    .map(item => item.trim())
-    .filter(Boolean), [value])
-
+  const available = useMemo(() => value.split(/[,;\n]+/).map(item => item.trim()).filter(Boolean), [value])
   const results = useMemo(() => {
     if (!available.length) return []
     return recipes.map(recipe => {
       const ingredientNames = recipe.ingredients.map(item => item[0])
       const matched = ingredientNames.filter(name => available.some(have => matches(have, name)))
       const missing = ingredientNames.filter(name => !matched.includes(name))
-      return {
-        recipe,
-        matched,
-        missing,
-        percent: Math.round((matched.length / ingredientNames.length) * 100)
-      }
+      return { recipe, matched, missing, percent: Math.round((matched.length / ingredientNames.length) * 100) }
     }).filter(item => item.matched.length > 0)
-      .sort((a, b) => b.percent - a.percent || a.missing.length - b.missing.length)
-      .slice(0, 8)
+      .sort((a, b) => b.percent - a.percent || a.missing.length - b.missing.length).slice(0, 8)
   }, [available, recipes])
 
   const findOnlineRecipes = async () => {
-    const selectedIngredient = available
-      .map(have => apiIngredients.find(item => item.ru.some(alias => normalize(have).includes(normalize(alias)) || normalize(alias).includes(normalize(have)))))
-      .find(Boolean)
-
+    const selectedIngredient = available.map(have => apiIngredients.find(item =>
+      item.ru.some(alias => normalize(have).includes(normalize(alias)) || normalize(alias).includes(normalize(have)))
+    )).find(Boolean)
     if (!selectedIngredient) {
-      setOnlineError('Для онлайн-поиска укажи знакомый продукт: курицу, картофель, яйца, рис, пасту, помидоры или другой основной ингредиент.')
+      setOnlineError('Не удалось распознать основной продукт. Попробуй указать, например, курицу, картофель, яйца, рис или помидоры.')
       setOnlineMeals([])
       return
     }
-
     setOnlineLoading(true)
     setOnlineError('')
     setSelectedOnlineMeal(null)
     try {
       const response = await fetch(`${API}/filter.php?i=${encodeURIComponent(selectedIngredient.api)}`)
-      if (!response.ok) throw new Error('Не удалось связаться с базой рецептов.')
+      if (!response.ok) throw new Error('network')
       const data = await response.json()
-      const meals = (data.meals || []).slice(0, 8)
-      const details = await Promise.all(meals.slice(0, 6).map(async meal => {
+      const meals = (data.meals || []).slice(0, 6)
+      const details = await Promise.all(meals.map(async meal => {
         const detailResponse = await fetch(`${API}/lookup.php?i=${encodeURIComponent(meal.idMeal)}`)
         if (!detailResponse.ok) return null
         const detailData = await detailResponse.json()
-        return detailData.meals?.[0] || null
+        const detail = detailData.meals?.[0]
+        if (!detail) return null
+        const translatedName = await translateToRussian(detail.strMeal)
+        return { ...detail, strMealRu: translatedName }
       }))
       setOnlineMeals(details.filter(Boolean))
       if (!details.some(Boolean)) setOnlineError('По этому продукту рецепты не нашлись. Попробуй другой ингредиент.')
     } catch {
       setOnlineError('Не получилось загрузить рецепты. Проверь подключение к интернету и попробуй ещё раз.')
       setOnlineMeals([])
-    } finally {
-      setOnlineLoading(false)
-    }
+    } finally { setOnlineLoading(false) }
   }
+
+  const openOnlineMeal = async meal => {
+    setSelectedOnlineMeal(meal)
+    setTranslatedInstructions('')
+    setTranslationNotice('')
+    setTranslationProgress(0)
+    setTranslationLoading(true)
+    const sourceText = meal.strInstructions || 'Инструкция не указана.'
+    try {
+      const translated = await translateInstructions(sourceText, setTranslationProgress)
+      setTranslatedInstructions(translated)
+      if (translated === sourceText) setTranslationNotice('Не удалось автоматически перевести инструкцию. Ниже доступен оригинал.')
+    } catch {
+      setTranslatedInstructions(sourceText)
+      setTranslationNotice('Не удалось автоматически перевести инструкцию. Ниже доступен оригинал.')
+    } finally { setTranslationLoading(false) }
+  }
+
+  const displayName = selectedOnlineMeal?.strMealRu || selectedOnlineMeal?.strMeal
+  const instructions = translatedInstructions || selectedOnlineMeal?.strInstructions || ''
 
   return (
     <div className="finderOverlay" role="dialog" aria-modal="true" aria-label="Что приготовить из продуктов">
@@ -139,20 +227,27 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
             <div className="finderHeader">
               <div className="finderTitle">
                 <button className="finderClose" onClick={() => setSelectedOnlineMeal(null)} aria-label="Назад"><ArrowLeft size={20}/></button>
-                <div><span className="muted">THEMEALDB · РЕЦЕПТ</span><h3>{selectedOnlineMeal.strMeal}</h3></div>
+                <div><span className="muted">FOOD · ОНЛАЙН-РЕЦЕПТ</span><h3>{displayName}</h3></div>
               </div>
               <button className="finderClose" onClick={onClose} aria-label="Закрыть"><X size={20}/></button>
             </div>
-            {selectedOnlineMeal.strMealThumb && <img className="finderOnlineHero" src={selectedOnlineMeal.strMealThumb} alt={selectedOnlineMeal.strMeal} />}
+            {selectedOnlineMeal.strMealThumb && <img className="finderOnlineHero" src={selectedOnlineMeal.strMealThumb} alt={displayName} />}
+            <div className="finderOnlineMeta">
+              {selectedOnlineMeal.strCategory && <span>{categoryRu[selectedOnlineMeal.strCategory.toLowerCase()] || selectedOnlineMeal.strCategory}</span>}
+              {selectedOnlineMeal.strArea && <span>{areaRu[selectedOnlineMeal.strArea.toLowerCase()] || selectedOnlineMeal.strArea}</span>}
+              <span><Languages size={13}/> Русский перевод</span>
+            </div>
             <div className="finderOnlineSection">
-              <h4>Ингредиенты</h4>
+              <h4>Что понадобится</h4>
               <ul>{mealIngredients(selectedOnlineMeal).map((ingredient, index) => <li key={index}>{ingredient}</li>)}</ul>
             </div>
             <div className="finderOnlineSection">
-              <h4>Приготовление</h4>
-              <p className="finderOnlineInstructions">{(selectedOnlineMeal.strInstructions || 'Инструкция не указана.').replace(/\r/g, '').split('\n').map(s => s.trim()).filter(Boolean).join('\n\n')}</p>
+              <div className="finderInstructionHeading"><h4>Как приготовить</h4>{translationLoading && <small><LoaderCircle size={13} className="finderSpinner"/> Перевод {translationProgress}%</small>}</div>
+              {translationLoading && <div className="finderTranslationProgress"><span style={{ width: `${translationProgress}%` }}/></div>}
+              {translationNotice && <p className="finderTranslationNotice">{translationNotice}</p>}
+              <p className="finderOnlineInstructions">{instructions.replace(/\r/g, '').split('\n').map(s => s.trim()).filter(Boolean).join('\n\n')}</p>
             </div>
-            <a className="finderSourceLink" href={selectedOnlineMeal.strSource || selectedOnlineMeal.strMealThumb} target="_blank" rel="noreferrer"><ExternalLink size={15}/> Открыть источник рецепта</a>
+            <a className="finderSourceLink" href={selectedOnlineMeal.strSource || `https://www.themealdb.com/meal/${selectedOnlineMeal.idMeal}`} target="_blank" rel="noreferrer"><ExternalLink size={15}/> Оригинал рецепта</a>
           </>
         ) : (
           <>
@@ -163,70 +258,51 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
               </div>
               <button className="finderClose" onClick={onClose} aria-label="Закрыть"><X size={20}/></button>
             </div>
-
-            <p className="finderLead">Напишите продукты, которые есть дома. Food подберёт блюда из вашей коллекции и найдёт дополнительные рецепты в открытой базе.</p>
-
+            <p className="finderLead">Укажи продукты, которые есть дома. Сначала покажем блюда из каталога Food, затем найдём новые рецепты с переводом на русский.</p>
             <div className="finderInputWrap">
               <Search size={18}/>
-              <textarea
-                value={value}
-                onChange={e => { setValue(e.target.value); setOnlineMeals([]); setOnlineError('') }}
-                placeholder="Например: картофель, яйца, молоко, сыр"
-                rows={3}
-                autoFocus
-              />
+              <textarea value={value} onChange={e => { setValue(e.target.value); setOnlineMeals([]); setOnlineError('') }} placeholder="Например: картофель, яйца, молоко, сыр" rows={3} autoFocus />
             </div>
-
             <div className="finderExamples">
-              {['картофель, яйца, сыр', 'курица, картофель, лук', 'мука, молоко, яйца'].map(example => (
-                <button key={example} onClick={() => { setValue(example); setOnlineMeals([]); setOnlineError('') }}>{example}</button>
-              ))}
+              {['картофель, яйца, сыр', 'курица, картофель, лук', 'мука, молоко, яйца'].map(example => <button key={example} onClick={() => { setValue(example); setOnlineMeals([]); setOnlineError('') }}>{example}</button>)}
             </div>
-
             {available.length > 0 && (
               <div className="finderResults">
-                <div className="finderResultsHead"><strong>Подходит вам</strong><span>{results.length} блюд</span></div>
+                <div className="finderResultsHead"><strong>Блюда из каталога Food</strong><span>{results.length}</span></div>
                 {results.length ? results.map(({ recipe, matched, missing, percent }) => (
                   <button className="finderResult" key={recipe.id} onClick={() => onSelectRecipe(recipe.id)}>
                     <img src={recipe.image} alt="" />
-                    <span className="finderResultBody">
-                      <strong>{recipe.name}</strong>
-                      <small>{matched.length} из {recipe.ingredients.length} ингредиентов · {percent}% совпадения</small>
-                      {missing.length ? (
-                        <small className="finderMissing"><ShoppingCart size={13}/> Не хватает: {missing.slice(0, 3).join(', ')}{missing.length > 3 ? '…' : ''}</small>
-                      ) : (
-                        <small className="finderReady"><Check size={13}/> Можно приготовить из того, что есть</small>
-                      )}
+                    <span className="finderResultBody"><strong>{recipe.name}</strong><small>{matched.length} из {recipe.ingredients.length} ингредиентов · {percent}% совпадения</small>
+                      {missing.length ? <small className="finderMissing"><ShoppingCart size={13}/> Нужно докупить: {missing.slice(0, 3).join(', ')}{missing.length > 3 ? '…' : ''}</small> : <small className="finderReady"><Check size={13}/> Всё необходимое уже есть</small>}
                     </span>
                   </button>
-                )) : (
-                  <div className="finderEmpty">В вашей коллекции пока нет совпадений. Попробуйте онлайн-поиск ниже.</div>
-                )}
+                )) : <div className="finderEmpty">В локальном каталоге совпадений нет. Ниже можно найти дополнительные блюда.</div>}
               </div>
             )}
-
             <div className="finderOnline">
               <div className="finderOnlineHeading">
                 <span className="finderIcon"><Globe size={20}/></span>
-                <div><strong>Ещё рецепты из интернета</strong><small>Открытая база TheMealDB</small></div>
+                <div><strong>Больше идей для меню</strong><small>Дополнительная база рецептов · TheMealDB</small></div>
               </div>
               <button className="finderOnlineButton" onClick={findOnlineRecipes} disabled={onlineLoading || !available.length}>
-                {onlineLoading ? <><LoaderCircle size={17} className="finderSpinner"/> Ищем рецепты…</> : <><Search size={17}/> Найти дополнительные рецепты</>}
+                {onlineLoading ? <><LoaderCircle size={17} className="finderSpinner"/> Подбираем блюда…</> : <><Sparkles size={17}/> Найти рецепты по продуктам</>}
               </button>
-              <p className="finderOnlineNote">Бесплатный API. Поиск выполняется по одному распознанному ингредиенту; рецепты и инструкции могут быть на английском языке.</p>
+              <p className="finderOnlineNote">Поиск идёт по одному основному продукту. Названия и инструкции автоматически переводятся на русский, если сервис перевода доступен.</p>
               {onlineError && <div className="finderEmpty" role="status">{onlineError}</div>}
               {onlineMeals.length > 0 && (
                 <div className="finderOnlineResults">
-                  <div className="finderResultsHead"><strong>Найдено в TheMealDB</strong><span>{onlineMeals.length}</span></div>
+                  <div className="finderResultsHead"><strong>Дополнительные рецепты</strong><span>{onlineMeals.length}</span></div>
                   {onlineMeals.map(meal => (
-                    <button className="finderResult" key={meal.idMeal} onClick={() => setSelectedOnlineMeal(meal)}>
+                    <button className="finderResult" key={meal.idMeal} onClick={() => openOnlineMeal(meal)}>
                       <img src={meal.strMealThumb} alt="" />
-                      <span className="finderResultBody"><strong>{meal.strMeal}</strong><small>{[meal.strCategory, meal.strArea].filter(Boolean).join(' · ') || 'Онлайн-рецепт'}</small><small className="finderReady"><ExternalLink size={13}/> Смотреть ингредиенты и шаги</small></span>
+                      <span className="finderResultBody"><strong>{meal.strMealRu || meal.strMeal}</strong>
+                        <small>{[categoryRu[(meal.strCategory || '').toLowerCase()] || meal.strCategory, areaRu[(meal.strArea || '').toLowerCase()] || meal.strArea].filter(Boolean).join(' · ') || 'Рецепт из открытой базы'}</small>
+                        <small className="finderReady"><ChefHat size={13}/> Открыть рецепт на русском</small>
+                      </span>
                     </button>
                   ))}
                 </div>
               )}
-            </div>
           </>
         )}
       </div>
