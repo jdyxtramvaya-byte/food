@@ -192,8 +192,30 @@ function mealIngredients(meal) {
     const measure = localizeMeasure(meal[`strMeasure${index + 1}`]?.trim())
     if (!raw) return null
     const ru = ingredientRu[raw.toLowerCase()] || raw
-    return `${ru}${measure ? ` — ${measure}` : ''}`
+    return { raw, ru, measure }
   }).filter(Boolean)
+}
+
+const looksEnglish = value => /[a-z]/i.test(value || '') && !/[а-я]/i.test(value || '')
+
+async function translateMealIngredients(meal) {
+  const items = mealIngredients(meal)
+  const translated = []
+  for (const item of items) {
+    const name = item.ru === item.raw && looksEnglish(item.raw)
+      ? await translateToRussian(item.raw)
+      : item.ru
+    translated.push(`${name}${item.measure ? ` — ${item.measure}` : ''}`)
+  }
+  return translated
+}
+
+async function translateMetadata(value, dictionary) {
+  if (!value) return ''
+  const local = dictionary[value.toLowerCase()]
+  if (local) return local
+  if (looksEnglish(value)) return await translateToRussian(value)
+  return value
 }
 
 export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
@@ -206,6 +228,9 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
   const [translationLoading, setTranslationLoading] = useState(false)
   const [translationProgress, setTranslationProgress] = useState(0)
   const [translationNotice, setTranslationNotice] = useState('')
+  const [translatedIngredients, setTranslatedIngredients] = useState([])
+  const [translatedCategory, setTranslatedCategory] = useState('')
+  const [translatedArea, setTranslatedArea] = useState('')
 
   const available = useMemo(() => value.split(/[,;\n]+/).map(item => item.trim()).filter(Boolean), [value])
   const results = useMemo(() => {
@@ -259,14 +284,30 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
     setTranslationNotice('')
     setTranslationProgress(0)
     setTranslationLoading(true)
+    setTranslatedIngredients([])
+    setTranslatedCategory('')
+    setTranslatedArea('')
     const sourceText = meal.strInstructions || 'Инструкция не указана.'
     try {
-      const translated = await translateInstructions(sourceText, setTranslationProgress)
+      const [translated, ingredients, category, area] = await Promise.all([
+        translateInstructions(sourceText, setTranslationProgress),
+        translateMealIngredients(meal),
+        translateMetadata(meal.strCategory, categoryRu),
+        translateMetadata(meal.strArea, areaRu)
+      ])
       setTranslatedInstructions(translated)
-      if (translated === sourceText) setTranslationNotice('Не удалось автоматически перевести инструкцию. Ниже доступен оригинал.')
+      setTranslatedIngredients(ingredients)
+      setTranslatedCategory(category)
+      setTranslatedArea(area)
+      const instructionStillEnglish = looksEnglish(translated) && looksEnglish(sourceText)
+      const ingredientStillEnglish = mealIngredients(meal).some(item => looksEnglish(item.ru) && item.ru === item.raw && !looksEnglish(ingredientRu[item.raw.toLowerCase()] || ''))
+      if (translated === sourceText || instructionStillEnglish || ingredientStillEnglish) {
+        setTranslationNotice('Часть текста не удалось перевести автоматически. Некоторые названия или строки могут остаться на английском.')
+      }
     } catch {
       setTranslatedInstructions(sourceText)
-      setTranslationNotice('Не удалось автоматически перевести инструкцию. Ниже доступен оригинал.')
+      setTranslatedIngredients(mealIngredients(meal).map(item => `${item.ru}${item.measure ? ` — ${item.measure}` : ''}`))
+      setTranslationNotice('Не удалось полностью перевести рецепт. Проверь подключение к интернету; часть текста показана в оригинале.')
     } finally { setTranslationLoading(false) }
   }
 
@@ -287,13 +328,13 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
             </div>
             {selectedOnlineMeal.strMealThumb && <img className="finderOnlineHero" src={selectedOnlineMeal.strMealThumb} alt={displayName} />}
             <div className="finderOnlineMeta">
-              {selectedOnlineMeal.strCategory && <span>{categoryRu[selectedOnlineMeal.strCategory.toLowerCase()] || selectedOnlineMeal.strCategory}</span>}
-              {selectedOnlineMeal.strArea && <span>{areaRu[selectedOnlineMeal.strArea.toLowerCase()] || selectedOnlineMeal.strArea}</span>}
+              {selectedOnlineMeal.strCategory && <span>{translatedCategory || categoryRu[selectedOnlineMeal.strCategory.toLowerCase()] || selectedOnlineMeal.strCategory}</span>}
+              {selectedOnlineMeal.strArea && <span>{translatedArea || areaRu[selectedOnlineMeal.strArea.toLowerCase()] || selectedOnlineMeal.strArea}</span>}
               <span><Languages size={13}/> Русский перевод</span>
             </div>
             <div className="finderOnlineSection">
               <h4>Что понадобится</h4>
-              <ul>{mealIngredients(selectedOnlineMeal).map((ingredient, index) => <li key={index}>{ingredient}</li>)}</ul>
+              <ul>{(translatedIngredients.length ? translatedIngredients : mealIngredients(selectedOnlineMeal).map(item => `${item.ru}${item.measure ? ` — ${item.measure}` : ''}`)).map((ingredient, index) => <li key={index}>{ingredient}</li>)}</ul>
             </div>
             <div className="finderOnlineSection">
               <div className="finderInstructionHeading"><h4>Как приготовить</h4>{translationLoading && <small><LoaderCircle size={13} className="finderSpinner"/> Перевод {translationProgress}%</small>}</div>
