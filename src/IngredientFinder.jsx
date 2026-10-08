@@ -137,14 +137,14 @@ async function translateToRussian(text) {
 }
 
 function splitForTranslation(text, max = 420) {
-  const sentences = (text || '').replace(/\r/g, '').split(/(?<=[.!?])\s+/)
+  const words = (text || '').replace(/\r/g, '').replace(/\n+/g, ' ').split(/\s+/).filter(Boolean)
   const chunks = []
   let current = ''
-  for (const sentence of sentences) {
-    if ((current + ' ' + sentence).trim().length > max && current) {
+  for (const word of words) {
+    if ((current + ' ' + word).trim().length > max && current) {
       chunks.push(current.trim())
-      current = sentence
-    } else current = (current + ' ' + sentence).trim()
+      current = word
+    } else current = (current + ' ' + word).trim()
   }
   if (current) chunks.push(current)
   return chunks
