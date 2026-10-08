@@ -256,7 +256,10 @@ async function translateMetadata(value, dictionary) {
 }
 
 export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
-  const [value, setValue] = useState('')
+  const [value, setValue] = useState(() => {
+    try { return window.localStorage.getItem('food-pantry-ingredients') || '' } catch { return '' }
+  })
+  const [readyOnly, setReadyOnly] = useState(false)
   const [shoppingList, setShoppingList] = useState(() => {
     try {
       const saved = JSON.parse(window.localStorage.getItem('food-shopping-list') || '[]')
@@ -278,6 +281,10 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
   useEffect(() => {
     try { window.localStorage.setItem('food-shopping-list', JSON.stringify(shoppingList)) } catch {}
   }, [shoppingList])
+
+  useEffect(() => {
+    try { window.localStorage.setItem('food-pantry-ingredients', value) } catch {}
+  }, [value])
 
   const addMissingIngredients = items => {
     setShoppingList(current => {
@@ -301,6 +308,16 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
     }).filter(item => item.matched.length > 0)
       .sort((a, b) => b.percent - a.percent || a.missing.length - b.missing.length).slice(0, 8)
   }, [available, recipes])
+
+  const visibleResults = useMemo(() => readyOnly ? results.filter(item => item.missing.length === 0) : results, [results, readyOnly])
+
+  const addPantryIngredient = ingredient => {
+    const current = available.map(normalize)
+    if (current.includes(normalize(ingredient))) return
+    setValue(previous => [previous.trim(), ingredient].filter(Boolean).join(', '))
+    setOnlineMeals([])
+    setOnlineError('')
+  }
 
   const findOnlineRecipes = async () => {
     const selectedIngredient = available.map(have => apiIngredients.find(item =>
@@ -417,6 +434,10 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
             <div className="finderExamples">
               {['картофель, яйца, сыр', 'курица, картофель, лук', 'мука, молоко, яйца'].map(example => <button key={example} onClick={() => { setValue(example); setOnlineMeals([]); setOnlineError('') }}>{example}</button>)}
             </div>
+            <div className="finderPantryQuickAdd">
+              <span>Быстро добавить</span>
+              <div>{['Яйца', 'Картофель', 'Молоко', 'Сыр', 'Курица', 'Лук', 'Рис', 'Помидоры'].map(item => <button key={item} onClick={() => addPantryIngredient(item)} disabled={available.some(have => matches(have, item))}>+ {item}</button>)}</div>
+            </div>
             {shoppingList.length > 0 && (
               <section className="finderShoppingList" aria-label="Список покупок">
                 <div className="finderShoppingHeader">
@@ -436,8 +457,9 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
             )}
             {available.length > 0 && (
               <div className="finderResults">
-                <div className="finderResultsHead"><strong>Блюда из каталога Food</strong><span>{results.length}</span></div>
-                {results.length ? results.map(({ recipe, matched, missing, percent }) => (
+                <div className="finderResultsHead"><strong>Блюда из каталога Food</strong><span>{visibleResults.length}</span></div>
+                <button className={readyOnly ? 'finderReadyFilter active' : 'finderReadyFilter'} onClick={() => setReadyOnly(current => !current)}><Check size={15}/><span>Только из того, что уже есть</span><i>{readyOnly ? 'Вкл.' : 'Все блюда'}</i></button>
+                {visibleResults.length ? visibleResults.map(({ recipe, matched, missing, percent }) => (
                   <div className="finderLocalResult" key={recipe.id}>
                     <button className="finderResult" onClick={() => onSelectRecipe(recipe.id)}>
                       <img src={recipe.image} alt="" />
@@ -447,7 +469,7 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
                     </button>
                     {missing.length > 0 && <button className="finderAddMissing" onClick={() => addMissingIngredients(missing)}><ShoppingCart size={15}/> Добавить недостающее <span>+{missing.filter(name => !shoppingList.some(item => normalize(item.name) === normalize(name))).length}</span></button>}
                   </div>
-                )) : <div className="finderEmpty">В локальном каталоге совпадений нет. Ниже можно найти дополнительные блюда.</div>}
+                )) : <div className="finderEmpty">{readyOnly ? 'Пока нет блюд, для которых хватает всех указанных ингредиентов. Выключи фильтр или добавь продукты.' : 'В локальном каталоге совпадений нет. Ниже можно найти дополнительные блюда.'}</div>}
               </div>
             )}
             <div className="finderOnline">
