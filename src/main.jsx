@@ -292,7 +292,7 @@ function DishIcon({ recipe, size = 22 }) {
 
 function App() {
   const [selectedId, setSelectedId] = useState(null)
-  const [servings, setServings] = useState(5)
+  const [servings, setServings] = useState(2)
   const [category, setCategory] = useState('Все')
   const [query, setQuery] = useState('')
   const [favorites, setFavorites] = useState(readFavorites)
@@ -328,6 +328,7 @@ function App() {
 
   const selectRecipe = (id) => {
     setSelectedId(id)
+    setServings(2)
     setShowSteps(false)
     setTab('dishes')
   }
@@ -476,18 +477,21 @@ function App() {
                 <span className="recipeCoverKicker">РЕЦЕПТ ДНЯ · FOOD</span>
                 <h3>{selected.name}</h3>
                 <p>{selected.description}</p>
-                <div className="recipeCoverMeta"><span><Clock3 size={15}/>{recipeDetails[selected.id]?.time || '30–60 мин'}</span><span><UtensilsCrossed size={15}/>{selected.baseServings} {pluralPeople(selected.baseServings)}</span><span>{recipeDetails[selected.id]?.difficulty || 'Средне'}</span></div>
+                <div className="recipeCoverMeta"><span><Clock3 size={15}/>{recipeDetails[selected.id]?.time || '30–60 мин'}</span><span><UtensilsCrossed size={15}/>{servings} {pluralPeople(servings)}</span><span>{recipeDetails[selected.id]?.difficulty || 'Средне'}</span></div>
               </div>
             </div>
             <div className="recipeIntroLine"><span>{selected.ingredients.length} ингредиентов</span><span className="recipeIntroDot"/> <span>Пропорции настраиваются под вас</span></div>
-            <div className="servings"><div><span className="muted">Количество</span><strong>{servings} {pluralPeople(servings)}</strong></div><div className="stepper"><button onClick={() => setServings(Math.max(1, servings - 1))} aria-label="Уменьшить"><Minus size={18}/></button><span>{servings}</span><button onClick={() => setServings(Math.min(50, servings + 1))} aria-label="Увеличить"><Plus size={18}/></button></div></div>
-            <div className="scaleButtons">{[2,4,5,6,10].map(n => <button key={n} className={servings === n ? 'scale active' : 'scale'} onClick={() => setServings(n)}>{n}</button>)}</div>
+            <div className="servings calculatorServings">
+              <div className="servingsCopy"><span className="servingsEyebrow">КАЛЬКУЛЯТОР ПОРЦИЙ</span><strong>На сколько человек?</strong><small>Количество ингредиентов пересчитается автоматически</small></div>
+              <div className="stepper"><button onClick={() => setServings(Math.max(1, servings - 1))} aria-label="Уменьшить количество порций"><Minus size={17}/></button><span>{servings}</span><button onClick={() => setServings(Math.min(50, servings + 1))} aria-label="Увеличить количество порций"><Plus size={17}/></button></div>
+            </div>
+            <div className="scaleButtons calculatorQuickPick"><span>Быстрый выбор</span>{[1,2,4,6,8].map(n => <button key={n} className={servings === n ? 'scale active' : 'scale'} onClick={() => setServings(n)}>{n}</button>)}</div>
             <div className="sectionHeading"><div><span>Ингредиенты</span><small>Количество автоматически пересчитано</small></div><b>{selected.ingredients.length}</b></div>
             <div className="tableHead"><span>ИНГРЕДИЕНТ</span><span>КОЛИЧЕСТВО</span></div>
             <div className="ingredients">{selected.ingredients.map(([name, amount, unit]) => <div className="ingredient" key={name}><span>{name}</span><strong>{formatAmount(amount * multiplier, unit)}</strong></div>)}</div>
             <div className="cardActions"><button className={showSteps ? 'secondaryAction active' : 'secondaryAction'} onClick={() => setShowSteps(!showSteps)}><UtensilsCrossed size={17}/>{showSteps ? 'Скрыть приготовление' : 'Как приготовить'}</button></div>
             {showSteps && <div className="steps"><div className="stepsTitle">Приготовление</div><div className="recipeDetailGrid"><div><small>Время</small><strong>{recipeDetails[selected.id]?.time || '30–60 мин'}</strong></div><div><small>Сложность</small><strong>{recipeDetails[selected.id]?.difficulty || 'Средне'}</strong></div><div><small>Инвентарь</small><strong>{recipeDetails[selected.id]?.equipment || 'Кастрюля, сковорода'}</strong></div></div>{(recipeDetails[selected.id]?.detailedSteps || selected.steps).map((step,index) => <div className="step" key={index}><span>{index+1}</span><p>{step}</p></div>)}{recipeDetails[selected.id]?.tip && <div className="recipeTip"><strong>💡 Совет</strong><p>{recipeDetails[selected.id].tip}</p></div>}{recipeDetails[selected.id]?.substitutions && <div className="recipeTip"><strong>↔ Чем заменить</strong><p>{recipeDetails[selected.id].substitutions}</p></div>}</div>}
-            <div className="note"><UtensilsCrossed size={18}/><span>Расчёт выполнен по базовой рецептуре на {selected.baseServings} {pluralPeople(selected.baseServings)}.</span></div>
+            <div className="note"><UtensilsCrossed size={18}/><span>Ингредиенты пересчитаны на {servings} {pluralPeople(servings)}. Количество можно изменить в любой момент.</span></div>
           </section>
         </div>
       )}
