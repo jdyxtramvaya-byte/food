@@ -1073,3 +1073,193 @@ button:focus-visible,input:focus-visible{outline-color:rgba(82,118,92,.55)}
 [data-theme="dark"] .librarySearch{background:rgba(34,40,32,.78);border-color:rgba(255,255,255,.1);box-shadow:none}
 [data-theme="dark"] .librarySearch button{background:rgba(255,255,255,.08);color:#c4cabb}
 @media(max-width:560px){.app{padding-bottom:calc(112px + env(safe-area-inset-bottom))}.bottomNav{width:calc(100vw - 18px);bottom:max(7px,env(safe-area-inset-bottom));gap:3px;padding:5px;border-radius:21px}.bottomNav .navItem{flex-direction:column;gap:4px;padding:7px 2px;border-radius:16px;font-size:9px;letter-spacing:-.01em}.bottomNav .navItem svg{width:19px;height:19px}.librarySearch{margin-bottom:18px;height:46px}}
+
+
+/* FOOD — one visual language across every screen */
+:root{
+  --blue:#6f8b60;
+  --blue-soft:rgba(111,139,96,.12);
+  --food-accent:#6f8b60;
+  --food-surface:rgba(250,250,245,.72);
+  --food-stroke:rgba(255,255,255,.78);
+  --text:#252b22;
+  --muted:#777f70;
+  --soft:rgba(116,135,100,.10);
+  --glass:rgba(250,251,246,.76);
+  --glass-strong:rgba(250,251,246,.9);
+  --shadow:0 18px 54px rgba(45,57,37,.09);
+}
+html{color-scheme:light}
+body{
+  background:
+    radial-gradient(ellipse at 12% 0%,rgba(161,184,139,.18),transparent 34rem),
+    radial-gradient(ellipse at 94% 12%,rgba(220,222,196,.22),transparent 30rem),
+    #f5f6f0;
+}
+.eyebrow{
+  border-color:rgba(111,139,96,.2);
+  background:rgba(111,139,96,.11);
+  color:#5d7750;
+}
+.brandIcon{background:linear-gradient(145deg,#334a32,#617d50)}
+.recipeMeta svg{color:#6f8b60}
+.category.active,.scale.active{
+  background:rgba(111,139,96,.16);
+  color:#405a36;
+  box-shadow:inset 0 0 0 1px rgba(111,139,96,.13);
+}
+[data-theme="dark"] .category.active,
+[data-theme="dark"] .scale.active,
+[data-theme="dark"] .navItem.active{
+  background:rgba(132,164,113,.22);
+  color:#c6ddb8;
+  box-shadow:inset 0 0 0 1px rgba(160,190,140,.16);
+}
+[data-theme="dark"] body,
+[data-theme="dark"]{
+  --text:#edf1e8;
+  --muted:#a7b09d;
+  --soft:rgba(202,215,190,.08);
+  --glass:rgba(32,39,30,.82);
+  --glass-strong:rgba(32,39,30,.92);
+  --food-surface:rgba(35,42,32,.8);
+  --food-stroke:rgba(255,255,255,.12);
+  --shadow:0 18px 54px rgba(0,0,0,.24);
+  background:
+    radial-gradient(ellipse at 10% 0%,rgba(101,132,82,.14),transparent 34rem),
+    radial-gradient(ellipse at 94% 12%,rgba(109,117,76,.09),transparent 30rem),
+    #171c16;
+}
+[data-theme="dark"] .eyebrow{background:rgba(132,164,113,.15);border-color:rgba(160,190,140,.18);color:#c0d7b1}
+[data-theme="dark"] .brandIcon{background:linear-gradient(145deg,#7f9b6c,#9ab486);color:#172015}
+[data-theme="dark"] .category.active,[data-theme="dark"] .scale.active{color:#dcebd2}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline-color:rgba(111,139,96,.62)}
+[data-theme="dark"] button:focus-visible,[data-theme="dark"] input:focus-visible,[data-theme="dark"] textarea:focus-visible{outline-color:rgba(161,190,139,.7)}
+.finderHeroButton{
+  border-color:rgba(111,139,96,.2)!important;
+  background:linear-gradient(135deg,rgba(255,255,255,.78),rgba(237,243,229,.72))!important;
+  color:var(--text)!important;
+  box-shadow:0 12px 34px rgba(54,75,42,.08),inset 0 1px rgba(255,255,255,.9)!important;
+}
+.finderHeroButton>span:first-of-type small{color:var(--muted)!important}
+.finderHeroArrow{color:#668457!important}
+[data-theme="dark"] .finderHeroButton{background:linear-gradient(135deg,rgba(48,58,43,.92),rgba(33,42,30,.88))!important;border-color:rgba(160,190,140,.17)!important;box-shadow:0 12px 34px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.05)!important}
+.bottomNav .navItem.active{background:linear-gradient(135deg,#425d3d,#6f8b60);color:#fff;box-shadow:0 5px 16px rgba(66,93,61,.22)}
+[data-theme="dark"] .bottomNav .navItem.active{background:linear-gradient(135deg,#91ad7f,#789766);color:#1a2417}
+
+/* "Из продуктов" is a real app screen, not a mismatched pop-up */
+.finderOverlay{
+  position:fixed;inset:0;z-index:70;display:block;overflow-y:auto;
+  padding:calc(28px + env(safe-area-inset-top)) 24px calc(118px + env(safe-area-inset-bottom));
+  background:
+    radial-gradient(ellipse at 12% 0%,rgba(161,184,139,.18),transparent 34rem),
+    radial-gradient(ellipse at 94% 12%,rgba(220,222,196,.22),transparent 30rem),
+    #f5f6f0;
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  animation:finderFadeIn .2s ease both;
+}
+.finderCard{
+  width:min(100%,1080px);max-height:none;overflow:visible;margin:0 auto;
+  padding:clamp(18px,3vw,34px);
+  border:1px solid rgba(255,255,255,.78);border-radius:32px;
+  background:rgba(250,251,246,.72);color:var(--text);
+  box-shadow:0 18px 54px rgba(45,57,37,.08),inset 0 1px rgba(255,255,255,.88);
+  backdrop-filter:blur(28px) saturate(160%);-webkit-backdrop-filter:blur(28px) saturate(160%);
+}
+.finderHeader{padding-bottom:18px;margin-bottom:22px;border-bottom:1px solid rgba(111,139,96,.15)}
+.finderIcon{
+  background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(224,234,215,.7));
+  border-color:rgba(255,255,255,.9);color:#55724a;
+  box-shadow:inset 0 1px rgba(255,255,255,.95),0 10px 28px rgba(54,75,42,.08);
+}
+.finderTitle .muted{color:#7d8e70}
+.finderClose{border-color:rgba(111,139,96,.17);background:rgba(111,139,96,.08);box-shadow:inset 0 1px rgba(255,255,255,.7)}
+.finderClose:hover{background:rgba(111,139,96,.16)}
+.finderInputWrap{
+  border-color:rgba(111,139,96,.18);border-radius:20px;
+  background:rgba(238,242,232,.76);box-shadow:inset 0 1px rgba(255,255,255,.78);
+}
+.finderInputWrap:focus-within{
+  border-color:rgba(111,139,96,.48);background:rgba(255,255,255,.8);
+  box-shadow:0 0 0 4px rgba(111,139,96,.09),inset 0 1px rgba(255,255,255,.92);
+}
+.finderExamples button{
+  border-color:rgba(111,139,96,.18);background:rgba(255,255,255,.55);
+  box-shadow:inset 0 1px rgba(255,255,255,.82);
+}
+.finderExamples button:hover{background:rgba(231,239,223,.9)}
+.finderResultsHead span{background:rgba(111,139,96,.12);color:#5d7750}
+.finderResult{
+  border-color:rgba(111,139,96,.15);border-radius:21px;
+  background:rgba(255,255,255,.62);box-shadow:0 8px 24px rgba(45,57,37,.045),inset 0 1px rgba(255,255,255,.88);
+}
+.finderResult:hover{background:rgba(246,249,241,.96);box-shadow:0 14px 32px rgba(45,57,37,.08),inset 0 1px #fff}
+.finderResultBody .finderMissing{color:#a36d35}
+.finderResultBody .finderReady{color:#5d8651}
+.finderEmpty{border-color:rgba(111,139,96,.25);background:rgba(111,139,96,.055)}
+.finderOnline{
+  margin-top:22px;padding:clamp(17px,2.5vw,26px);
+  border:1px solid rgba(111,139,96,.15);border-radius:26px;
+  background:rgba(233,239,226,.56);
+}
+.finderOnlineHeading{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.finderOnlineHeading>div{display:flex;flex-direction:column;gap:4px}
+.finderOnlineHeading strong{font-size:17px;letter-spacing:-.025em}
+.finderOnlineHeading small,.finderOnlineNote{color:var(--muted);font-size:12px;line-height:1.5}
+.finderOnlineButton{
+  display:flex;align-items:center;justify-content:center;gap:9px;width:100%;
+  min-height:48px;padding:12px 18px;border:1px solid #5e7952;border-radius:16px;
+  background:linear-gradient(135deg,#425d3d,#6f8b60);color:#fff;font-size:14px;font-weight:700;
+  box-shadow:0 8px 20px rgba(66,93,61,.16);transition:transform .2s,filter .2s,opacity .2s;
+}
+.finderOnlineButton:hover{filter:brightness(1.04);transform:translateY(-1px)}
+.finderOnlineButton:active{transform:scale(.99)}
+.finderOnlineButton:disabled{opacity:.45;box-shadow:none;cursor:not-allowed}
+.finderOnlineNote{margin:11px 0 0}
+.finderOnlineResults{margin-top:22px}
+.finderOnlineHero{width:100%;max-height:360px;object-fit:cover;display:block;border-radius:24px;margin:0 0 18px}
+.finderOnlineMeta{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px}
+.finderOnlineMeta span{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border:1px solid rgba(111,139,96,.16);border-radius:999px;background:rgba(111,139,96,.09);font-size:12px;color:var(--muted)}
+.finderOnlineSection{margin:18px 0 0;padding:clamp(16px,2.5vw,24px);border:1px solid rgba(111,139,96,.14);border-radius:24px;background:rgba(255,255,255,.45)}
+.finderOnlineSection h4{margin:0 0 14px;font-size:19px;letter-spacing:-.03em}
+.finderOnlineSection ul{margin:0;padding-left:20px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 24px;color:var(--muted);font-size:14px;line-height:1.45}
+.finderOnlineInstructions{white-space:pre-line;color:var(--muted);font-size:14px;line-height:1.75}
+.finderInstructionHeading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.finderInstructionHeading small{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:11px}
+.finderTranslationProgress{height:4px;overflow:hidden;margin:12px 0;border-radius:99px;background:rgba(111,139,96,.12)}
+.finderTranslationProgress span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#91ad7f,#5d7950);transition:width .2s}
+.finderTranslationNotice{padding:12px 14px;border-radius:14px;background:rgba(179,131,61,.1);color:#a36d35;font-size:12px;line-height:1.5}
+.finderSourceLink{display:inline-flex;align-items:center;gap:7px;margin-top:18px;color:#5d7750;font-size:13px;font-weight:650;text-decoration:none}
+[data-theme="dark"] .finderOverlay{
+  background:radial-gradient(ellipse at 12% 0%,rgba(101,132,82,.14),transparent 34rem),radial-gradient(ellipse at 94% 12%,rgba(109,117,76,.09),transparent 30rem),#171c16;
+}
+[data-theme="dark"] .finderCard{background:rgba(32,39,30,.84);border-color:rgba(255,255,255,.12);box-shadow:0 18px 54px rgba(0,0,0,.25),inset 0 1px rgba(255,255,255,.06)}
+[data-theme="dark"] .finderHeader{border-bottom-color:rgba(255,255,255,.1)}
+[data-theme="dark"] .finderIcon{background:linear-gradient(145deg,rgba(91,113,78,.72),rgba(48,60,42,.7));border-color:rgba(255,255,255,.1);color:#d0e2c2}
+[data-theme="dark"] .finderClose{background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.12)}
+[data-theme="dark"] .finderInputWrap{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.1);box-shadow:inset 0 1px rgba(255,255,255,.04)}
+[data-theme="dark"] .finderInputWrap:focus-within{background:rgba(40,51,36,.9);border-color:rgba(160,190,140,.4);box-shadow:0 0 0 4px rgba(132,164,113,.09)}
+[data-theme="dark"] .finderExamples button{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.1);box-shadow:inset 0 1px rgba(255,255,255,.04)}
+[data-theme="dark"] .finderExamples button:hover{background:rgba(132,164,113,.12)}
+[data-theme="dark"] .finderResult{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.1);box-shadow:0 8px 24px rgba(0,0,0,.15),inset 0 1px rgba(255,255,255,.04)}
+[data-theme="dark"] .finderResult:hover{background:rgba(132,164,113,.1)}
+[data-theme="dark"] .finderEmpty{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.025)}
+[data-theme="dark"] .finderOnline{background:rgba(132,164,113,.06);border-color:rgba(255,255,255,.1)}
+[data-theme="dark"] .finderOnlineSection{background:rgba(255,255,255,.025);border-color:rgba(255,255,255,.09)}
+[data-theme="dark"] .finderOnlineMeta span{background:rgba(132,164,113,.09);border-color:rgba(255,255,255,.1)}
+[data-theme="dark"] .finderOnlineButton{background:linear-gradient(135deg,#91ad7f,#789766);border-color:#91ad7f;color:#182116}
+[data-theme="dark"] .finderSourceLink{color:#c0d7b1}
+@media(max-width:560px){
+  .finderOverlay{padding:calc(14px + env(safe-area-inset-top)) 10px calc(110px + env(safe-area-inset-bottom))}
+  .finderCard{padding:16px 13px;border-radius:25px}
+  .finderHeader{gap:10px;margin-bottom:17px;padding-bottom:15px}
+  .finderTitle{gap:10px}
+  .finderIcon{width:44px;height:44px;border-radius:15px}
+  .finderTitle h3{font-size:25px}
+  .finderClose{width:38px;height:38px}
+  .finderOnline{padding:15px;border-radius:22px}
+  .finderOnlineSection{padding:15px;border-radius:20px}
+  .finderOnlineSection ul{grid-template-columns:1fr;gap:7px}
+  .finderOnlineHero{border-radius:18px;max-height:250px}
+  .finderResult>img{width:66px;height:66px}
+}
