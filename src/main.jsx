@@ -467,9 +467,14 @@ function App() {
             </div>
           </aside>
           <section className="card">
-            <div className="cardTop">
-              <div className="dishHead"><div className="dishIcon"><img src={selected.image} alt={selected.name} loading="eager"/><i/></div><div><span className="muted">{selected.category} · {selected.ingredients.length} ингредиентов</span><h3>{selected.name}</h3><p>{selected.description}</p></div></div>
+            <div className="recipeCover">
+              <img src={selected.image} alt={selected.name} loading="eager"/>
+              <div className="recipeCoverShade"/>
+              <span className="recipeCoverLabel"><UtensilsCrossed size={14}/>{selected.category}</span>
               <button className={favorites.includes(selected.id) ? 'favoriteButton active' : 'favoriteButton'} onClick={() => toggleFavorite(selected.id)} aria-label="Добавить в избранное"><Heart size={19} fill={favorites.includes(selected.id) ? 'currentColor' : 'none'}/></button>
+            </div>
+            <div className="cardTop recipeCardHeading">
+              <div className="dishHead"><div><span className="muted">{selected.ingredients.length} ингредиентов · домашний рецепт</span><h3>{selected.name}</h3><p>{selected.description}</p></div></div>
             </div>
             <div className="recipeMeta"><span><Clock3 size={15}/> {recipeDetails[selected.id]?.time || '30–60 мин'}</span><span><UtensilsCrossed size={15}/> {selected.baseServings} {pluralPeople(selected.baseServings)}</span><span>{recipeDetails[selected.id]?.difficulty || 'Средне'}</span></div>
             <div className="servings"><div><span className="muted">Количество</span><strong>{servings} {pluralPeople(servings)}</strong></div><div className="stepper"><button onClick={() => setServings(Math.max(1, servings - 1))} aria-label="Уменьшить"><Minus size={18}/></button><span>{servings}</span><button onClick={() => setServings(Math.min(50, servings + 1))} aria-label="Увеличить"><Plus size={18}/></button></div></div>
