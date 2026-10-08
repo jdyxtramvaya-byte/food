@@ -59,6 +59,34 @@ const ingredientRu = {
   'orange': 'апельсин', 'orange juice': 'апельсиновый сок'
 }
 
+const dishRu = {
+  'chicken alfredo primavera': 'Курица альфредо с овощами',
+  'chicken fajita mac and cheese': 'Макароны с курицей и сыром',
+  'chicken ham and leek pie': 'Пирог с курицей, ветчиной и луком-пореем',
+  'chicken tikka masala': 'Курица тикка масала',
+  'chicken curry': 'Курица карри',
+  'chicken soup': 'Куриный суп',
+  'chicken stir fry': 'Курица с овощами на сковороде',
+  'beef and mustard pie': 'Пирог с говядиной и горчицей',
+  'beef stroganoff': 'Бефстроганов',
+  'spaghetti bolognese': 'Спагетти болоньезе',
+  'lasagne': 'Лазанья',
+  'lasagna': 'Лазанья',
+  'fish pie': 'Рыбный пирог',
+  'fish and chips': 'Рыба с картофелем фри',
+  'vegetarian chilli': 'Вегетарианское чили',
+  'tomato soup': 'Томатный суп',
+  'french onion soup': 'Французский луковый суп',
+  'apple crumble': 'Яблочный крамбл',
+  'banana pancakes': 'Банановые оладьи',
+  'pancakes': 'Блины',
+  'carbonara': 'Паста карбонара',
+  'pizza express margherita': 'Пицца «Маргарита»',
+  'sushi': 'Суши',
+  'katsu chicken curry': 'Курица кацу карри',
+  'pad thai': 'Пад-тай',
+  'fried rice': 'Жареный рис'
+}
 const categoryRu = {
   'beef': 'Говядина', 'chicken': 'Курица', 'dessert': 'Десерт', 'lamb': 'Баранина',
   'miscellaneous': 'Разное', 'pasta': 'Паста', 'pork': 'Свинина', 'seafood': 'Морепродукты',
@@ -188,7 +216,7 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
         const detailData = await detailResponse.json()
         const detail = detailData.meals?.[0]
         if (!detail) return null
-        const translatedName = await translateToRussian(detail.strMeal)
+        const translatedName = dishRu[normalize(detail.strMeal)] || await translateToRussian(detail.strMeal)
         return { ...detail, strMealRu: translatedName }
       }))
       setOnlineMeals(details.filter(Boolean))
