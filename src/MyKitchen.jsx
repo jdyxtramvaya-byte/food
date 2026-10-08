@@ -11,7 +11,7 @@ const writeJSON = (key, value) => {
   try { window.localStorage.setItem(key, JSON.stringify(value)) } catch {}
 }
 const readProfile = () => {
-  try { return JSON.parse(window.localStorage.getItem('food-kitchen-profile') || '{"name":""}') } catch { return { name: '' } }
+  try { const value = JSON.parse(window.localStorage.getItem('food-kitchen-profile') || '{"name":""}'); return value && typeof value === 'object' ? value : { name: '' } } catch { return { name: '' } }
 }
 
 export default function MyKitchen({ recipes, favorites, onSelectRecipe, onOpenFinder }) {
@@ -85,7 +85,7 @@ export default function MyKitchen({ recipes, favorites, onSelectRecipe, onOpenFi
 
       <div className="kitchenSection">
         <div className="kitchenSectionHead"><div><span>04 · ВАШ ВКУС</span><h3><Sparkles size={19}/> Персональные предпочтения</h3></div><span className="kitchenCount">{ratedRecipes.length}</span></div>
-        {ratedRecipes.length ? <div className="kitchenTasteList">{ratedRecipes.map(recipe => <div key={recipe.id}><span>{recipe.name}</span><strong className={taste[recipe.id] === 'like' || taste[recipe.id] === 1 ? 'liked' : 'disliked'}>{taste[recipe.id] === 'like' || taste[recipe.id] === 1 ? 'Нравится' : 'Не моё'}</strong></div>)}</div> : <div className="kitchenEmpty">Отмечайте в подборщике, какие блюда вам нравятся. Food сохранит ваши оценки на этом устройстве.</div>}
+        {ratedRecipes.length ? <div className="kitchenTasteList">{ratedRecipes.map(recipe => <div key={recipe.id}><span>{recipe.name}</span><strong className={taste[recipe.id] === 'love' ? 'liked' : 'disliked'}>{taste[recipe.id] === 'love' ? 'Нравится' : 'Не моё'}</strong></div>)}</div> : <div className="kitchenEmpty">Отмечайте в подборщике, какие блюда вам нравятся. Food сохранит ваши оценки на этом устройстве.</div>}
       </div>
 
       <div className="kitchenSection">
