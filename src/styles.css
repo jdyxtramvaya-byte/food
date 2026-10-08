@@ -588,3 +588,172 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
   .finderOnlineMeta>span{font-size:10px;padding:6px 9px}
   .finderInstructionHeading{align-items:flex-start}
 }
+
+
+/* FOOD — visual refinement: editorial culinary palette, stronger hierarchy, calmer glass */
+:root{
+  --blue:#52765c;
+  --blue-soft:rgba(82,118,92,.12);
+  --line:rgba(61,74,57,.13);
+  --soft:rgba(83,101,75,.085);
+  --glass:rgba(255,253,247,.76);
+  --glass-strong:rgba(255,253,247,.91);
+  --text:#20251f;
+  --muted:#73786e;
+  --shadow:0 24px 70px rgba(54,61,43,.09);
+}
+body{
+  background:
+    radial-gradient(ellipse at 8% 0%,rgba(191,205,166,.28),transparent 34rem),
+    radial-gradient(ellipse at 95% 12%,rgba(228,196,157,.22),transparent 31rem),
+    #f6f5ef;
+}
+.app{max-width:1500px}
+.header{top:10px}
+.brand,.bottomNav{
+  border-color:rgba(255,255,255,.82);
+  background:rgba(255,253,247,.78);
+  box-shadow:0 12px 34px rgba(52,58,43,.08),inset 0 1px rgba(255,255,255,.95);
+}
+.brandIcon{background:linear-gradient(145deg,#344f3a,#1f3325);box-shadow:0 7px 18px rgba(42,67,47,.22),inset 0 1px rgba(255,255,255,.22)}
+.brand h1{letter-spacing:-.055em;font-size:19px}
+.themeToggle{border-color:rgba(255,255,255,.9);background:rgba(255,253,247,.86);color:#465b43}
+.hero{padding-top:clamp(34px,5vw,64px);padding-bottom:clamp(32px,4vw,54px)}
+.hero>div{
+  position:relative;isolation:isolate;overflow:hidden;
+  padding:clamp(28px,5vw,62px);
+  border:1px solid rgba(255,255,255,.86);
+  border-radius:clamp(28px,4vw,46px);
+  background:linear-gradient(118deg,rgba(255,255,251,.92) 0%,rgba(249,247,237,.86) 55%,rgba(231,237,219,.74) 100%);
+  box-shadow:0 28px 78px rgba(56,65,44,.09),inset 0 1px rgba(255,255,255,.98);
+}
+.hero>div:after{
+  content:"";position:absolute;z-index:-1;width:clamp(180px,32vw,420px);height:clamp(180px,32vw,420px);
+  right:-8%;top:-35%;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,rgba(191,207,164,.52),rgba(191,207,164,0) 68%);
+  pointer-events:none;
+}
+.eyebrow{border-color:rgba(82,118,92,.16);background:rgba(82,118,92,.09);color:#48694d;letter-spacing:.095em}
+.hero h2{max-width:850px;font-weight:780;letter-spacing:-.075em;line-height:.94}
+.hero p{max-width:590px;color:#656d60}
+.finderHeroButton{
+  display:flex;align-items:center;gap:14px;width:min(100%,460px);margin-top:26px;padding:15px 17px;
+  text-align:left;border:1px solid rgba(255,255,255,.92);border-radius:22px;
+  color:#fff;background:linear-gradient(135deg,#385a40,#263e2d);
+  box-shadow:0 14px 30px rgba(42,71,47,.22),inset 0 1px rgba(255,255,255,.18);
+  transition:transform .22s ease,box-shadow .22s ease,filter .22s ease;
+}
+.finderHeroButton:hover{transform:translateY(-2px);filter:brightness(1.04);box-shadow:0 20px 36px rgba(42,71,47,.25)}
+.finderHeroButton>svg{flex:none}
+.finderHeroButton>span:nth-child(2){display:flex;flex:1;min-width:0;flex-direction:column;gap:4px}
+.finderHeroButton strong{font-size:13px;line-height:1.3}
+.finderHeroButton small{font-size:11px;color:rgba(255,255,255,.7);line-height:1.35}
+.finderHeroArrow{font-size:26px;line-height:1;color:rgba(255,255,255,.72)}
+.categoryHome{padding-top:clamp(18px,3vw,32px)}
+.categoryIntro{max-width:780px}
+.categoryIntro>.muted{display:inline-flex;align-items:center;gap:8px;color:#75806f;font-size:12px;font-weight:750;letter-spacing:.1em;text-transform:uppercase}
+.categoryIntro h3{font-size:clamp(34px,4.7vw,54px);letter-spacing:-.07em}
+.categoryIntro p{color:#73786e}
+.categoryGrid{gap:16px}
+.categoryTile{
+  min-height:202px;padding:23px;border-radius:28px;
+  border-color:rgba(255,255,255,.88);
+  background:linear-gradient(145deg,rgba(255,255,251,.91),rgba(245,246,237,.73));
+  box-shadow:0 16px 42px rgba(56,65,44,.065),inset 0 1px rgba(255,255,255,.98);
+}
+.categoryTile:hover{background:linear-gradient(145deg,#fffefa,rgba(237,242,228,.96));box-shadow:0 24px 52px rgba(56,65,44,.11),inset 0 1px #fff}
+.categoryTileIcon{border-radius:19px;background:linear-gradient(145deg,rgba(111,143,99,.17),rgba(111,143,99,.07));color:#476b4b}
+.categoryTileText strong{font-size:16px;letter-spacing:-.035em}
+.categoryTileText small{color:#83877b}
+.categoryTileArrow{color:#648066;background:rgba(92,126,85,.09);border-radius:50%;width:30px;height:30px;display:grid;place-items:center}
+.finderCategoryTile{background:linear-gradient(145deg,#e7eddd,#f8f7ef)}
+.card{
+  border-color:rgba(255,255,255,.9);
+  background:rgba(255,254,249,.82);
+  box-shadow:0 28px 76px rgba(54,61,43,.09),inset 0 1px rgba(255,255,255,.98);
+}
+.dishIcon{background:linear-gradient(145deg,#e8eddf,#f4e9d9);box-shadow:inset 0 1px #fff,0 16px 34px rgba(52,64,42,.10)}
+.recipeMeta span{background:rgba(82,118,92,.09);color:#66715f}
+.recipeMeta svg,.note svg{color:#52765c}
+.servings,.steps{border-color:rgba(255,255,255,.9);background:rgba(238,240,230,.62)}
+.stepper button{border-color:rgba(255,255,255,.95);background:linear-gradient(145deg,#fffefa,#eeefe7);color:#3d5d42}
+.sectionHeading b{background:#314b36}
+.step>span{background:#385a40}
+.secondaryAction{border-color:rgba(255,255,255,.9);background:rgba(235,239,228,.78)}
+.search{border-color:rgba(255,255,255,.82);background:rgba(236,238,229,.76)}
+.category.active,.scale.active{background:#fffefa;box-shadow:0 5px 18px rgba(54,61,43,.09),inset 0 1px #fff}
+.recipe.active{background:rgba(255,254,249,.8);box-shadow:0 10px 28px rgba(54,61,43,.07),inset 0 1px rgba(255,255,255,.95)}
+.recipeEmoji{background:linear-gradient(145deg,#fffefa,#e9eddf);box-shadow:inset 0 1px #fff}
+.dishTile{border-color:rgba(255,255,255,.9);background:rgba(255,254,249,.82);box-shadow:0 16px 42px rgba(54,61,43,.07),inset 0 1px #fff}
+.dishTile:hover{background:#fffefa;box-shadow:0 24px 54px rgba(54,61,43,.12),inset 0 1px #fff}
+.finderCard{border-color:rgba(255,255,255,.9);background:linear-gradient(145deg,rgba(255,254,249,.96),rgba(245,246,237,.92));box-shadow:0 35px 100px rgba(31,42,29,.24),inset 0 1px #fff}
+.finderOnlineButton{border-color:rgba(255,255,255,.95);background:linear-gradient(135deg,rgba(82,118,92,.15),rgba(216,191,150,.16));box-shadow:inset 0 1px #fff,0 8px 24px rgba(40,57,39,.06)}
+.finderOnlineButton:hover:not(:disabled){background:linear-gradient(135deg,rgba(82,118,92,.22),rgba(216,191,150,.2))}
+.finderTranslationProgress span{background:linear-gradient(90deg,#52765c,#c5a66d)}
+.bottomNav{border-color:rgba(255,255,255,.9)}
+.navItem.active{background:rgba(82,118,92,.13);color:#426648}
+button{-webkit-tap-highlight-color:transparent}
+button:focus-visible,input:focus-visible{outline-color:rgba(82,118,92,.55)}
+[data-theme="dark"]{
+  --blue:#9bc49a;--blue-soft:rgba(155,196,154,.14);
+  --line:rgba(235,235,245,.14);--soft:rgba(118,118,128,.22);
+  --glass:rgba(30,32,29,.78);--glass-strong:rgba(34,36,32,.9);
+  --text:#f3f3eb;--muted:#a8ac9f;
+  --shadow:0 24px 70px rgba(0,0,0,.3);
+}
+[data-theme="dark"] body,[data-theme="dark"]{
+  background:radial-gradient(ellipse at 8% 0%,rgba(83,112,71,.16),transparent 34rem),radial-gradient(ellipse at 95% 12%,rgba(145,116,73,.1),transparent 31rem),#11130f;
+}
+[data-theme="dark"] .hero>div{border-color:rgba(255,255,255,.1);background:linear-gradient(118deg,rgba(35,39,32,.96),rgba(29,34,28,.9) 58%,rgba(39,48,34,.86));box-shadow:0 28px 78px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.06)}
+[data-theme="dark"] .hero p,[data-theme="dark"] .categoryIntro p{color:#b3b7aa}
+[data-theme="dark"] .eyebrow{color:#b6d2ad;background:rgba(155,196,154,.12);border-color:rgba(155,196,154,.18)}
+[data-theme="dark"] .themeToggle{color:#d8e7d0;background:rgba(35,38,32,.85);border-color:rgba(255,255,255,.12)}
+[data-theme="dark"] .brand,[data-theme="dark"] .bottomNav{background:rgba(30,32,29,.82);border-color:rgba(255,255,255,.12)}
+[data-theme="dark"] .categoryTile{background:linear-gradient(145deg,rgba(36,41,33,.92),rgba(29,33,27,.82));border-color:rgba(255,255,255,.1);box-shadow:0 18px 48px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.06)}
+[data-theme="dark"] .categoryTile:hover{background:linear-gradient(145deg,rgba(43,49,39,.98),rgba(33,39,30,.92))}
+[data-theme="dark"] .categoryTileIcon{background:rgba(155,196,154,.12);color:#b6d2ad}
+[data-theme="dark"] .categoryTileText small{color:#a8ac9f}
+[data-theme="dark"] .categoryTileArrow{color:#b6d2ad;background:rgba(155,196,154,.1)}
+[data-theme="dark"] .finderCategoryTile{background:linear-gradient(145deg,rgba(48,64,43,.96),rgba(30,38,29,.92))}
+[data-theme="dark"] .card{background:rgba(29,32,27,.86);border-color:rgba(255,255,255,.11)}
+[data-theme="dark"] .dishIcon{background:linear-gradient(145deg,rgba(72,89,63,.65),rgba(66,55,39,.45))}
+[data-theme="dark"] .recipeMeta span{background:rgba(155,196,154,.1);color:#c0c7b7}
+[data-theme="dark"] .servings,[data-theme="dark"] .steps{background:rgba(48,53,44,.68);border-color:rgba(255,255,255,.1)}
+[data-theme="dark"] .stepper button{background:rgba(65,72,58,.75);border-color:rgba(255,255,255,.12);color:#dce9d4}
+[data-theme="dark"] .sectionHeading b,[data-theme="dark"] .step>span{background:#b3d0a8;color:#1b281b}
+[data-theme="dark"] .secondaryAction,[data-theme="dark"] .search{background:rgba(48,53,44,.75);border-color:rgba(255,255,255,.1)}
+[data-theme="dark"] .category.active,[data-theme="dark"] .scale.active{background:rgba(72,80,65,.88);color:#f3f3eb}
+[data-theme="dark"] .recipe.active{background:rgba(47,52,43,.82)}
+[data-theme="dark"] .recipeEmoji{background:linear-gradient(145deg,rgba(68,79,58,.85),rgba(47,52,43,.85))}
+[data-theme="dark"] .dishTile{background:rgba(29,32,27,.88);border-color:rgba(255,255,255,.1)}
+[data-theme="dark"] .finderCard{background:linear-gradient(145deg,rgba(34,38,31,.98),rgba(25,29,24,.96));border-color:rgba(255,255,255,.12)}
+[data-theme="dark"] .finderOnlineButton{background:linear-gradient(135deg,rgba(82,118,92,.22),rgba(151,120,74,.13));border-color:rgba(255,255,255,.12)}
+[data-theme="dark"] .navItem.active{background:rgba(155,196,154,.16);color:#c4dfba}
+@media(max-width:900px){
+  .hero>div{padding:clamp(24px,5vw,38px);border-radius:30px}
+  .categoryGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .categoryTile{min-height:170px;padding:18px;border-radius:24px}
+}
+@media(max-width:560px){
+  .hero{padding-top:22px;padding-bottom:20px}
+  .hero>div{padding:23px 20px;border-radius:26px}
+  .hero h2{font-size:clamp(34px,9.5vw,46px);line-height:.98}
+  .hero p{font-size:14px}
+  .finderHeroButton{margin-top:20px;padding:13px;border-radius:18px;gap:10px}
+  .finderHeroButton strong{font-size:12px}
+  .finderHeroButton small{font-size:10px}
+  .categoryIntro{text-align:left;margin-bottom:20px;padding:0 3px}
+  .categoryIntro h3{font-size:34px;line-height:1.02}
+  .categoryIntro p{font-size:13px;line-height:1.5}
+  .categoryTile{min-height:154px;padding:15px;border-radius:22px}
+  .categoryTileIcon{width:46px;height:46px;border-radius:15px}
+  .categoryTileIcon svg{width:24px;height:24px}
+  .categoryTileText strong{font-size:14px}
+  .categoryTileText small{font-size:11px}
+  .card{box-shadow:0 18px 50px rgba(54,61,43,.08),inset 0 1px #fff}
+}
+@media(max-width:360px){
+  .categoryGrid{gap:9px}
+  .categoryTile{padding:12px;min-height:145px}
+  .categoryTileText strong{font-size:13px}
+}
