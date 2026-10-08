@@ -1324,3 +1324,43 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline-color:rg
 [data-theme="dark"] .finderTasteRow button.active{background:rgba(130,167,119,.16);border-color:rgba(130,167,119,.3);color:#c6dfbd}
 [data-theme="dark"] .finderTasteRow button.active.avoid{background:rgba(191,133,103,.12);border-color:rgba(191,133,103,.25);color:#e2b9a3}
 @media(max-width:560px){.finderTasteRow{gap:6px;margin-right:7px;margin-left:7px}.finderTasteRow>span{flex-basis:100%;min-width:0}.finderTasteRow button{flex:1}}
+
+/* Interactive cooking checklist and per-step timer */
+.cookingMode{margin-top:18px}
+.cookingProgressHead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:9px}
+.cookingProgressHead>div{display:grid;gap:5px}
+.cookingEyebrow{display:flex;align-items:center;gap:6px;color:var(--muted,#85877d);font-size:10px;letter-spacing:.13em;font-weight:800}
+.cookingProgressHead strong{font-size:14px;font-weight:750}
+.cookingProgressPercent{font-size:22px;letter-spacing:-.05em;font-weight:750;color:var(--accent,#6f8b60)}
+.cookingProgressTrack{height:5px;overflow:hidden;border-radius:999px;background:rgba(100,120,90,.12);margin-bottom:16px}
+.cookingProgressTrack span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#78966b,#b1c59a);transition:width .25s ease}
+.cookingTimer{display:flex;align-items:center;gap:12px;margin:0 0 15px;padding:14px;border:1px solid rgba(110,139,95,.22);border-radius:18px;background:rgba(126,157,107,.10)}
+.cookingTimer.finished{background:rgba(126,157,107,.17);border-color:rgba(110,139,95,.4)}
+.cookingTimerIcon{width:40px;height:40px;flex:0 0 40px;display:grid;place-items:center;border-radius:13px;background:rgba(110,139,95,.13);color:#6f8b60}
+.cookingTimerText{display:grid;gap:3px;min-width:0;flex:1}
+.cookingTimerText small{font-size:9px;letter-spacing:.12em;font-weight:800;color:var(--muted,#7d8178)}
+.cookingTimerText strong{font-size:27px;line-height:1.05;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.cookingTimerText span{font-size:11px;color:var(--muted,#7d8178)}
+.cookingTimerActions{display:flex;gap:6px}
+.cookingTimerActions button{display:grid;place-items:center;width:36px;height:36px;border:1px solid rgba(110,139,95,.18);border-radius:12px;background:rgba(255,255,255,.58);color:inherit;-webkit-tap-highlight-color:transparent}
+.cookingStepList{display:grid;gap:9px}
+.cookingStep{display:flex;align-items:flex-start;gap:11px;padding:14px 12px;border:1px solid rgba(100,120,90,.12);border-radius:16px;background:rgba(255,255,255,.34);transition:background .2s,border-color .2s}
+.cookingStep.done{background:rgba(115,147,99,.08);border-color:rgba(115,147,99,.2)}
+.cookingStepCheck{display:grid;place-items:center;flex:0 0 30px;width:30px;height:30px;margin-top:1px;border:1px solid rgba(100,120,90,.24);border-radius:50%;background:transparent;color:#6f8b60;-webkit-tap-highlight-color:transparent}
+.cookingStep.done .cookingStepCheck{background:#78966b;border-color:#78966b;color:#fff}
+.cookingStepContent{min-width:0;flex:1}
+.cookingStepLabel{display:block;margin:1px 0 5px;font-size:9px;letter-spacing:.13em;font-weight:800;color:var(--muted,#85877d)}
+.cookingStepContent p{margin:0;font-size:13px;line-height:1.6;color:var(--text,#34392f)}
+.cookingStep.done .cookingStepContent p{color:var(--muted,#85877d)}
+.cookingStepTimer{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:7px 10px;border:1px solid rgba(110,139,95,.19);border-radius:10px;background:rgba(116,148,100,.10);color:#5d7b52;font-size:11px;font-weight:750;-webkit-tap-highlight-color:transparent}
+.cookingFinished{display:flex;align-items:center;gap:8px;margin-top:13px;padding:12px 14px;border-radius:14px;background:rgba(115,147,99,.12);color:#56784d;font-size:13px;font-weight:750}
+.cookingReset{margin-top:13px;padding:9px 0;border:0;background:transparent;color:var(--muted,#85877d);font:inherit;font-size:11px;text-decoration:underline;text-underline-offset:3px;-webkit-tap-highlight-color:transparent}
+[data-theme="dark"] .cookingStep{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.08)}
+[data-theme="dark"] .cookingStep.done{background:rgba(130,167,119,.09);border-color:rgba(130,167,119,.2)}
+[data-theme="dark"] .cookingStepContent p{color:#e5e8df}
+[data-theme="dark"] .cookingStep.done .cookingStepContent p{color:#a3aa9c}
+[data-theme="dark"] .cookingTimerActions button{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1)}
+[data-theme="dark"] .cookingTimerText strong{color:#f1f2eb}
+[data-theme="dark"] .cookingStepTimer{background:rgba(130,167,119,.12);border-color:rgba(130,167,119,.22);color:#c6dfbd}
+[data-theme="dark"] .cookingFinished{background:rgba(130,167,119,.12);color:#c6dfbd}
+@media(max-width:560px){.cookingStep{padding:12px 10px;gap:9px}.cookingStepContent p{font-size:12px}.cookingTimer{padding:12px}.cookingTimerText strong{font-size:25px}}
