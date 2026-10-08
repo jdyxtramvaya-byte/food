@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { ChefHat, Search, X, Check, ShoppingCart, Globe, LoaderCircle, ArrowLeft, ExternalLink, Languages, Sparkles } from 'lucide-react'
 
 const aliases = {
@@ -257,6 +257,12 @@ async function translateMetadata(value, dictionary) {
 
 export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
   const [value, setValue] = useState('')
+  const [shoppingList, setShoppingList] = useState(() => {
+    try {
+      const saved = JSON.parse(window.localStorage.getItem('food-shopping-list') || '[]')
+      return Array.isArray(saved) ? saved.filter(item => item && typeof item.name === 'string').slice(0, 100) : []
+    } catch { return [] }
+  })
   const [onlineMeals, setOnlineMeals] = useState([])
   const [onlineLoading, setOnlineLoading] = useState(false)
   const [onlineError, setOnlineError] = useState('')
@@ -268,6 +274,21 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
   const [translatedIngredients, setTranslatedIngredients] = useState([])
   const [translatedCategory, setTranslatedCategory] = useState('')
   const [translatedArea, setTranslatedArea] = useState('')
+
+  useEffect(() => {
+    try { window.localStorage.setItem('food-shopping-list', JSON.stringify(shoppingList)) } catch {}
+  }, [shoppingList])
+
+  const addMissingIngredients = items => {
+    setShoppingList(current => {
+      const known = new Set(current.map(item => normalize(item.name)))
+      const additions = items.filter(name => !known.has(normalize(name))).map(name => ({ name, checked: false }))
+      return [...current, ...additions].slice(0, 100)
+    })
+  }
+  const toggleShoppingItem = name => setShoppingList(current => current.map(item => item.name === name ? { ...item, checked: !item.checked } : item))
+  const removeShoppingItem = name => setShoppingList(current => current.filter(item => item.name !== name))
+  const clearShoppingList = () => setShoppingList([])
 
   const available = useMemo(() => value.split(/[,;\n]+/).map(item => item.trim()).filter(Boolean), [value])
   const results = useMemo(() => {
@@ -396,16 +417,36 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
             <div className="finderExamples">
               {['картофель, яйца, сыр', 'курица, картофель, лук', 'мука, молоко, яйца'].map(example => <button key={example} onClick={() => { setValue(example); setOnlineMeals([]); setOnlineError('') }}>{example}</button>)}
             </div>
+            {shoppingList.length > 0 && (
+              <section className="finderShoppingList" aria-label="Список покупок">
+                <div className="finderShoppingHeader">
+                  <div><span className="finderShoppingEyebrow">СОХРАНЯЕТСЯ НА УСТРОЙСТВЕ</span><h4><ShoppingCart size={18}/> Список покупок <span>{shoppingList.filter(item => !item.checked).length}</span></h4></div>
+                  <button className="finderShoppingClear" onClick={clearShoppingList}>Очистить</button>
+                </div>
+                <div className="finderShoppingItems">
+                  {shoppingList.map(item => (
+                    <div className={item.checked ? 'finderShoppingItem checked' : 'finderShoppingItem'} key={item.name}>
+                      <button className="finderShoppingCheck" onClick={() => toggleShoppingItem(item.name)} aria-label={item.checked ? 'Вернуть в список' : 'Отметить купленным'}><Check size={14}/></button>
+                      <span>{item.name}</span>
+                      <button className="finderShoppingRemove" onClick={() => removeShoppingItem(item.name)} aria-label={'Удалить '+item.name}><X size={15}/></button>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
             {available.length > 0 && (
               <div className="finderResults">
                 <div className="finderResultsHead"><strong>Блюда из каталога Food</strong><span>{results.length}</span></div>
                 {results.length ? results.map(({ recipe, matched, missing, percent }) => (
-                  <button className="finderResult" key={recipe.id} onClick={() => onSelectRecipe(recipe.id)}>
-                    <img src={recipe.image} alt="" />
-                    <span className="finderResultBody"><strong>{recipe.name}</strong><small>{matched.length} из {recipe.ingredients.length} ингредиентов · {percent}% совпадения</small>
-                      {missing.length ? <small className="finderMissing"><ShoppingCart size={13}/> Нужно докупить: {missing.slice(0, 3).join(', ')}{missing.length > 3 ? '…' : ''}</small> : <small className="finderReady"><Check size={13}/> Всё необходимое уже есть</small>}
-                    </span>
-                  </button>
+                  <div className="finderLocalResult" key={recipe.id}>
+                    <button className="finderResult" onClick={() => onSelectRecipe(recipe.id)}>
+                      <img src={recipe.image} alt="" />
+                      <span className="finderResultBody"><strong>{recipe.name}</strong><small>{matched.length} из {recipe.ingredients.length} ингредиентов · {percent}% совпадения</small>
+                        {missing.length ? <small className="finderMissing"><ShoppingCart size={13}/> Нужно докупить: {missing.slice(0, 3).join(', ')}{missing.length > 3 ? '…' : ''}</small> : <small className="finderReady"><Check size={13}/> Всё необходимое уже есть</small>}
+                      </span>
+                    </button>
+                    {missing.length > 0 && <button className="finderAddMissing" onClick={() => addMissingIngredients(missing)}><ShoppingCart size={15}/> Добавить недостающее <span>+{missing.filter(name => !shoppingList.some(item => normalize(item.name) === normalize(name))).length}</span></button>}
+                  </div>
                 )) : <div className="finderEmpty">В локальном каталоге совпадений нет. Ниже можно найти дополнительные блюда.</div>}
               </div>
             )}
