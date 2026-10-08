@@ -46,6 +46,16 @@ export default function CookingMode({ recipe, steps, tip, substitutions }) {
   const doneCount = completed.length
   const progress = steps.length ? Math.round(doneCount / steps.length * 100) : 0
 
+  useEffect(() => {
+    if (progress !== 100) return
+    try {
+      const history = JSON.parse(window.localStorage.getItem('food-cooking-history') || '[]')
+      if (!Array.isArray(history) || history.some(entry => entry.id === recipe.id)) return
+      history.unshift({ id: recipe.id, name: recipe.name, date: new Date().toISOString() })
+      window.localStorage.setItem('food-cooking-history', JSON.stringify(history.slice(0, 50)))
+    } catch {}
+  }, [progress, recipe.id, recipe.name])
+
   const toggleStep = index => setCompleted(current =>
     current.includes(index) ? current.filter(item => item !== index) : [...current, index].sort((a, b) => a - b)
   )
