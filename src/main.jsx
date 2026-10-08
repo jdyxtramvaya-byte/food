@@ -1,9 +1,10 @@
 import React, { useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { ChefHat, Heart, Home, Minus, Plus, Search, UtensilsCrossed, X, Sparkles, Clock3, Sun, Moon, Soup, Salad, Croissant, CakeSlice, Drumstick, Wheat, Utensils } from 'lucide-react'
+import { ChefHat, Heart, Home, Minus, Plus, Search, UtensilsCrossed, X, Sparkles, Clock3, Sun, Moon, Soup, Salad, Croissant, CakeSlice, Drumstick, Wheat, Utensils, UserRound } from 'lucide-react'
 import './styles.css'
 import IngredientFinder from './IngredientFinder'
 import CookingMode from './CookingMode'
+import MyKitchen from './MyKitchen'
 import recipeDetails from './recipeDetails'
 import extraRecipes from './extraRecipes'
 
@@ -319,7 +320,7 @@ function App() {
   const [favorites, setFavorites] = useState(readFavorites)
   const [tab, setTab] = useState(() => {
     const savedTab = readAppState().tab
-    return savedTab === 'favorites' || savedTab === 'recipes' ? savedTab : 'home'
+    return ['favorites', 'recipes', 'kitchen'].includes(savedTab) ? savedTab : 'home'
   })
   const [showSteps, setShowSteps] = useState(() => Boolean(readAppState().showSteps))
   const [showFinder, setShowFinder] = useState(false)
@@ -393,6 +394,13 @@ function App() {
     setTab('recipes')
   }
 
+  const goKitchen = () => {
+    setSelectedId(null)
+    setShowSteps(false)
+    setShowFinder(false)
+    setTab('kitchen')
+  }
+
   const goFavorites = () => {
     setSelectedId(null)
     setCategory('Все')
@@ -434,7 +442,7 @@ function App() {
       </section>
 
       {!selected ? (
-        tab === 'favorites' ? (
+        tab === 'kitchen' ? <MyKitchen recipes={recipes} favorites={favorites} onSelectRecipe={selectRecipe} onOpenFinder={() => setShowFinder(true)} /> : tab === 'favorites' ? (
           <section className="categoryDishes">
             <div className="categoryDishesHeader">
               <button className="backButton" onClick={backToCategories}>‹ Категории</button>
@@ -588,6 +596,9 @@ function App() {
         </button>
         <button className={!showFinder && tab === 'favorites' ? 'navItem active' : 'navItem'} onClick={goFavorites} aria-current={!showFinder && tab === 'favorites' ? 'page' : undefined}>
           <Heart size={20} fill={tab === 'favorites' ? 'currentColor' : 'none'} /><span>Избранное</span>
+        </button>
+        <button className={!showFinder && tab === 'kitchen' ? 'navItem active' : 'navItem'} onClick={goKitchen} aria-current={!showFinder && tab === 'kitchen' ? 'page' : undefined}>
+          <UserRound size={20} /><span>Моя кухня</span>
         </button>
       </nav>
 
