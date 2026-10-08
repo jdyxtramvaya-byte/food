@@ -972,3 +972,33 @@ button:focus-visible,input:focus-visible{outline-color:rgba(82,118,92,.55)}
  .card .ingredient>span{font-size:13px}
  .card .steps{padding:16px;border-radius:18px}
 }
+
+
+/* Premium portion calculator */
+.card .calculatorServings{align-items:center;padding:21px 20px;margin:20px 0 13px;border:1px solid rgba(129,148,111,.22);border-radius:22px;background:linear-gradient(135deg,rgba(143,164,123,.15),rgba(143,164,123,.045) 70%);box-shadow:inset 0 1px 0 rgba(255,255,255,.45)}
+.card .servingsCopy{display:flex;flex-direction:column;gap:5px;min-width:0}
+.card .servingsEyebrow{font-size:9px;letter-spacing:.15em;font-weight:850;color:#718466}
+.card .servingsCopy>strong{font-size:19px;letter-spacing:-.035em;line-height:1.2}
+.card .servingsCopy>small{max-width:260px;font-size:11px;line-height:1.45;color:var(--muted,#7d8278)}
+.card .calculatorServings .stepper{gap:10px;padding:5px;background:rgba(255,255,255,.72);border-color:rgba(129,148,111,.2);box-shadow:0 3px 12px rgba(40,55,34,.045)}
+.card .calculatorServings .stepper button{width:35px;height:35px;background:#3e5d43;color:#fff}
+.card .calculatorServings .stepper>span{font-size:17px;min-width:20px}
+.card .calculatorQuickPick{align-items:center;gap:7px;margin:0 0 24px;padding:0 2px}
+.card .calculatorQuickPick>span{margin-right:auto;color:var(--muted,#7d8278);font-size:11px;font-weight:650}
+.card .calculatorQuickPick .scale{min-width:37px;height:34px;border-radius:12px;background:rgba(132,151,111,.07);border-color:transparent;font-variant-numeric:tabular-nums}
+.card .calculatorQuickPick .scale.active{background:#3e5d43;color:#fff;border-color:#3e5d43}
+[data-theme="dark"] .card .calculatorServings{background:linear-gradient(135deg,rgba(143,164,123,.13),rgba(143,164,123,.035));border-color:rgba(143,164,123,.2);box-shadow:none}
+[data-theme="dark"] .card .servingsEyebrow{color:#b0c49f}
+[data-theme="dark"] .card .calculatorServings .stepper{background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.08)}
+[data-theme="dark"] .card .calculatorServings .stepper button{background:#91a887;color:#172119}
+[data-theme="dark"] .card .calculatorQuickPick .scale{background:rgba(255,255,255,.055)}
+[data-theme="dark"] .card .calculatorQuickPick .scale.active{background:#91a887;color:#172119}
+@media(max-width:600px){
+ .card .calculatorServings{align-items:stretch;gap:15px;padding:17px;border-radius:19px;flex-direction:column}
+ .card .servingsCopy>strong{font-size:18px}
+ .card .servingsCopy>small{max-width:none}
+ .card .calculatorServings .stepper{align-self:flex-start;gap:12px}
+ .card .calculatorQuickPick{gap:6px}
+ .card .calculatorQuickPick>span{flex-basis:100%;margin:0 0 2px}
+ .card .calculatorQuickPick .scale{flex:1;min-width:0;height:37px}
+}
