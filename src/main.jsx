@@ -420,11 +420,13 @@ function App() {
               {categories.map(item => {
                 const Icon = categoryIcons[item]
                 const count = recipes.filter(r => r.category === item).length
+                const cover = recipes.find(r => r.category === item && r.image)?.image
                 return (
                   <button key={item} className="categoryTile" onClick={() => openCategory(item)}>
-                    <span className="categoryTileIcon"><Icon size={28} strokeWidth={1.7} /></span>
+                    <span className="categoryTileImage" aria-hidden="true">{cover && <img src={cover} alt="" loading="lazy" />}</span>
+                    <span className="categoryTileIcon"><Icon size={22} strokeWidth={1.8} /></span>
                     <span className="categoryTileText"><strong>{item}</strong><small>{count} {count === 1 ? 'блюдо' : count < 5 ? 'блюда' : 'блюд'}</small></span>
-                    <span className="categoryTileArrow">›</span>
+                    <span className="categoryTileArrow">↗</span>
                   </button>
                 )
               })}
