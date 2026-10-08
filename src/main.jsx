@@ -239,6 +239,26 @@ function writeFavorites(value) {
   }
 }
 
+function readAppState() {
+  try {
+    if (typeof window === 'undefined') return {}
+    const saved = JSON.parse(window.localStorage.getItem('food-app-state') || '{}')
+    return saved && typeof saved === 'object' ? saved : {}
+  } catch {
+    return {}
+  }
+}
+
+function writeAppState(value) {
+  try {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('food-app-state', JSON.stringify(value))
+    }
+  } catch {
+    // The app remains usable if browser storage is unavailable.
+  }
+}
+
 function formatAmount(value, unit) {
   const rounded = Math.round(value * 10) / 10
   if (unit === 'г' && rounded >= 1000) return `${Math.round(rounded / 1000 * 10) / 10} кг`
@@ -291,13 +311,16 @@ function DishIcon({ recipe, size = 22 }) {
 }
 
 function App() {
-  const [selectedId, setSelectedId] = useState(null)
-  const [servings, setServings] = useState(2)
-  const [category, setCategory] = useState('Все')
-  const [query, setQuery] = useState('')
+  const [selectedId, setSelectedId] = useState(() => readAppState().selectedId ?? null)
+  const [servings, setServings] = useState(() => Math.min(50, Math.max(1, Number(readAppState().servings) || 2)))
+  const [category, setCategory] = useState(() => readAppState().category || 'Все')
+  const [query, setQuery] = useState(() => readAppState().query || '')
   const [favorites, setFavorites] = useState(readFavorites)
-  const [tab, setTab] = useState('dishes')
-  const [showSteps, setShowSteps] = useState(false)
+  const [tab, setTab] = useState(() => {
+    const savedTab = readAppState().tab
+    return savedTab === 'favorites' || savedTab === 'recipes' ? savedTab : 'home'
+  })
+  const [showSteps, setShowSteps] = useState(() => Boolean(readAppState().showSteps))
   const [showFinder, setShowFinder] = useState(false)
   const [theme, setTheme] = useState(() => {
     try { return window.localStorage.getItem('food-theme') || 'light' } catch { return 'light' }
@@ -319,6 +342,10 @@ function App() {
     try { window.localStorage.setItem('food-theme', theme) } catch {}
   }, [theme])
 
+  React.useEffect(() => {
+    writeAppState({ selectedId, servings, category, query, tab, showSteps })
+  }, [selectedId, servings, category, query, tab, showSteps])
+
   const saveFavorites = (next) => { setFavorites(next); writeFavorites(next) }
 
   const toggleFavorite = (id) => {
@@ -330,7 +357,7 @@ function App() {
     setSelectedId(id)
     setServings(2)
     setShowSteps(false)
-    setTab('dishes')
+    setTab('recipes')
   }
 
   const selectFinderRecipe = (id) => {
@@ -344,14 +371,38 @@ function App() {
     setCategory(item)
     setSelectedId(null)
     setQuery('')
-    setTab('dishes')
+    setTab('recipes')
   }
 
-  const backToCategories = () => {
+  const goHome = () => {
     setSelectedId(null)
     setCategory('Все')
     setQuery('')
     setShowSteps(false)
+    setShowFinder(false)
+    setTab('home')
+  }
+
+  const goRecipes = () => {
+    setSelectedId(null)
+    setCategory('Все')
+    setQuery('')
+    setShowSteps(false)
+    setShowFinder(false)
+    setTab('recipes')
+  }
+
+  const goFavorites = () => {
+    setSelectedId(null)
+    setCategory('Все')
+    setQuery('')
+    setShowSteps(false)
+    setShowFinder(false)
+    setTab('favorites')
+  }
+
+  const backToCategories = () => {
+    goHome()
   }
 
   return (
@@ -404,6 +455,26 @@ function App() {
                 <p>Пока нет сохранённых блюд. Нажмите сердечко у рецепта, чтобы добавить его сюда.</p>
               </div>
             )}
+          </section>
+        ) : tab === 'recipes' ? (
+          <section className="categoryDishes recipeLibraryPage">
+            <div className="categoryDishesHeader">
+              <button className="backButton" onClick={goHome}>‹ Главная</button>
+              <span className="muted">Библиотека FOOD</span>
+              <h3>Все рецепты</h3>
+              <p>Найдите блюдо или выберите рецепт, чтобы рассчитать ингредиенты.</p>
+            </div>
+            <div className="librarySearch"><Search size={18}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Поиск рецепта..." aria-label="Поиск рецепта"/>{query && <button onClick={() => setQuery('')} aria-label="Очистить поиск"><X size={16}/></button>}</div>
+            {filtered.length ? (
+              <div className="dishGrid">
+                {filtered.map(recipe => (
+                  <button key={recipe.id} className="dishTile" onClick={() => selectRecipe(recipe.id)}>
+                    <img src={recipe.image} alt={recipe.name} loading="lazy" />
+                    <span><strong>{recipe.name}</strong><small>{recipe.description}</small></span>
+                  </button>
+                ))}
+              </div>
+            ) : <div className="categoryDishesHeader"><p>По вашему запросу ничего не найдено.</p></div>}
           </section>
         ) : category === 'Все' ? (
           <section className="categoryHome">
@@ -504,14 +575,17 @@ function App() {
         </div>
       )}
 
-      <nav className="bottomNav">
-        <button className={tab === 'dishes' ? 'navItem active' : 'navItem'} onClick={() => setTab('dishes')}>
-          <Home size={20} /><span>Блюда</span>
+      <nav className="bottomNav" aria-label="Основная навигация">
+        <button className={!showFinder && tab === 'home' && !selected ? 'navItem active' : 'navItem'} onClick={goHome} aria-current={!showFinder && tab === 'home' && !selected ? 'page' : undefined}>
+          <Home size={20} /><span>Главная</span>
         </button>
-        <button className={showFinder ? 'navItem active' : 'navItem'} onClick={() => setShowFinder(true)}>
+        <button className={!showFinder && tab === 'recipes' ? 'navItem active' : 'navItem'} onClick={goRecipes} aria-current={!showFinder && tab === 'recipes' ? 'page' : undefined}>
+          <Utensils size={20} /><span>Рецепты</span>
+        </button>
+        <button className={showFinder ? 'navItem active' : 'navItem'} onClick={() => setShowFinder(true)} aria-current={showFinder ? 'page' : undefined}>
           <ChefHat size={20} /><span>Из продуктов</span>
         </button>
-        <button className={tab === 'favorites' ? 'navItem active' : 'navItem'} onClick={() => setTab('favorites')}>
+        <button className={!showFinder && tab === 'favorites' ? 'navItem active' : 'navItem'} onClick={goFavorites} aria-current={!showFinder && tab === 'favorites' ? 'page' : undefined}>
           <Heart size={20} fill={tab === 'favorites' ? 'currentColor' : 'none'} /><span>Избранное</span>
         </button>
       </nav>
