@@ -481,11 +481,19 @@ function App() {
               </div>
             </div>
             <div className="recipeIntroLine"><span>{selected.ingredients.length} ингредиентов</span><span className="recipeIntroDot"/> <span>Пропорции настраиваются под вас</span></div>
-            <div className="servings calculatorServings">
-              <div className="servingsCopy"><span className="servingsEyebrow">КАЛЬКУЛЯТОР ПОРЦИЙ</span><strong>На сколько человек?</strong><small>Количество ингредиентов пересчитается автоматически</small></div>
-              <div className="stepper"><button onClick={() => setServings(Math.max(1, servings - 1))} aria-label="Уменьшить количество порций"><Minus size={17}/></button><span>{servings}</span><button onClick={() => setServings(Math.min(50, servings + 1))} aria-label="Увеличить количество порций"><Plus size={17}/></button></div>
-            </div>
-            <div className="scaleButtons calculatorQuickPick"><span>Быстрый выбор</span>{[1,2,4,6,8].map(n => <button key={n} className={servings === n ? 'scale active' : 'scale'} onClick={() => setServings(n)}>{n}</button>)}</div>
+            <section className="portionLab" aria-label="Калькулятор порций">
+              <div className="portionLabTop"><span className="portionLiveDot"/><span>РЕЖИМ ПРИГОТОВЛЕНИЯ</span><span className="portionLabLine"/><Sparkles size={15}/></div>
+              <div className="portionLabBody">
+                <div className="portionOrbit" aria-hidden="true"><div className="portionOrbitRing portionOrbitRingOne"/><div className="portionOrbitRing portionOrbitRingTwo"/><div className="portionOrbitCore"><span className="portionNumber">{String(servings).padStart(2,'0')}</span><span className="portionUnit">ПОРЦИИ</span></div><span className="portionOrbitNode portionOrbitNodeOne"/><span className="portionOrbitNode portionOrbitNodeTwo"/></div>
+                <div className="portionLabControls">
+                  <span className="portionLabEyebrow">МАСШТАБ РЕЦЕПТА</span>
+                  <h3>Готовим<br/>на свой вкус.</h3>
+                  <p>Меняйте количество — ингредиенты пересчитаются сами.</p>
+                  <div className="portionAdjust"><button onClick={() => setServings(Math.max(1, servings - 1))} aria-label="Уменьшить количество порций" disabled={servings <= 1}><Minus size={17}/></button><span>{servings} <small>{pluralPeople(servings)}</small></span><button onClick={() => setServings(Math.min(50, servings + 1))} aria-label="Увеличить количество порций" disabled={servings >= 50}><Plus size={17}/></button></div>
+                </div>
+              </div>
+              <div className="portionPresets"><span>БЫСТРЫЙ ВЫБОР</span>{[1,2,4,6,8].map(n => <button key={n} className={servings === n ? 'portionPreset active' : 'portionPreset'} onClick={() => setServings(n)} aria-pressed={servings === n}>{String(n).padStart(2,'0')}</button>)}<span className="portionPresetMax">до 50</span></div>
+            </section>
             <div className="sectionHeading"><div><span>Ингредиенты</span><small>Количество автоматически пересчитано</small></div><b>{selected.ingredients.length}</b></div>
             <div className="tableHead"><span>ИНГРЕДИЕНТ</span><span>КОЛИЧЕСТВО</span></div>
             <div className="ingredients">{selected.ingredients.map(([name, amount, unit]) => <div className="ingredient" key={name}><span>{name}</span><strong>{formatAmount(amount * multiplier, unit)}</strong></div>)}</div>
