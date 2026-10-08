@@ -116,23 +116,57 @@ const matches = (have, ingredient) => {
 
 const API = 'https://www.themealdb.com/api/json/v1/1'
 const translationCache = {}
+function decodeTranslation(value) {
+  return (value || '')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&#x27;/g, "'")
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .trim()
+}
+
 async function translateToRussian(text) {
   const value = (text || '').trim()
   if (!value) return value
   if (translationCache[value]) return translationCache[value]
+
+  // Provider 1: MyMemory. Do not stop here on a quota/network failure.
   try {
     const url = new URL('https://api.mymemory.translated.net/get')
     url.searchParams.set('q', value.slice(0, 450))
     url.searchParams.set('langpair', 'en|ru')
     const response = await fetch(url.toString())
-    if (!response.ok) return value
-    const data = await response.json()
-    const translated = data.responseData?.translatedText
-    if (translated && !/MYMEMORY WARNING|PLEASE SELECT/i.test(translated)) {
-      translationCache[value] = translated
-      return translated
+    if (response.ok) {
+      const data = await response.json()
+      const translated = decodeTranslation(data.responseData?.translatedText || '')
+      if (translated && !/MYMEMORY WARNING|PLEASE SELECT/i.test(translated) &&
+          (translated !== value || !looksEnglish(value))) {
+        translationCache[value] = translated
+        return translated
+      }
     }
-  } catch { /* Keep the original text if translation service is unavailable. */ }
+  } catch { /* Try the backup provider below. */ }
+
+  // Provider 2: Google Translate's lightweight endpoint as a fallback.
+  try {
+    const url = new URL('https://translate.googleapis.com/translate_a/single')
+    url.searchParams.set('client', 'gtx')
+    url.searchParams.set('sl', 'en')
+    url.searchParams.set('tl', 'ru')
+    url.searchParams.set('dt', 't')
+    url.searchParams.set('q', value.slice(0, 450))
+    const response = await fetch(url.toString())
+    if (response.ok) {
+      const data = await response.json()
+      const translated = decodeTranslation((data?.[0] || []).map(part => part?.[0] || '').join(''))
+      if (translated && (translated !== value || !looksEnglish(value))) {
+        translationCache[value] = translated
+        return translated
+      }
+    }
+  } catch { /* Preserve the source text and report incomplete translation in the UI. */ }
+
   return value
 }
 
@@ -153,11 +187,14 @@ function splitForTranslation(text, max = 420) {
 async function translateInstructions(text, setProgress) {
   const chunks = splitForTranslation(text)
   const translated = []
+  let failedChunks = 0
   for (let i = 0; i < chunks.length; i++) {
-    translated.push(await translateToRussian(chunks[i]))
+    const result = await translateToRussian(chunks[i])
+    translated.push(result)
+    if (looksEnglish(chunks[i]) && looksEnglish(result) && result === chunks[i]) failedChunks++
     setProgress(Math.round(((i + 1) / Math.max(chunks.length, 1)) * 100))
   }
-  return translated.join('\n\n')
+  return { text: translated.join('\n\n'), failedChunks, totalChunks: chunks.length }
 }
 
 function localizeMeasure(value) {
@@ -289,18 +326,18 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
     setTranslatedArea('')
     const sourceText = meal.strInstructions || 'Инструкция не указана.'
     try {
-      const [translated, ingredients, category, area] = await Promise.all([
+      const [instructionResult, ingredients, category, area] = await Promise.all([
         translateInstructions(sourceText, setTranslationProgress),
         translateMealIngredients(meal),
         translateMetadata(meal.strCategory, categoryRu),
         translateMetadata(meal.strArea, areaRu)
       ])
-      setTranslatedInstructions(translated)
+      setTranslatedInstructions(instructionResult.text)
       setTranslatedIngredients(ingredients)
       setTranslatedCategory(category)
       setTranslatedArea(area)
-      if (translated === sourceText || (looksEnglish(translated) && looksEnglish(sourceText))) {
-        setTranslationNotice('Часть текста не удалось перевести автоматически. Некоторые названия или строки могут остаться на английском.')
+      if (instructionResult.failedChunks > 0) {
+        setTranslationNotice(`Не удалось перевести ${instructionResult.failedChunks} из ${instructionResult.totalChunks} фрагментов инструкции. Для перевода используются два сервиса; отдельные строки могут остаться на английском.`)
       }
     } catch {
       setTranslatedInstructions(sourceText)
