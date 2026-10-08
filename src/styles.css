@@ -925,3 +925,50 @@ button:focus-visible,input:focus-visible{outline-color:rgba(82,118,92,.55)}
  .recipeCoverMeta span{padding:7px 8px}
 }
 [data-theme="dark"] .recipeIntroLine{color:#aeb5a5}
+
+
+/* Finishing pass: make portions, ingredients and preparation feel like one recipe workspace */
+.card .servings{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:17px 18px;margin:18px 0 10px;border:1px solid var(--line);border-radius:20px;background:rgba(135,153,116,.075)}
+.card .servings>div:first-child{display:flex;flex-direction:column;gap:4px}
+.card .servings>div:first-child strong{font-size:16px;letter-spacing:-.02em}
+.card .stepper{display:flex;align-items:center;gap:13px;padding:5px;border:1px solid var(--line);border-radius:999px;background:var(--surface,rgba(255,255,255,.72))}
+.card .stepper button{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(132,151,111,.13);color:var(--text);transition:transform .18s,background .18s}
+.card .stepper button:active{transform:scale(.94)}
+.card .stepper>span{min-width:16px;text-align:center;font-weight:750;font-variant-numeric:tabular-nums}
+.card .scaleButtons{display:flex;gap:8px;flex-wrap:wrap;margin:11px 0 25px}
+.card .scaleButtons .scale{min-width:42px;height:36px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--text);font-size:12px;font-weight:700;transition:background .2s,color .2s,border-color .2s}
+.card .scaleButtons .scale.active{background:#3e5d43;color:#fff;border-color:#3e5d43;box-shadow:0 5px 14px rgba(62,93,67,.16)}
+.card .sectionHeading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:20px;border-top:1px solid var(--line)}
+.card .sectionHeading>div{display:flex;flex-direction:column;gap:5px}
+.card .sectionHeading>div>span{font-size:25px;font-weight:780;letter-spacing:-.045em}
+.card .sectionHeading small{font-size:12px;color:var(--muted,#7d8278)}
+.card .sectionHeading>b{width:35px;height:35px;border-radius:12px;display:grid;place-items:center;background:rgba(132,151,111,.15);color:var(--text);font-size:13px}
+.card .tableHead{display:flex;justify-content:space-between;gap:12px;padding:14px 12px 8px;color:var(--muted,#7d8278);font-size:9px;font-weight:800;letter-spacing:.13em}
+.card .ingredients{display:flex;flex-direction:column;gap:4px}
+.card .ingredient{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 13px;border:1px solid transparent;border-radius:14px;transition:background .18s,border-color .18s}
+.card .ingredient:nth-child(odd){background:rgba(132,151,111,.055)}
+.card .ingredient>span{font-size:14px;line-height:1.4}
+.card .ingredient>strong{white-space:nowrap;font-size:13px;font-weight:750}
+.card .cardActions{margin-top:22px}
+.card .secondaryAction{width:100%;min-height:52px;display:flex;align-items:center;justify-content:center;gap:9px;border-radius:16px;background:#3e5d43;color:#fff;font-size:14px;font-weight:750;box-shadow:0 8px 22px rgba(62,93,67,.17);transition:transform .18s,filter .18s}
+.card .secondaryAction:active{transform:scale(.99)}
+.card .steps{margin-top:20px;padding:22px;border-radius:22px;border:1px solid var(--line);background:rgba(132,151,111,.055)}
+.card .stepsTitle{display:flex;align-items:center;gap:10px}
+.card .stepsTitle:before{content:"";width:5px;height:25px;border-radius:5px;background:#8da17a}
+.card .recipeTip{padding:15px 16px;border-radius:16px;background:rgba(132,151,111,.12);border:1px solid rgba(132,151,111,.18)}
+.card .recipeTip p{margin:7px 0 0;line-height:1.55}
+.card .note{margin-top:20px;padding:14px 15px;border-radius:15px;background:rgba(132,151,111,.07);font-size:12px;line-height:1.5}
+[data-theme="dark"] .card .servings{background:rgba(255,255,255,.035)}
+[data-theme="dark"] .card .stepper{background:rgba(255,255,255,.045)}
+[data-theme="dark"] .card .ingredient:nth-child(odd){background:rgba(255,255,255,.035)}
+[data-theme="dark"] .card .secondaryAction{background:#91a887;color:#172119;box-shadow:none}
+[data-theme="dark"] .card .steps{background:rgba(255,255,255,.025)}
+@media(max-width:600px){
+ .card .servings{padding:14px;border-radius:17px}
+ .card .stepper{gap:8px}
+ .card .stepper button{width:32px;height:32px}
+ .card .sectionHeading>div>span{font-size:23px}
+ .card .ingredient{padding:13px 10px}
+ .card .ingredient>span{font-size:13px}
+ .card .steps{padding:16px;border-radius:18px}
+}
