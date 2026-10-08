@@ -1293,3 +1293,20 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline-color:rg
 [data-theme="dark"] .finderShoppingCheck{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14)}
 [data-theme="dark"] .finderShoppingItem.checked .finderShoppingCheck{background:#66865d;border-color:#66865d;color:#fff}
 @media(max-width:560px){.finderShoppingList{padding:14px;border-radius:20px}.finderShoppingHeader h4{font-size:15px}.finderAddMissing{width:calc(100% - 16px);margin-right:8px;margin-left:8px}}
+
+
+/* Pantry memory and ready-to-cook filter */
+.finderPantryQuickAdd{margin:12px 0 20px}
+.finderPantryQuickAdd>span{display:block;margin-bottom:8px;color:var(--muted,#7d8178);font-size:11px;font-weight:750;letter-spacing:.045em}
+.finderPantryQuickAdd>div{display:flex;flex-wrap:wrap;gap:7px}
+.finderPantryQuickAdd button{padding:8px 11px;border:1px solid rgba(82,118,92,.16);border-radius:999px;background:rgba(255,255,255,.52);color:#526c50;font-size:12px;font-weight:650;transition:background .18s,transform .18s}
+.finderPantryQuickAdd button:hover:not(:disabled){background:rgba(130,157,116,.16);transform:translateY(-1px)}
+.finderPantryQuickAdd button:disabled{opacity:.45;cursor:default}
+.finderReadyFilter{display:flex;align-items:center;gap:8px;width:100%;margin:0 0 12px;padding:11px 13px;border:1px solid rgba(82,118,92,.14);border-radius:15px;background:rgba(118,118,128,.06);color:var(--text,#333);text-align:left;font:inherit;font-size:12px}
+.finderReadyFilter>span{flex:1}
+.finderReadyFilter i{font-style:normal;color:#7b8275;font-size:11px}
+.finderReadyFilter.active{background:rgba(95,133,88,.13);border-color:rgba(95,133,88,.3);color:#456b45}
+[data-theme="dark"] .finderPantryQuickAdd button{background:rgba(255,255,255,.045);border-color:rgba(150,181,137,.18);color:#c6dfbd}
+[data-theme="dark"] .finderReadyFilter{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.1);color:#e8eae5}
+[data-theme="dark"] .finderReadyFilter.active{background:rgba(130,167,119,.16);border-color:rgba(130,167,119,.3);color:#c6dfbd}
+@media(max-width:560px){.finderPantryQuickAdd button{padding:8px 10px}.finderReadyFilter{padding:10px 11px}}
