@@ -331,6 +331,7 @@ export default function IngredientFinder({ recipes, onClose, onSelectRecipe }) {
                   ))}
                 </div>
               )}
+            </div>
           </>
         )}
       </div>
