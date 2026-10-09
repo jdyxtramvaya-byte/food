@@ -136,7 +136,7 @@ export default function CookingMode({ recipe, steps = [], tip, substitutions, in
       {guided && steps.length > 0 ? (
         <section className="guidedCookingStep">
           <div className="guidedCookingTop"><span>ШАГ {String(activeStep + 1).padStart(2, '0')}</span><span>{activeStep + 1} из {steps.length}</span></div>
-          <div className="guidedCookingTrack">{steps.map((_, index) => <span key={index} className={index < activeStep ? 'done' : index === activeStep ? 'current' : ''}/>)}</div>
+          <div className="guidedCookingTrack" style={{ "--step-count": steps.length }}>{steps.map((_, index) => <span key={index} className={index < activeStep ? 'done' : index === activeStep ? 'current' : ''}/>)}</div>
           <p className={completed.includes(activeStep) ? 'guidedCookingText done' : 'guidedCookingText'}>{steps[activeStep]}</p>
           {durationFromText(steps[activeStep]) && <button className="cookingStepTimer guidedTimerButton" onClick={() => startTimer(steps[activeStep], activeStep)}><Timer size={15}/> Запустить таймер · {durationFromText(steps[activeStep]).label}</button>}
           <button type="button" className={completed.includes(activeStep) ? 'guidedDoneButton checked' : 'guidedDoneButton'} onClick={() => toggleStep(activeStep)}>{completed.includes(activeStep) ? <><Check size={17}/> Шаг выполнен</> : <><Circle size={17}/> Отметить шаг выполненным</>}</button>
