@@ -1463,3 +1463,102 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline-color:rg
 @media(min-width:900px){.mealWeekGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
 .kitchenShoppingQuantity{display:block;margin-top:2px;color:var(--muted,#85877d);font-size:10px;font-weight:600}
+
+/* Visual weekly meal planner redesign */
+.mealPlannerPro{padding:0!important;overflow:hidden;background:transparent!important;border:0!important;box-shadow:none!important}
+.mealPlannerHero{position:relative;isolation:isolate;overflow:hidden;padding:clamp(20px,4vw,30px);border-radius:26px;color:#f7f8f1;background:linear-gradient(125deg,#27382c 0%,#405943 56%,#748b62 100%);box-shadow:0 18px 38px rgba(44,67,43,.16)}
+.mealHeroGlow{position:absolute;z-index:-1;width:260px;height:260px;right:-65px;top:-95px;border-radius:50%;background:radial-gradient(circle,rgba(220,233,180,.25),rgba(220,233,180,0) 70%);pointer-events:none}
+.mealHeroTop{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.mealHeroTag{display:flex;align-items:center;gap:7px;color:rgba(248,250,240,.76);font-size:10px;font-weight:800;letter-spacing:.12em}
+.mealHeroCount{font-size:31px;font-weight:650;letter-spacing:-.06em;line-height:1}
+.mealHeroCount small{font-size:13px;color:rgba(248,250,240,.55);letter-spacing:0}
+.mealPlannerHero h3{margin:23px 0 9px;font-size:clamp(27px,5vw,40px);line-height:1.05;letter-spacing:-.055em;font-weight:700}
+.mealPlannerHero h3 em{font-style:normal;color:#d1e0b5}
+.mealPlannerHero>p{max-width:340px;margin:0;color:rgba(248,250,240,.72);font-size:13px;line-height:1.55}
+.mealHeroBottom{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:22px}
+.mealHeroServings{display:flex;align-items:center;gap:6px;color:rgba(248,250,240,.8);font-size:12px}
+.mealHeroServings select{padding:8px 9px;border:1px solid rgba(255,255,255,.2);border-radius:10px;background:rgba(255,255,255,.12);color:white;font-size:12px}
+.mealHeroServings select option{color:#20271f;background:#fff}
+.mealAutoButton{display:flex;align-items:center;justify-content:center;gap:7px;padding:12px 15px;border:1px solid rgba(255,255,255,.18);border-radius:13px;background:#f1f3e8;color:#344631;font-size:12px;font-weight:800;box-shadow:0 5px 14px rgba(0,0,0,.08);-webkit-tap-highlight-color:transparent}
+.mealAutoButton:active{transform:scale(.98)}
+.mealHeroProgress{height:4px;margin-top:20px;overflow:hidden;border-radius:20px;background:rgba(255,255,255,.18)}
+.mealHeroProgress span{display:block;height:100%;border-radius:inherit;background:#d5e5b5;transition:width .25s ease}
+.mealWeekHeading{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:27px 1px 13px}
+.mealWeekHeading>div:first-child>span{font-size:9px;font-weight:800;letter-spacing:.14em;color:var(--muted,#777c70)}
+.mealWeekHeading h4{margin:5px 0 0;font-size:22px;letter-spacing:-.045em}
+.mealWeekStatus{display:flex;align-items:center;gap:6px;padding-bottom:3px;color:var(--muted,#777c70);font-size:10px}
+.mealStatusDot{width:6px;height:6px;border-radius:50%;background:#8ca977}
+.mealDayRail{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:13px}
+.mealDayTab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0;padding:10px 3px;border:1px solid var(--line,rgba(60,60,67,.12));border-radius:14px;background:var(--glass,rgba(255,255,255,.65));color:var(--muted,#777c70);-webkit-tap-highlight-color:transparent;transition:background .18s,border-color .18s,transform .18s}
+.mealDayTab>span{font-size:9px;font-weight:800;letter-spacing:.04em}
+.mealDayTab>strong{display:grid;place-items:center;width:22px;height:22px;border-radius:8px;background:rgba(120,145,101,.11);color:var(--muted,#777c70);font-size:10px}
+.mealDayTab.active{border-color:#617c52;background:#617c52;color:#fff;box-shadow:0 5px 14px rgba(70,96,58,.15)}
+.mealDayTab.active>strong{background:rgba(255,255,255,.17);color:#fff}
+.mealWeekGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.mealDayCard{min-width:0;padding:14px;border:1px solid var(--line,rgba(60,60,67,.1));border-radius:20px;background:var(--glass,rgba(255,255,255,.7));box-shadow:0 5px 20px rgba(25,30,20,.035)}
+.mealDayHeading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+.mealDayHeading>div{display:grid;gap:4px}
+.mealDayKicker{font-size:8px;font-weight:800;letter-spacing:.13em;color:var(--muted,#777c70)}
+.mealDayHeading>div>strong{font-size:15px;letter-spacing:-.035em}
+.mealDayDone{display:flex;align-items:center;gap:3px;padding:5px 8px;border-radius:999px;background:rgba(115,145,94,.11);color:var(--muted,#777c70);font-size:9px;font-weight:800;white-space:nowrap}
+.mealDayDone.complete{background:#e4edd9;color:#4e6e40}
+.mealDaySlots{display:grid;gap:10px}
+.mealSlot{display:grid;grid-template-columns:74px minmax(0,1fr);gap:10px;align-items:center;min-width:0;padding:7px;border:1px solid var(--line,rgba(60,60,67,.08));border-radius:15px;background:var(--glass-strong,rgba(255,255,255,.74))}
+.mealSlotPhoto{position:relative;width:74px;height:74px;overflow:hidden;border-radius:11px;background:linear-gradient(135deg,#e9e7d9,#d3dac5)}
+.mealSlotPhoto img{width:100%;height:100%;object-fit:cover;display:block}
+.mealSlotPlaceholder{display:grid;place-items:center;width:100%;height:100%;color:#738466}
+.mealSlotPlaceholder span{display:grid;place-items:center}
+.mealSlotLabel{position:absolute;left:4px;right:4px;bottom:4px;padding:4px 3px;border-radius:6px;background:rgba(25,34,23,.66);color:white;text-align:center;font-size:8px;font-weight:750;backdrop-filter:blur(8px)}
+.mealSlotTime{position:absolute;right:4px;top:4px;display:grid;place-items:center;width:19px;height:19px;border-radius:50%;background:rgba(248,250,240,.92);color:#55734a}
+.mealSlotInfo{display:grid;gap:7px;min-width:0}
+.mealSlotInfo>strong{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:11px;line-height:1.35;letter-spacing:-.015em}
+.mealSlotInfo select{width:100%;min-width:0;padding:7px 5px;border:0;border-radius:7px;background:rgba(119,145,103,.1);color:var(--muted,#777c70);font-size:9px;font-weight:700;outline:none;-webkit-tap-highlight-color:transparent}
+.mealSlotInfo select:focus-visible{outline:1px solid #819a71}
+.mealDayFooter{display:flex;align-items:center;gap:5px;margin-top:11px;color:#688457;font-size:10px;font-weight:700}
+.mealShoppingCard{margin-top:18px;padding:17px;border:1px solid rgba(113,140,95,.18);border-radius:22px;background:linear-gradient(145deg,rgba(231,239,221,.8),rgba(249,248,240,.9))}
+.mealShoppingTop{display:flex;align-items:center;gap:11px}
+.mealShoppingIcon{display:grid;place-items:center;width:43px;height:43px;flex:none;border-radius:14px;background:#d9e6ce;color:#4e6b43}
+.mealShoppingCopy{min-width:0;flex:1}
+.mealShoppingCopy>span{font-size:8px;font-weight:850;letter-spacing:.13em;color:#718365}
+.mealShoppingCopy h4{margin:3px 0;font-size:20px;letter-spacing:-.04em;color:#283526}
+.mealShoppingCopy p{margin:0;color:#6c7765;font-size:11px;line-height:1.45}
+.mealShoppingTotal{display:grid;justify-items:end;gap:2px}
+.mealShoppingTotal strong{font-size:25px;line-height:1;color:#354a2f;letter-spacing:-.05em}
+.mealShoppingTotal span{font-size:9px;color:#6c7765}
+.mealShoppingIngredients{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 13px;margin:14px 0 0;padding-top:6px;border-top:1px solid rgba(90,112,77,.15)}
+.mealShoppingIngredients>div{display:flex;align-items:center;gap:7px;min-width:0;padding:9px 0;border-bottom:1px solid rgba(90,112,77,.1)}
+.mealIngredientDot{width:5px;height:5px;flex:none;border-radius:50%;background:#819d70}
+.mealIngredientName{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#4d5a47;font-size:10px}
+.mealShoppingIngredients strong{color:#34482f;font-size:9px;white-space:nowrap}
+.mealMoreIngredients{grid-column:1/-1;padding-top:8px;color:#6c7765;font-size:10px}
+.mealShoppingAction{width:100%;margin-top:14px!important;border-radius:13px!important;background:#344a30!important;color:#fff!important;justify-content:center}
+.mealShoppingAction:disabled{opacity:.55}
+.mealPlannerNotice{display:flex;align-items:flex-start;gap:7px;margin:10px 0 0;color:#66865a;font-size:11px;line-height:1.45}
+.mealPlannerFoot{display:flex;align-items:flex-start;gap:6px;margin-top:12px;color:var(--muted,#85877d);font-size:10px;line-height:1.45}
+.mealPlannerFoot svg{flex:none;margin-top:1px}
+[data-theme="dark"] .mealDayCard,[data-theme="dark"] .mealDayTab{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.09)}
+[data-theme="dark"] .mealDayTab.active{background:#617c52;border-color:#617c52;color:#fff}
+[data-theme="dark"] .mealSlot{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.08)}
+[data-theme="dark"] .mealSlotInfo select{background:rgba(160,190,140,.12);color:#dce5d5}
+[data-theme="dark"] .mealShoppingCard{background:linear-gradient(145deg,rgba(58,76,48,.55),rgba(37,43,34,.8));border-color:rgba(160,190,140,.18)}
+[data-theme="dark"] .mealShoppingCopy h4,[data-theme="dark"] .mealShoppingIngredients strong{color:#e7efdf}
+[data-theme="dark"] .mealShoppingCopy p,[data-theme="dark"] .mealIngredientName,[data-theme="dark"] .mealShoppingTotal span{color:#bdcbb4}
+[data-theme="dark"] .mealShoppingIngredients>div{border-color:rgba(210,230,195,.1)}
+@media(max-width:600px){
+ .mealPlannerHero{padding:20px;border-radius:23px}
+ .mealPlannerHero h3{margin-top:20px;font-size:30px}
+ .mealHeroBottom{gap:7px}
+ .mealAutoButton{padding:11px 12px;font-size:11px}
+ .mealDayRail{gap:4px}
+ .mealDayTab{padding:9px 2px;border-radius:12px}
+ .mealDayCard{display:none;padding:12px}
+ .mealDayCard.active{display:block;animation:mealCardIn .22s ease-out}
+ .mealDaySlots{gap:8px}
+ .mealSlot{grid-template-columns:82px minmax(0,1fr);gap:10px;padding:7px}
+ .mealSlotPhoto{width:82px;height:78px}
+ .mealSlotInfo>strong{font-size:12px}
+ .mealSlotInfo select{padding:8px 6px;font-size:10px}
+ .mealShoppingCard{padding:14px;border-radius:19px}
+ .mealShoppingIngredients{grid-template-columns:minmax(0,1fr)}
+}
+@keyframes mealCardIn{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
