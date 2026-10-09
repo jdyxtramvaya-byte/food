@@ -1615,3 +1615,74 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline-color:rg
 [data-theme="dark"] .cookingModeSwitch button,[data-theme="dark"] .guidedCookingNav button{background:rgba(255,255,255,.06);color:#e5e8df;border-color:rgba(255,255,255,.12)}
 [data-theme="dark"] .guidedCookingText{color:#e5e8df}
 @media(max-width:560px){.cookingPrep{padding:12px}.guidedCookingStep{padding:14px}.guidedCookingText{font-size:16px;min-height:125px}.cookingModeSwitch{align-items:flex-start}.cookingModeSwitch button{padding:8px 9px}}
+
+
+/* Full-screen guided cooking overlay */
+.cookingLaunchCard{display:grid;grid-template-columns:44px minmax(0,1fr);gap:11px;align-items:center;margin:16px 0;padding:15px;border:1px solid rgba(112,140,95,.2);border-radius:19px;background:linear-gradient(135deg,rgba(224,235,214,.72),rgba(255,255,255,.62))}
+.cookingLaunchIcon{width:44px;height:44px;display:grid;place-items:center;border-radius:14px;background:rgba(109,139,91,.16);color:#5f7e51}
+.cookingLaunchCopy{display:grid;gap:4px;min-width:0}
+.cookingLaunchCopy strong{font-size:13px;letter-spacing:-.02em}
+.cookingLaunchCopy span{font-size:11px;line-height:1.45;color:var(--muted,#85877d)}
+.cookingLaunchCard>button{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:7px;min-height:45px;border:0;border-radius:13px;background:#344a30;color:white;font:inherit;font-size:12px;font-weight:750;-webkit-tap-highlight-color:transparent}
+.cookingFullscreen{position:fixed;z-index:9999;inset:0;display:flex;flex-direction:column;overflow:auto;overscroll-behavior:contain;background:#f5f5ed;color:#2e352a;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);animation:cookingOverlayIn .22s ease-out}
+.cookingFullscreenHeader{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:12px;padding:13px 18px;border-bottom:1px solid rgba(70,90,60,.12)}
+.cookingCloseButton{width:40px;height:40px;display:grid;place-items:center;border:1px solid rgba(70,90,60,.13);border-radius:50%;background:rgba(255,255,255,.72);color:#394433;-webkit-tap-highlight-color:transparent}
+.cookingFullscreenBrand{display:grid;gap:4px;min-width:0}
+.cookingFullscreenBrand span{font-size:8px;letter-spacing:.14em;font-weight:850;color:#75846c}
+.cookingFullscreenBrand strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:16px;letter-spacing:-.035em}
+.cookingFullscreenServings{padding:7px 9px;border-radius:9px;background:rgba(110,140,90,.12);font-size:10px;font-weight:750;white-space:nowrap}
+.cookingFullscreenProgress{padding:15px 22px 0}
+.cookingFullscreenProgress>div:first-child{display:flex;align-items:center;justify-content:space-between;font-size:9px;font-weight:800;letter-spacing:.1em;color:#7a8472}
+.cookingFullscreenProgress strong{font-size:15px;color:#577548;letter-spacing:0}
+.cookingFullscreenTrack{height:4px;margin-top:9px;overflow:hidden;border-radius:99px;background:rgba(80,100,70,.13)}
+.cookingFullscreenTrack span{display:block;height:100%;border-radius:99px;background:#78966b;transition:width .25s ease}
+.cookingFullscreenMain{width:min(100%,640px);box-sizing:border-box;flex:1;align-self:center;display:flex;flex-direction:column;padding:20px 22px 18px}
+.cookingFullscreenStepMeta{display:flex;justify-content:space-between;align-items:center;font-size:10px;font-weight:850;letter-spacing:.13em;color:#7b8773}
+.cookingFullscreenSegments{display:grid;grid-template-columns:repeat(var(--step-count,6),minmax(0,1fr));gap:5px;margin:11px 0 18px}
+.cookingFullscreenSegments span{height:4px;border-radius:99px;background:rgba(80,100,70,.13)}
+.cookingFullscreenSegments span.done,.cookingFullscreenSegments span.current{background:#78966b}
+.cookingFullscreenImage{position:relative;width:100%;height:clamp(135px,25vh,230px);overflow:hidden;border-radius:21px;background:#e1e5d9}
+.cookingFullscreenImage img{width:100%;height:100%;object-fit:cover;display:block}
+.cookingFullscreenImage:after{content:"";position:absolute;inset:40% 0 0;background:linear-gradient(transparent,rgba(18,24,16,.5))}
+.cookingFullscreenImage>span{position:absolute;z-index:1;left:13px;bottom:12px;display:flex;align-items:center;gap:6px;color:white;font-size:9px;font-weight:800;letter-spacing:.1em}
+.cookingFullscreenInstruction{margin:22px 0 16px;font-size:clamp(20px,4.8vw,29px);line-height:1.42;letter-spacing:-.04em;font-weight:620;color:#30382b}
+.cookingFullscreenInstruction.completed{color:#788571}
+.cookingFullscreenTimerButton{display:flex;align-items:center;justify-content:center;gap:8px;min-height:42px;margin-top:2px;border:1px solid rgba(105,135,87,.24);border-radius:13px;background:rgba(121,151,105,.11);color:#557448;font:inherit;font-size:12px;font-weight:750;-webkit-tap-highlight-color:transparent}
+.fullscreenTimer{margin:0 0 12px}
+.cookingFullscreenDone{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;margin-top:auto;padding:12px;border:1px solid rgba(105,135,87,.25);border-radius:14px;background:rgba(121,151,105,.12);color:#3d5734;font:inherit;font-size:13px;font-weight:800;-webkit-tap-highlight-color:transparent}
+.cookingFullscreenDone.checked{background:#78966b;border-color:#78966b;color:#fff}
+.cookingFullscreenFooter{position:sticky;bottom:0;display:grid;grid-template-columns:1fr 1.5fr;gap:10px;padding:13px 22px calc(13px + env(safe-area-inset-bottom));background:rgba(245,245,237,.94);border-top:1px solid rgba(70,90,60,.12);backdrop-filter:blur(18px)}
+.cookingFullscreenFooter button{display:flex;align-items:center;justify-content:center;gap:5px;min-height:46px;border:1px solid rgba(70,90,60,.15);border-radius:13px;background:rgba(255,255,255,.75);color:#374131;font:inherit;font-size:12px;font-weight:750;-webkit-tap-highlight-color:transparent}
+.cookingFullscreenFooter button:disabled{opacity:.35}
+.cookingFullscreenFooter .cookingNextButton{background:#344a30;border-color:#344a30;color:white}
+.cookingFullscreenExtras{padding:0 22px 18px;background:#f5f5ed}
+.cookingFullscreenExtras>button{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:10px;border:0;background:transparent;color:#687761;font:inherit;font-size:11px;font-weight:750;-webkit-tap-highlight-color:transparent}
+.cookingFullscreenStepList{display:grid;gap:6px;max-width:640px;margin:4px auto 0}
+.cookingFullscreenStepList button{display:grid;grid-template-columns:28px minmax(0,1fr);align-items:start;gap:9px;padding:10px;border:1px solid rgba(70,90,60,.1);border-radius:11px;background:rgba(255,255,255,.6);color:#394433;text-align:left;font:inherit;font-size:11px;line-height:1.45}
+.cookingFullscreenStepList button.active{border-color:#78966b;background:rgba(121,151,105,.12)}
+.cookingFullscreenStepList button>span{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;background:rgba(110,140,90,.12);font-size:10px;font-weight:800}
+.cookingCompletion{width:min(100%,520px);box-sizing:border-box;flex:1;align-self:center;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center}
+.cookingCompletionIcon{display:grid;place-items:center;width:76px;height:76px;border-radius:25px;background:#dce8d3;color:#4c6e40}
+.cookingCompletion>span{margin-top:23px;font-size:9px;font-weight:850;letter-spacing:.16em;color:#72866a}
+.cookingCompletion h2{margin:12px 0 6px;font-size:34px;letter-spacing:-.06em}
+.cookingCompletion p{max-width:290px;margin:0;color:#778171;font-size:13px;line-height:1.6}
+.cookingCompletion button{width:100%;min-height:48px;margin-top:28px;border:0;border-radius:14px;background:#344a30;color:white;font:inherit;font-size:12px;font-weight:800}
+[data-theme="dark"] .cookingLaunchCard{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1)}
+[data-theme="dark"] .cookingLaunchCopy strong{color:#e5e8df}
+[data-theme="dark"] .cookingFullscreen{background:#171b15;color:#edf1e8}
+[data-theme="dark"] .cookingFullscreenHeader{border-color:rgba(255,255,255,.09)}
+[data-theme="dark"] .cookingCloseButton{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.1);color:#edf1e8}
+[data-theme="dark"] .cookingFullscreenBrand strong,[data-theme="dark"] .cookingFullscreenInstruction{color:#edf1e8}
+[data-theme="dark"] .cookingFullscreenProgress>div:first-child,[data-theme="dark"] .cookingFullscreenStepMeta{color:#aab5a1}
+[data-theme="dark"] .cookingFullscreenProgress strong{color:#b9d3a9}
+[data-theme="dark"] .cookingFullscreenFooter,[data-theme="dark"] .cookingFullscreenExtras{background:rgba(23,27,21,.96);border-color:rgba(255,255,255,.09)}
+[data-theme="dark"] .cookingFullscreenFooter button{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:#edf1e8}
+[data-theme="dark"] .cookingFullscreenFooter .cookingNextButton{background:#78966b;color:#fff}
+[data-theme="dark"] .cookingFullscreenExtras>button{color:#b9c6af}
+[data-theme="dark"] .cookingFullscreenStepList button{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.09);color:#edf1e8}
+[data-theme="dark"] .cookingCompletionIcon{background:#354b2e;color:#c8e0b9}
+[data-theme="dark"] .cookingCompletion>span{color:#a9c49a}
+[data-theme="dark"] .cookingCompletion p{color:#b0b9a8}
+@keyframes cookingOverlayIn{from{opacity:.6;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(min-width:700px){.cookingFullscreenMain{padding-top:24px}.cookingFullscreenFooter{width:min(100%,640px);box-sizing:border-box;align-self:center;border-radius:16px 16px 0 0}}
+@media(max-width:560px){.cookingFullscreenHeader{padding:10px 13px;gap:8px}.cookingFullscreenMain{padding:17px 16px 15px}.cookingFullscreenImage{height:clamp(125px,22vh,190px);border-radius:17px}.cookingFullscreenInstruction{margin-top:18px;font-size:22px}.cookingFullscreenFooter{padding-left:16px;padding-right:16px}.cookingFullscreenExtras{padding-left:16px;padding-right:16px}.cookingFullscreenServings{font-size:9px;padding:7px}}
