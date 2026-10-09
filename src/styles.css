@@ -1461,3 +1461,5 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline-color:rg
 [data-theme="dark"] .mealMissingPreview span{background:rgba(255,255,255,.035)}
 @media(max-width:540px){.mealWeekGrid{grid-template-columns:minmax(0,1fr)}.mealDayCard{padding:12px}.mealDaySlots{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.mealSlot select{font-size:10px;padding-left:7px;padding-right:5px}.mealDayHeading{margin-bottom:9px}.mealPlannerControls{align-items:stretch}.mealAutoButton{font-size:11px;padding:10px}.mealServings{font-size:11px}}
 @media(min-width:900px){.mealWeekGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+.kitchenShoppingQuantity{display:block;margin-top:2px;color:var(--muted,#85877d);font-size:10px;font-weight:600}
