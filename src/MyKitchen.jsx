@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import MealPlanner from './MealPlanner'
+import AIChef from './AIChef'
 import { UserRound, Heart, Refrigerator, ShoppingBasket, ChefHat, Check, Plus, Trash2, Clock3, Sparkles, ArrowUpRight } from 'lucide-react'
 
 const readJSON = (key, fallback) => {
@@ -73,6 +74,7 @@ export default function MyKitchen({ recipes, favorites, onSelectRecipe, onOpenFi
         <div className="kitchenChips">{pantryItems.slice(0,12).map((item,index) => <span key={item + index}>{item}</span>)}</div>
       </div>
 
+      <AIChef pantry={pantry} recipes={recipes} />
       <MealPlanner recipes={recipes} pantry={pantry} shopping={shopping} setShopping={setShopping} />
 
       <div className="kitchenSection">
