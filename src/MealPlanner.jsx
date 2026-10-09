@@ -158,49 +158,66 @@ export default function MealPlanner({ recipes = [], pantry = '', shopping = [], 
     setNotice('Недостающие ингредиенты добавлены в общий список покупок.')
   }
 
+  const [selectedDay, setSelectedDay] = useState(0)
+  const getRecipe = (day, slot) => recipes.find(recipe => String(recipe.id) === String(plan[day + '|' + slot]))
+  const dayCount = day => slots.filter(slot => getRecipe(day, slot.id)).length
+
   return <section className="kitchenSection mealPlannerPro">
-    <div className="kitchenSectionHead">
-      <div><span>02 · ПЛАНИРОВАНИЕ</span><h3><CalendarDays size={19}/> Меню на неделю</h3></div>
-      <span className="kitchenCount">{plannedCount}/21</span>
+    <div className="mealPlannerHero">
+      <div className="mealHeroGlow"/>
+      <div className="mealHeroTop"><span className="mealHeroTag"><CalendarDays size={13}/> ВАШ РИТМ ПИТАНИЯ</span><span className="mealHeroCount">{plannedCount}<small>/21</small></span></div>
+      <h3>Вкусная неделя.<br/><em>Без лишних забот.</em></h3>
+      <p>Соберите меню, а Food рассчитает продукты для всей семьи.</p>
+      <div className="mealHeroBottom">
+        <label className="mealServings mealHeroServings"><UsersRound size={15}/><span>На</span><select value={servings} onChange={event => setServings(Number(event.target.value))}>{[1,2,3,4,5,6,7,8,9,10,11,12].map(n => <option key={n} value={n}>{n}</option>)}</select><span>{servings === 1 ? 'человека' : servings < 5 ? 'человека' : 'человек'}</span></label>
+        <button className="mealAutoButton" type="button" onClick={generateWeek}><WandSparkles size={16}/> Собрать меню</button>
+      </div>
+      <div className="mealHeroProgress"><span style={{width:completion+'%'}}/></div>
     </div>
-    <p className="kitchenSectionDesc">Food подберёт меню под ваши запасы и соберёт ингредиенты для всей недели — без повторного подсчёта одинаковых продуктов.</p>
 
-    <div className="mealPlannerControls">
-      <label className="mealServings"><UsersRound size={16}/><span>Человек</span><select value={servings} onChange={event => setServings(Number(event.target.value))}>{[1,2,3,4,5,6,7,8,9,10,11,12].map(n => <option key={n} value={n}>{n}</option>)}</select></label>
-      <button className="mealAutoButton" type="button" onClick={generateWeek}><WandSparkles size={16}/> Составить меню</button>
-    </div>
-
-    <div className="mealWeekProgress" aria-label={'Заполнено ' + completion + '% недели'}>
-      <div><span>План на неделю</span><strong>{plannedCount} из 21 приёмов пищи</strong></div>
-      <div className="mealProgressTrack"><span style={{ width: completion + '%' }}/></div>
+    <div className="mealWeekHeading"><div><span>ВАША НЕДЕЛЯ</span><h4>План питания</h4></div><div className="mealWeekStatus"><span className="mealStatusDot"/>{plannedCount === 21 ? 'Всё запланировано' : plannedCount ? 'Можно продолжать' : 'Начнём планировать'}</div></div>
+    <div className="mealDayRail" role="tablist" aria-label="Дни недели">
+      {days.map((day,index) => <button key={day} type="button" role="tab" aria-selected={selectedDay===index} className={selectedDay===index?'mealDayTab active':'mealDayTab'} onClick={()=>setSelectedDay(index)}><span>{['ПН','ВТ','СР','ЧТ','ПТ','СБ','ВС'][index]}</span><strong>{dayCount(day)}</strong></button>)}
     </div>
 
     <div className="mealWeekGrid">
       {days.map((day, dayIndex) => (
-        <article className="mealDayCard" key={day}>
-          <div className="mealDayHeading"><span className="mealDayNumber">{String(dayIndex + 1).padStart(2, '0')}</span><strong>{day}</strong><span className="mealDayDone">{slots.filter(slot => plan[day + '|' + slot.id] && recipes.some(recipe => String(recipe.id) === String(plan[day + '|' + slot.id]))).length}/3</span></div>
+        <article className={selectedDay===dayIndex?'mealDayCard active':'mealDayCard'} key={day}>
+          <div className="mealDayHeading"><div><span className="mealDayKicker">ДЕНЬ {String(dayIndex+1).padStart(2,'0')}</span><strong>{day}</strong></div><span className={dayCount(day)===3?'mealDayDone complete':'mealDayDone'}>{dayCount(day)===3?<Check size={12}/>:dayCount(day)+' / 3'}</span></div>
           <div className="mealDaySlots">
-            {slots.map(slot => (
-              <label className="mealSlot" key={slot.id}>
-                <span>{slot.label}</span>
-                <select value={plan[day + '|' + slot.id] || ''} onChange={event => setMeal(day, slot.id, event.target.value)}>
-                  <option value="">Выбрать блюдо…</option>
-                  {recipes.map(recipe => <option key={recipe.id} value={recipe.id}>{recipe.name}</option>)}
-                </select>
-              </label>
-            ))}
+            {slots.map(slot => {
+              const recipe=getRecipe(day,slot.id)
+              return <div className={recipe?'mealSlot mealSlotFilled':'mealSlot'} key={slot.id}>
+                <div className="mealSlotPhoto">
+                  {recipe?.image ? <img src={recipe.image} alt="" loading="lazy"/> : <div className="mealSlotPlaceholder"><span>{slot.id==='breakfast'?'☀':slot.id==='lunch'?'◒':'☾'}</span></div>}
+                  <span className="mealSlotLabel">{slot.label}</span>
+                  {recipe && <span className="mealSlotTime"><Check size={11}/></span>}
+                </div>
+                <div className="mealSlotInfo">
+                  <strong>{recipe?.name || 'Что приготовим?'}</strong>
+                  <select aria-label={slot.label+' · '+day} value={plan[day+'|'+slot.id]||''} onChange={event=>setMeal(day,slot.id,event.target.value)}>
+                    <option value="">Выбрать блюдо</option>
+                    {recipes.map(item=><option key={item.id} value={item.id}>{item.name}</option>)}
+                  </select>
+                </div>
+              </div>
+            })}
           </div>
+          {dayCount(day)===3 && <div className="mealDayFooter"><Check size={13}/> День спланирован</div>}
         </article>
       ))}
     </div>
 
-    <div className="mealPlanInsight">
-      <div className="mealInsightIcon"><ShoppingBasket size={18}/></div>
-      <div><strong>Список покупок на всю неделю</strong><p>{shoppingCount ? shoppingCount + ' ингредиентов не хватает дома. Повторяющиеся продукты объединены, количество пересчитано на ' + servings + (servings === 1 ? ' человека.' : servings < 5 ? ' человек.' : ' человек.') : 'Добавьте блюда в меню — Food проверит запасы и рассчитает, что нужно купить.'}</p></div>
+    <div className="mealShoppingCard">
+      <div className="mealShoppingTop">
+        <div className="mealShoppingIcon"><ShoppingBasket size={21}/></div>
+        <div className="mealShoppingCopy"><span>УМНЫЙ СПИСОК</span><h4>Что купить</h4><p>{shoppingCount ? 'Food нашёл '+shoppingCount+' ингредиентов, которых нет в ваших запасах.' : 'Добавьте блюда в меню — соберём список недостающих продуктов.'}</p></div>
+        <div className="mealShoppingTotal"><strong>{shoppingCount}</strong><span>позиций</span></div>
+      </div>
+      {missing.length>0 && <div className="mealShoppingIngredients">{missing.slice(0,8).map(item=><div key={item.name+'|'+item.unit}><span className="mealIngredientDot"/><span className="mealIngredientName">{item.name}</span><strong>{item.hasQuantity?quantityText(item.amount,item.unit):'по вкусу'}</strong></div>)}{missing.length>8&&<span className="mealMoreIngredients">и ещё {missing.length-8} позиций</span>}</div>}
+      <button className="kitchenPlanAction mealShoppingAction" type="button" onClick={addMissing} disabled={!missing.length}><ShoppingBasket size={16}/>{missing.length?'Добавить в общий список покупок':'Список пока пуст'}</button>
     </div>
-    {missing.length > 0 && <div className="mealMissingPreview">{missing.slice(0, 6).map(item => <span key={item.name + item.unit}>{item.name}{item.hasQuantity ? ' · ' + quantityText(item.amount, item.unit) : ''}</span>)}{missing.length > 6 && <span>+ ещё {missing.length - 6}</span>}</div>}
-    <button className="kitchenPlanAction" type="button" onClick={addMissing} disabled={!missing.length}><ShoppingBasket size={16}/>{missing.length ? 'Добавить недостающее в покупки' : 'Сначала добавьте блюда в меню'}</button>
     {notice && <p className="mealPlannerNotice" role="status"><Check size={15}/>{notice}</p>}
-    <div className="mealPlannerFoot"><RefreshCw size={13}/> Автоподбор учитывает запасы, тип приёма пищи и старается не повторять блюда. Меню можно редактировать вручную.</div>
+    <div className="mealPlannerFoot"><RefreshCw size={13}/> Автоподбор учитывает продукты дома. Вы можете заменить любое блюдо — меню сохранится на этом устройстве.</div>
   </section>
 }
