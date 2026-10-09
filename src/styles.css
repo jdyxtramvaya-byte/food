@@ -1562,3 +1562,15 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline-color:rg
  .mealShoppingIngredients{grid-template-columns:minmax(0,1fr)}
 }
 @keyframes mealCardIn{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* Fix planner image overlap on narrow screens: each meal gets its own row. */
+@media(max-width:600px){
+  .mealPlannerPro .mealDaySlots{grid-template-columns:minmax(0,1fr)!important}
+  .mealPlannerPro .mealSlot{grid-template-columns:82px minmax(0,1fr);width:100%;box-sizing:border-box}
+  .mealPlannerPro .mealSlotPhoto{width:82px;height:82px;max-width:100%;box-sizing:border-box}
+  .mealPlannerPro .mealSlotInfo{min-width:0}
+  .mealPlannerPro .mealSlotInfo select{max-width:100%;box-sizing:border-box}
+}
+@media(min-width:601px){
+  .mealPlannerPro .mealSlotPhoto{width:74px;height:74px}
+}
