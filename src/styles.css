@@ -1574,3 +1574,44 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline-color:rg
 @media(min-width:601px){
   .mealPlannerPro .mealSlotPhoto{width:74px;height:74px}
 }
+
+
+/* Guided cooking and ingredient preparation */
+.cookingPrep{margin:16px 0;padding:15px;border:1px solid rgba(100,120,90,.14);border-radius:18px;background:rgba(255,255,255,.36)}
+.cookingSectionTitle{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.cookingSectionIcon{width:36px;height:36px;display:grid;place-items:center;border-radius:12px;background:rgba(115,147,99,.13);color:#668657}
+.cookingSectionTitle>span:last-child{display:grid;gap:3px}
+.cookingSectionTitle strong{font-size:13px}
+.cookingSectionTitle small,.cookingModeSwitch small{font-size:11px;color:var(--muted,#85877d)}
+.cookingIngredientList{display:grid;gap:5px}
+.cookingIngredient{width:100%;display:grid;grid-template-columns:22px minmax(0,1fr) auto;align-items:center;gap:9px;text-align:left;padding:9px 8px;border:1px solid transparent;border-radius:11px;background:rgba(120,140,105,.045);color:var(--text,#34392f);font:inherit;font-size:12px;-webkit-tap-highlight-color:transparent}
+.cookingIngredientCheck{width:20px;height:20px;display:grid;place-items:center;border:1px solid rgba(100,120,90,.3);border-radius:7px;color:white}
+.cookingIngredient strong{font-size:11px;font-weight:700;color:var(--muted,#85877d)}
+.cookingIngredient.checked{background:rgba(115,147,99,.10);color:var(--muted,#85877d)}
+.cookingIngredient.checked .cookingIngredientCheck{background:#78966b;border-color:#78966b}
+.cookingIngredient.checked>span:nth-child(2){text-decoration:line-through}
+.cookingModeSwitch{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 0;padding:12px;border:1px solid rgba(100,120,90,.13);border-radius:15px;background:rgba(120,140,105,.06)}
+.cookingModeSwitch>div{display:flex;align-items:center;gap:9px;min-width:0}
+.cookingModeSwitch>div>svg{flex:0 0 auto;color:#6f8b60}
+.cookingModeSwitch>div span{display:grid;gap:3px}
+.cookingModeSwitch strong{font-size:12px}
+.cookingModeSwitch button{flex:0 0 auto;padding:9px 11px;border:1px solid rgba(110,139,95,.2);border-radius:11px;background:rgba(120,150,105,.12);color:var(--text,#34392f);font:inherit;font-size:11px;font-weight:750;-webkit-tap-highlight-color:transparent}
+.guidedCookingStep{padding:18px;border:1px solid rgba(110,139,95,.2);border-radius:20px;background:linear-gradient(145deg,rgba(126,157,107,.10),rgba(255,255,255,.48))}
+.guidedCookingTop{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:10px;font-weight:800;letter-spacing:.1em;color:var(--muted,#85877d)}
+.guidedCookingTrack{display:grid;grid-template-columns:repeat(var(--step-count,6),minmax(0,1fr));grid-auto-flow:column;gap:5px;margin:12px 0 20px}
+.guidedCookingTrack span{height:4px;border-radius:99px;background:rgba(100,120,90,.14)}
+.guidedCookingTrack span.done,.guidedCookingTrack span.current{background:#78966b}
+.guidedCookingText{min-height:115px;margin:0;font-size:18px;line-height:1.6;letter-spacing:-.02em;font-weight:550;color:var(--text,#34392f)}
+.guidedCookingText.done{color:var(--muted,#85877d)}
+.guidedTimerButton{margin-top:14px!important}
+.guidedDoneButton{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:18px;padding:13px;border:1px solid rgba(110,139,95,.24);border-radius:13px;background:rgba(120,150,105,.12);color:var(--text,#34392f);font:inherit;font-size:12px;font-weight:750;-webkit-tap-highlight-color:transparent}
+.guidedDoneButton.checked{background:#78966b;border-color:#78966b;color:white}
+.guidedCookingNav{display:flex;justify-content:space-between;gap:10px;margin-top:12px}
+.guidedCookingNav button{display:flex;align-items:center;justify-content:center;gap:5px;min-height:40px;padding:9px 12px;border:1px solid rgba(100,120,90,.16);border-radius:12px;background:rgba(255,255,255,.4);color:var(--text,#34392f);font:inherit;font-size:12px;font-weight:700;-webkit-tap-highlight-color:transparent}
+.guidedCookingNav button:disabled{opacity:.35}
+[data-theme="dark"] .cookingPrep,[data-theme="dark"] .guidedCookingStep{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.09)}
+[data-theme="dark"] .cookingIngredient{color:#e5e8df;background:rgba(255,255,255,.035)}
+[data-theme="dark"] .cookingModeSwitch{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.09)}
+[data-theme="dark"] .cookingModeSwitch button,[data-theme="dark"] .guidedCookingNav button{background:rgba(255,255,255,.06);color:#e5e8df;border-color:rgba(255,255,255,.12)}
+[data-theme="dark"] .guidedCookingText{color:#e5e8df}
+@media(max-width:560px){.cookingPrep{padding:12px}.guidedCookingStep{padding:14px}.guidedCookingText{font-size:16px;min-height:125px}.cookingModeSwitch{align-items:flex-start}.cookingModeSwitch button{padding:8px 9px}}
