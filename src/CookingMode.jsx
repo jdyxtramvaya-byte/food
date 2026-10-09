@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Check, Circle, Timer, Play, Pause, RotateCcw, ChefHat, ChevronLeft, ChevronRight, ClipboardCheck, ListChecks } from 'lucide-react'
+import { Check, Circle, Timer, Play, Pause, RotateCcw, ChefHat, ChevronLeft, ChevronRight, ClipboardCheck, X, ListChecks } from 'lucide-react'
 
 function durationFromText(text) {
-  const match = text.match(/(\d+)(?:\s*[–-]\s*(\d+))?\s*(час(?:а|ов)?|ч\.?|минут(?:у|ы)?|мин\.?|секунд(?:у|ы)?|сек\.?)/i)
+  const match = String(text).match(/(\d+)(?:\s*[–-]\s*(\d+))?\s*(час(?:а|ов)?|ч\.?|минут(?:у|ы)?|мин\.?|секунд(?:у|ы)?|сек\.?)/i)
   if (!match) return null
   const amount = Number(match[2] || match[1])
   const unit = match[3].toLowerCase()
@@ -12,9 +12,7 @@ function durationFromText(text) {
 
 function formatTime(seconds) {
   const safe = Math.max(0, seconds)
-  const m = Math.floor(safe / 60)
-  const s = safe % 60
-  return m ? `${m}:${String(s).padStart(2, '0')}` : `0:${String(s).padStart(2, '0')}`
+  return `${Math.floor(safe / 60)}:${String(safe % 60).padStart(2, '0')}`
 }
 
 function readArray(key) {
@@ -34,6 +32,8 @@ export default function CookingMode({ recipe, steps = [], tip, substitutions, in
     try { return Math.max(0, Number(window.localStorage.getItem(`food-current-step-${recipe.id}`)) || 0) } catch { return 0 }
   })
   const [timer, setTimer] = useState(null)
+  const [allSteps, setAllSteps] = useState(false)
+  const [finished, setFinished] = useState(false)
 
   useEffect(() => {
     try { window.localStorage.setItem(storageKey, JSON.stringify(completed)) } catch {}
@@ -80,91 +80,94 @@ export default function CookingMode({ recipe, steps = [], tip, substitutions, in
   )
   const startTimer = (step, index) => {
     const duration = durationFromText(step)
-    if (!duration) return
-    setTimer({ index, label: duration.label, remaining: duration.seconds, total: duration.seconds, paused: false })
+    if (duration) setTimer({ index, label: duration.label, remaining: duration.seconds, paused: false })
   }
   const resetProgress = () => {
     setCompleted([])
     setPreparedIngredients([])
     setCurrentStep(0)
     setTimer(null)
+    setFinished(false)
     try {
       window.localStorage.removeItem(storageKey)
       window.localStorage.removeItem(ingredientKey)
       window.localStorage.removeItem(`food-current-step-${recipe.id}`)
     } catch {}
   }
+  const closeGuided = () => {
+    setGuided(false)
+    setFinished(false)
+  }
 
   return (
     <div className="cookingMode">
       <div className="cookingProgressHead">
-        <div><span className="cookingEyebrow"><ChefHat size={14}/> РЕЖИМ ГОТОВКИ</span><strong>{doneCount} из {steps.length} шагов</strong></div>
+        <div><span className="cookingEyebrow"><ChefHat size={14}/> РЕЖИМ ГОТОВКИ</span><strong>{doneCount} из {steps.length} шагов пройдено</strong></div>
         <span className="cookingProgressPercent">{progress}%</span>
       </div>
       <div className="cookingProgressTrack"><span style={{ width: `${progress}%` }}/></div>
 
-      {ingredients.length > 0 && (
-        <section className="cookingPrep">
-          <div className="cookingSectionTitle"><span className="cookingSectionIcon"><ClipboardCheck size={17}/></span><span><strong>Подготовить продукты</strong><small>{preparedIngredients.length} из {ingredients.length} подготовлено · на {servings} {servings === 1 ? 'порцию' : servings < 5 ? 'порции' : 'порций'}</small></span></div>
-          <div className="cookingIngredientList">
-            {ingredients.map((item, index) => {
-              const checked = preparedIngredients.includes(index)
-              return <button type="button" key={`${item.name}-${index}`} className={checked ? 'cookingIngredient checked' : 'cookingIngredient'} onClick={() => toggleIngredient(index)} aria-pressed={checked}>
-                <span className="cookingIngredientCheck">{checked && <Check size={14}/>}</span><span>{item.name}</span><strong>{item.amount}</strong>
-              </button>
-            })}
-          </div>
-        </section>
-      )}
-
-      {timer && (
-        <section className={timer.remaining === 0 ? 'cookingTimer finished' : 'cookingTimer'} aria-live="polite">
-          <div className="cookingTimerIcon"><Timer size={20}/></div>
-          <div className="cookingTimerText"><small>{timer.remaining === 0 ? 'ВРЕМЯ ВЫШЛО' : `ТАЙМЕР · ШАГ ${timer.index + 1}`}</small><strong>{formatTime(timer.remaining)}</strong><span>{timer.remaining === 0 ? 'Проверьте готовность блюда' : `Установлено: ${timer.label}`}</span></div>
-          <div className="cookingTimerActions">
-            {timer.remaining > 0 && <button onClick={() => setTimer(current => ({ ...current, paused: !current.paused }))} aria-label={timer.paused ? 'Продолжить таймер' : 'Поставить таймер на паузу'}>{timer.paused ? <Play size={17}/> : <Pause size={17}/>}</button>}
-            <button onClick={() => setTimer(null)} aria-label="Сбросить таймер"><RotateCcw size={17}/></button>
-          </div>
-        </section>
-      )}
-
-      <div className="cookingModeSwitch">
-        <div><ListChecks size={17}/><span><strong>{guided ? 'Пошаговое приготовление' : 'Все шаги рецепта'}</strong><small>{guided ? 'Сосредоточьтесь на текущем шаге' : 'Отмечайте выполненные шаги'}</small></span></div>
-        <button type="button" onClick={() => setGuided(value => !value)}>{guided ? 'Все шаги' : 'Вести по шагам'}</button>
-      </div>
-
-      {guided && steps.length > 0 ? (
-        <section className="guidedCookingStep">
-          <div className="guidedCookingTop"><span>ШАГ {String(activeStep + 1).padStart(2, '0')}</span><span>{activeStep + 1} из {steps.length}</span></div>
-          <div className="guidedCookingTrack" style={{ "--step-count": steps.length }}>{steps.map((_, index) => <span key={index} className={index < activeStep ? 'done' : index === activeStep ? 'current' : ''}/>)}</div>
-          <p className={completed.includes(activeStep) ? 'guidedCookingText done' : 'guidedCookingText'}>{steps[activeStep]}</p>
-          {durationFromText(steps[activeStep]) && <button className="cookingStepTimer guidedTimerButton" onClick={() => startTimer(steps[activeStep], activeStep)}><Timer size={15}/> Запустить таймер · {durationFromText(steps[activeStep]).label}</button>}
-          <button type="button" className={completed.includes(activeStep) ? 'guidedDoneButton checked' : 'guidedDoneButton'} onClick={() => toggleStep(activeStep)}>{completed.includes(activeStep) ? <><Check size={17}/> Шаг выполнен</> : <><Circle size={17}/> Отметить шаг выполненным</>}</button>
-          <div className="guidedCookingNav"><button type="button" onClick={() => setCurrentStep(Math.max(0, activeStep - 1))} disabled={activeStep === 0}><ChevronLeft size={17}/> Назад</button><button type="button" onClick={() => { if (activeStep < steps.length - 1) setCurrentStep(activeStep + 1); else if (!completed.includes(activeStep)) toggleStep(activeStep) }}>{activeStep === steps.length - 1 ? 'Завершить' : 'Следующий шаг'} <ChevronRight size={17}/></button></div>
-          {activeStep === steps.length - 1 && progress === 100 && <div className="cookingFinished"><Check size={17}/> Блюдо готово. Приятного аппетита!</div>}
-        </section>
-      ) : (
-        <div className="cookingStepList">
-          {steps.map((step, index) => {
-            const isDone = completed.includes(index)
-            const duration = durationFromText(step)
-            return (
-              <article className={isDone ? 'cookingStep done' : 'cookingStep'} key={index}>
-                <button className="cookingStepCheck" onClick={() => toggleStep(index)} aria-label={isDone ? `Отметить шаг ${index + 1} невыполненным` : `Отметить шаг ${index + 1} выполненным`} aria-pressed={isDone}>
-                  {isDone ? <Check size={17}/> : <Circle size={19}/>}
-                </button>
-                <div className="cookingStepContent"><span className="cookingStepLabel">ШАГ {String(index + 1).padStart(2, '0')}</span><p>{step}</p>
-                  {duration && <button className="cookingStepTimer" onClick={() => startTimer(step, index)}><Timer size={14}/> Таймер на {duration.label}</button>}
-                </div>
-              </article>
-            )
+      {ingredients.length > 0 && <section className="cookingPrep">
+        <div className="cookingSectionTitle"><span className="cookingSectionIcon"><ClipboardCheck size={17}/></span><span><strong>Подготовить продукты</strong><small>{preparedIngredients.length} из {ingredients.length} · на {servings} {servings === 1 ? 'порцию' : servings < 5 ? 'порции' : 'порций'}</small></span></div>
+        <div className="cookingIngredientList">
+          {ingredients.map((item, index) => {
+            const checked = preparedIngredients.includes(index)
+            return <button type="button" key={`${item.name}-${index}`} className={checked ? 'cookingIngredient checked' : 'cookingIngredient'} onClick={() => toggleIngredient(index)} aria-pressed={checked}>
+              <span className="cookingIngredientCheck">{checked && <Check size={14}/>}</span><span>{item.name}</span><strong>{item.amount}</strong>
+            </button>
           })}
         </div>
-      )}
+      </section>}
+
+      <div className="cookingLaunchCard">
+        <div className="cookingLaunchIcon"><ChefHat size={22}/></div>
+        <div className="cookingLaunchCopy"><strong>Готовим шаг за шагом</strong><span>Отдельный экран, таймер и крупные инструкции — удобно, когда руки заняты.</span></div>
+        <button type="button" onClick={() => { setGuided(true); setFinished(false) }}>{progress === 0 ? 'Начать готовить' : 'Продолжить'} <ChevronRight size={16}/></button>
+      </div>
+
       {progress === 100 && <div className="cookingFinished"><Check size={17}/> Готово! Приятного аппетита.</div>}
       {tip && <div className="recipeTip"><strong>Совет повара</strong><p>{tip}</p></div>}
       {substitutions && <div className="recipeTip"><strong>Чем заменить</strong><p>{substitutions}</p></div>}
       <button className="cookingReset" onClick={resetProgress}>Сбросить прогресс и начать заново</button>
+
+      {guided && <div className="cookingFullscreen" role="dialog" aria-modal="true" aria-label={`Готовим: ${recipe.name}`}>
+        <header className="cookingFullscreenHeader">
+          <button type="button" className="cookingCloseButton" onClick={closeGuided} aria-label="Закрыть режим готовки"><X size={21}/></button>
+          <div className="cookingFullscreenBrand"><span>FOOD · РЕЖИМ ГОТОВКИ</span><strong>{recipe.name}</strong></div>
+          <span className="cookingFullscreenServings">{servings} порц.</span>
+        </header>
+        <div className="cookingFullscreenProgress">
+          <div><span>ВАШ ПРОГРЕСС</span><strong>{progress}%</strong></div>
+          <div className="cookingFullscreenTrack"><span style={{ width: `${progress}%` }}/></div>
+        </div>
+
+        {finished || (progress === 100 && activeStep === steps.length - 1) ? <section className="cookingCompletion">
+          <div className="cookingCompletionIcon"><Check size={32}/></div>
+          <span>ВСЕ ШАГИ ПОЗАДИ</span><h2>Блюдо готово.</h2><p>Можно накрывать на стол. Приятного аппетита всей семье!</p>
+          <button type="button" onClick={closeGuided}>Вернуться к рецепту</button>
+        </section> : <>
+          <main className="cookingFullscreenMain">
+            <div className="cookingFullscreenStepMeta"><span>ШАГ {String(activeStep + 1).padStart(2, '0')}</span><span>{activeStep + 1} ИЗ {steps.length}</span></div>
+            <div className="cookingFullscreenSegments" style={{ "--step-count": steps.length }}>{steps.map((_, index) => <span key={index} className={index < activeStep ? 'done' : index === activeStep ? 'current' : ''}/>)}</div>
+            {recipe.image && <div className="cookingFullscreenImage"><img src={recipe.image} alt={recipe.name}/><span><ChefHat size={14}/> ГОТОВИМ ВМЕСТЕ</span></div>}
+            <p className={completed.includes(activeStep) ? 'cookingFullscreenInstruction completed' : 'cookingFullscreenInstruction'}>{steps[activeStep]}</p>
+            {timer && <section className={timer.remaining === 0 ? 'cookingTimer finished fullscreenTimer' : 'cookingTimer fullscreenTimer'} aria-live="polite">
+              <div className="cookingTimerIcon"><Timer size={20}/></div><div className="cookingTimerText"><small>{timer.remaining === 0 ? 'ВРЕМЯ ВЫШЛО' : `ТАЙМЕР · ШАГ ${timer.index + 1}`}</small><strong>{formatTime(timer.remaining)}</strong><span>{timer.remaining === 0 ? 'Проверьте готовность блюда' : `Установлено: ${timer.label}`}</span></div>
+              <div className="cookingTimerActions">{timer.remaining > 0 && <button onClick={() => setTimer(current => ({ ...current, paused: !current.paused }))} aria-label={timer.paused ? 'Продолжить таймер' : 'Пауза'}>{timer.paused ? <Play size={17}/> : <Pause size={17}/>}</button>}<button onClick={() => setTimer(null)} aria-label="Сбросить таймер"><RotateCcw size={17}/></button></div>
+            </section>}
+            {durationFromText(steps[activeStep]) && <button type="button" className="cookingFullscreenTimerButton" onClick={() => startTimer(steps[activeStep], activeStep)}><Timer size={17}/> Запустить таймер · {durationFromText(steps[activeStep]).label}</button>}
+            <button type="button" className={completed.includes(activeStep) ? 'cookingFullscreenDone checked' : 'cookingFullscreenDone'} onClick={() => toggleStep(activeStep)}>{completed.includes(activeStep) ? <><Check size={18}/> Шаг выполнен</> : <><Circle size={18}/> Отметить шаг выполненным</>}</button>
+          </main>
+          <footer className="cookingFullscreenFooter">
+            <button type="button" onClick={() => setCurrentStep(Math.max(0, activeStep - 1))} disabled={activeStep === 0}><ChevronLeft size={18}/> Назад</button>
+            <button type="button" className="cookingNextButton" onClick={() => { if (activeStep < steps.length - 1) setCurrentStep(activeStep + 1); else { if (!completed.includes(activeStep)) toggleStep(activeStep); setFinished(true) } }}>{activeStep === steps.length - 1 ? 'Завершить' : 'Следующий шаг'} <ChevronRight size={18}/></button>
+          </footer>
+          <div className="cookingFullscreenExtras">
+            <button type="button" onClick={() => setAllSteps(value => !value)}><ListChecks size={15}/>{allSteps ? 'Скрыть список шагов' : 'Все шаги рецепта'}</button>
+            {allSteps && <div className="cookingFullscreenStepList">{steps.map((step, index) => <button type="button" key={index} className={index === activeStep ? 'active' : ''} onClick={() => { setCurrentStep(index); setAllSteps(false) }}><span>{completed.includes(index) ? <Check size={15}/> : String(index + 1).padStart(2, '0')}</span>{step}</button>)}</div>}
+          </div>
+        </>}
+      </div>}
     </div>
   )
 }
