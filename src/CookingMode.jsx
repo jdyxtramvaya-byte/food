@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Check, Circle, Timer, Play, Pause, RotateCcw, ChefHat, ChevronLeft, ChevronRight, ClipboardCheck, X, ListChecks } from 'lucide-react'
 
 function durationFromText(text) {
@@ -99,6 +100,23 @@ export default function CookingMode({ recipe, steps = [], tip, substitutions, in
     setFinished(false)
   }
 
+  useEffect(() => {
+    if (!guided) return undefined
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKeyDown = event => {
+      if (event.key === 'Escape') {
+        setGuided(false)
+        setFinished(false)
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [guided])
+
   return (
     <div className="cookingMode">
       <div className="cookingProgressHead">
@@ -130,7 +148,7 @@ export default function CookingMode({ recipe, steps = [], tip, substitutions, in
       {substitutions && <div className="recipeTip"><strong>Чем заменить</strong><p>{substitutions}</p></div>}
       <button className="cookingReset" onClick={resetProgress}>Сбросить прогресс и начать заново</button>
 
-      {guided && <div className="cookingFullscreen" role="dialog" aria-modal="true" aria-label={`Готовим: ${recipe.name}`}>
+      {guided && createPortal(<div className="cookingFullscreen" role="dialog" aria-modal="true" aria-label={`Готовим: ${recipe.name}`}>
         <header className="cookingFullscreenHeader">
           <button type="button" className="cookingCloseButton" onClick={closeGuided} aria-label="Закрыть режим готовки"><X size={21}/></button>
           <div className="cookingFullscreenBrand"><span>FOOD · РЕЖИМ ГОТОВКИ</span><strong>{recipe.name}</strong></div>
@@ -167,7 +185,7 @@ export default function CookingMode({ recipe, steps = [], tip, substitutions, in
             {allSteps && <div className="cookingFullscreenStepList">{steps.map((step, index) => <button type="button" key={index} className={index === activeStep ? 'active' : ''} onClick={() => { setCurrentStep(index); setAllSteps(false) }}><span>{completed.includes(index) ? <Check size={15}/> : String(index + 1).padStart(2, '0')}</span>{step}</button>)}</div>}
           </div>
         </>}
-      </div>}
+      </div>, document.body)}
     </div>
   )
 }
