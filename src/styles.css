@@ -1420,3 +1420,44 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline-color:rg
   .aiChefStarters button { padding: 8px 10px; font-size: 11px; }
   .aiChefStatus { font-size: 10px; }
 }
+
+
+/* Smart weekly meal planner */
+.mealPlannerPro{overflow:hidden}
+.mealPlannerControls{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:15px 0}
+.mealServings{display:flex;align-items:center;gap:7px;color:var(--muted,#85877d);font-size:12px;font-weight:650}
+.mealServings select{min-width:54px;padding:9px 10px;border:1px solid var(--line,rgba(60,60,67,.12));border-radius:12px;background:var(--glass-strong,rgba(255,255,255,.82));color:var(--text,#1d1d1f);font:inherit}
+.mealAutoButton{display:flex;align-items:center;justify-content:center;gap:7px;padding:11px 14px;border:1px solid rgba(105,139,91,.18);border-radius:13px;background:linear-gradient(135deg,#789b68,#58794b);color:white;font:inherit;font-size:12px;font-weight:750;box-shadow:0 7px 18px rgba(89,122,72,.16);-webkit-tap-highlight-color:transparent}
+.mealAutoButton:active{transform:scale(.98)}
+.mealWeekProgress{display:grid;gap:8px;padding:13px 14px;margin:0 0 13px;border:1px solid var(--line,rgba(60,60,67,.12));border-radius:15px;background:var(--glass,rgba(255,255,255,.68))}
+.mealWeekProgress>div:first-child{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;color:var(--muted,#85877d)}
+.mealWeekProgress strong{color:var(--text,#1d1d1f);font-size:11px}
+.mealProgressTrack{height:5px;border-radius:999px;overflow:hidden;background:rgba(120,140,110,.15)}
+.mealProgressTrack span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#91b47c,#547b49);transition:width .25s ease}
+.mealWeekGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.mealDayCard{min-width:0;padding:12px;border:1px solid var(--line,rgba(60,60,67,.12));border-radius:16px;background:var(--glass,rgba(255,255,255,.68));box-shadow:inset 0 1px rgba(255,255,255,.4)}
+.mealDayHeading{display:flex;align-items:center;gap:7px;margin-bottom:10px}
+.mealDayNumber{display:grid;place-items:center;width:25px;height:25px;flex:none;border-radius:8px;background:rgba(111,145,96,.13);color:#66865a;font-size:10px;font-weight:800}
+.mealDayHeading>strong{min-width:0;flex:1;font-size:12px;letter-spacing:-.02em}
+.mealDayDone{padding:3px 6px;border-radius:999px;background:rgba(111,145,96,.1);color:var(--muted,#85877d);font-size:9px;font-weight:750}
+.mealDaySlots{display:grid;gap:8px}
+.mealSlot{display:grid;gap:4px;min-width:0}
+.mealSlot>span{color:var(--muted,#85877d);font-size:10px;font-weight:650}
+.mealSlot select{width:100%;min-width:0;min-height:36px;padding:7px 24px 7px 9px;border:1px solid var(--line,rgba(60,60,67,.12));border-radius:10px;background:var(--glass-strong,rgba(255,255,255,.82));color:var(--text,#1d1d1f);font:inherit;font-size:11px;outline:none;-webkit-tap-highlight-color:transparent}
+.mealSlot select:focus{border-color:rgba(105,139,91,.48)}
+.mealPlanInsight{display:flex;align-items:flex-start;gap:10px;margin:15px 0 9px;padding:13px;border-radius:15px;background:rgba(111,145,96,.09)}
+.mealInsightIcon{display:grid;place-items:center;width:34px;height:34px;flex:none;border-radius:11px;background:rgba(111,145,96,.14);color:#66865a}
+.mealPlanInsight strong{display:block;font-size:12px}
+.mealPlanInsight p{margin:4px 0 0;color:var(--muted,#85877d);font-size:11px;line-height:1.45}
+.mealMissingPreview{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 12px}
+.mealMissingPreview span{padding:6px 9px;border:1px solid var(--line,rgba(60,60,67,.12));border-radius:999px;background:var(--glass,rgba(255,255,255,.68));color:var(--text,#1d1d1f);font-size:10px}
+.mealPlannerNotice{display:flex;align-items:flex-start;gap:7px;margin:10px 0 0;color:#66865a;font-size:11px;line-height:1.45}
+.mealPlannerNotice svg{flex:none;margin-top:1px}
+.mealPlannerFoot{display:flex;align-items:flex-start;gap:6px;margin-top:12px;color:var(--muted,#85877d);font-size:10px;line-height:1.45}
+.mealPlannerFoot svg{flex:none;margin-top:1px}
+[data-theme="dark"] .mealDayCard,[data-theme="dark"] .mealWeekProgress{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.08)}
+[data-theme="dark"] .mealSlot select,[data-theme="dark"] .mealServings select{background:#252c22;border-color:rgba(255,255,255,.1);color:#e8ebe2}
+[data-theme="dark"] .mealWeekProgress strong{color:#e8ebe2}
+[data-theme="dark"] .mealMissingPreview span{background:rgba(255,255,255,.035)}
+@media(max-width:540px){.mealWeekGrid{grid-template-columns:minmax(0,1fr)}.mealDayCard{padding:12px}.mealDaySlots{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.mealSlot select{font-size:10px;padding-left:7px;padding-right:5px}.mealDayHeading{margin-bottom:9px}.mealPlannerControls{align-items:stretch}.mealAutoButton{font-size:11px;padding:10px}.mealServings{font-size:11px}}
+@media(min-width:900px){.mealWeekGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
