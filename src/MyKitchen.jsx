@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import MealPlanner from './MealPlanner'
 import { UserRound, Heart, Refrigerator, ShoppingBasket, ChefHat, Check, Plus, Trash2, Clock3, Sparkles, ArrowUpRight } from 'lucide-react'
 
 const readJSON = (key, fallback) => {
@@ -71,6 +72,8 @@ export default function MyKitchen({ recipes, favorites, onSelectRecipe, onOpenFi
         <textarea value={pantry} onChange={event => setPantry(event.target.value)} placeholder="Например: картофель, яйца, молоко, сыр" rows={3}/>
         <div className="kitchenChips">{pantryItems.slice(0,12).map((item,index) => <span key={item + index}>{item}</span>)}</div>
       </div>
+
+      <MealPlanner recipes={recipes} pantry={pantry} shopping={shopping} setShopping={setShopping} />
 
       <div className="kitchenSection">
         <div className="kitchenSectionHead"><div><span>02 · СПИСОК</span><h3><ShoppingBasket size={19}/> Список покупок</h3></div><span className="kitchenCount">{shopping.length}</span></div>
